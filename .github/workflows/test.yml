@@ -53,7 +53,7 @@ jobs:
           PGPASSWORD: postgres
           RAILS_ENV: test
         run: |
-          bin/rake test
+          bin/rake test:prepare test
 
       - name: Run System Tests
         env:
@@ -62,4 +62,4 @@ jobs:
           PGPASSWORD: postgres
           RAILS_ENV: test
         run: |
-          bin/rake test:system
+          bin/rake test:prepare test:system
