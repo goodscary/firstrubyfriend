@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.1.3"
+ruby File.read(".ruby-version").strip
 
 # Use specific branch of Rails
 gem "rails", github: "rails/rails", branch: "7-0-stable"
