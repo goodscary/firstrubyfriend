@@ -2,12 +2,12 @@ require "test_helper"
 
 class Identity::EmailVerificationsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @user = sign_in_as(users(:lazaro_nixon))
-    @user.update! verified: false
+    @user = User.create!(email: "pratik@hi.com", password: "password_with_12_chars", verified: false)
+    sign_in_as(@user)
   end
 
   test "should send a verification email" do
-    assert_enqueued_email_with UserMailer, :email_verification, args: { user: @user } do
+    assert_enqueued_email_with UserMailer, :email_verification, args: {user: @user} do
       post identity_email_verification_url
     end
 

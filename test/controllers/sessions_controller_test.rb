@@ -2,7 +2,8 @@ require "test_helper"
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @user = users(:lazaro_nixon)
+    @user = User.create!(email: "pratik@hi.com", password: "password_with_12_chars")
+    sign_in_as(@user)
   end
 
   test "should get index" do
@@ -18,7 +19,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should sign in" do
-    post sign_in_url, params: {email: @user.email, password: "Secret1*3*5*"}
+    post sign_in_url, params: {email: @user.email, password: "password_with_12_chars"}
     assert_redirected_to root_url
 
     get root_url

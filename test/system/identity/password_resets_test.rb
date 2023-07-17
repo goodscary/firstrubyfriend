@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class Identity::PasswordResetsTest < ApplicationSystemTestCase
   setup do
-    @user = users(:lazaro_nixon)
+    @user = User.create!(email: "pratik@hi.com", password: "password_with_12_chars", verified: true)
     @sid = @user.password_reset_tokens.create.signed_id(expires_in: 20.minutes)
   end
 

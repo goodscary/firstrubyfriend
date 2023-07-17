@@ -2,14 +2,15 @@ require "application_system_test_case"
 
 class Identity::EmailsTest < ApplicationSystemTestCase
   setup do
-    @user = sign_in_as(users(:lazaro_nixon))
+    @user = User.create!(email: "pratik@hi.com", password: "password_with_12_chars")
+    sign_in_as(@user)
   end
 
   test "updating the email" do
     click_on "Change email address"
 
     fill_in "New email", with: "new_email@hey.com"
-    fill_in "Current password", with: "Secret1*3*5*"
+    fill_in "Current password", with: "password_with_12_chars"
     click_on "Save changes"
 
     assert_text "Your email has been changed"
