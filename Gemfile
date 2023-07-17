@@ -11,6 +11,8 @@ gem "bootsnap", require: false # Reduces boot times through caching; required in
 gem "bcrypt" # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "image_processing", "~> 1.2" # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "importmap-rails" # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
+gem "omniauth" # Use OmniAuth to support multi-provider authentication [https://github.com/omniauth/omniauth]
+gem "omniauth-rails_csrf_protection" # Provides a mitigation against CVE-2015-9284 [https://github.com/cookpad/omniauth-rails_csrf_protection]
 gem "propshaft" # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "pg" # Use postgresql as the database for Active Record
 gem "puma" # Use the Puma web server [https://github.com/puma/puma]
