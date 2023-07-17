@@ -18,6 +18,7 @@ class Identity::PasswordResetsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should send a password reset email" do
+    @user.update!(verified: true)
     assert_enqueued_email_with UserMailer, :password_reset, args: {user: @user} do
       post identity_password_reset_url, params: {email: @user.email}
     end
