@@ -44,9 +44,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_17_103747) do
     t.string "password_digest", null: false
     t.boolean "verified", default: false, null: false
     t.string "provider"
+    t.string "uid"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
 
   add_foreign_key "email_verification_tokens", "users"

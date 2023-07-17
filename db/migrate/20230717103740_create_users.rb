@@ -10,8 +10,11 @@ class CreateUsers < ActiveRecord::Migration[7.0]
       t.boolean :verified, null: false, default: false
 
       t.string :provider
+      t.string :uid
 
       t.timestamps
     end
+
+    add_index :users, [:provider, :uid], unique: true
   end
 end
