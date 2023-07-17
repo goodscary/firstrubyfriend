@@ -6,6 +6,7 @@ ruby File.read(".ruby-version").strip
 # Use specific branch of Rails
 gem "rails", github: "rails/rails", branch: "7-0-stable"
 
+gem "authentication-zero"
 gem "bootsnap", require: false # Reduces boot times through caching; required in config/boot.rb
 gem "bcrypt" # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "image_processing", "~> 1.2" # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
