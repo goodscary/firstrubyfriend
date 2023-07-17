@@ -7,7 +7,7 @@ class Sessions::OmniauthController < ApplicationController
 
     if @user.save
       session_record = @user.sessions.create!
-      cookies.signed.permanent[:session_token] = { value: session_record.id, httponly: true }
+      cookies.signed.permanent[:session_token] = {value: session_record.id, httponly: true}
 
       redirect_to root_path, notice: "Signed in successfully"
     else
@@ -20,15 +20,16 @@ class Sessions::OmniauthController < ApplicationController
   end
 
   private
-    def user_params
-      { email: omniauth.info.email, password: SecureRandom.base58, verified: true }
-    end
 
-    def omniauth_params
-      { provider: omniauth.provider, uid: omniauth.uid }
-    end
+  def user_params
+    {email: omniauth.info.email, password: SecureRandom.base58, verified: true}
+  end
 
-    def omniauth
-      request.env["omniauth.auth"]
-    end
+  def omniauth_params
+    {provider: omniauth.provider, uid: omniauth.uid}
+  end
+
+  def omniauth
+    request.env["omniauth.auth"]
+  end
 end
