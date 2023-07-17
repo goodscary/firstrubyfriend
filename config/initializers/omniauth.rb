@@ -1,4 +1,4 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :developer unless Rails.env.production? # You should replace it with your provider
-  provider :github, "clientid", "secret id", scope: "user:email"
+  provider :github, Rails.application.credentials.dig(:github, :KEY), Rails.application.credentials.dig(:github, :SECRET), scope: "user:email"
 end
