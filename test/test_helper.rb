@@ -1,15 +1,7 @@
-require "simplecov"
-SimpleCov.start "rails" do
-  add_filter "/bin/"
-  add_filter "/db/"
-  add_filter "/test/"
-  add_filter "/vendor/"
-  add_filter "/config/"
-end
-
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
+Webdrivers::Chromedriver.required_version = "114.0.5735.90"
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
@@ -19,4 +11,8 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+  def sign_in_as(user)
+    post(sign_in_url, params: {email: user.email, password: "Secret1*3*5*"})
+    user
+  end
 end
