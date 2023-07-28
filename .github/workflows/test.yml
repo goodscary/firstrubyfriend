@@ -25,6 +25,10 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+      redis:
+        image: redis
+        ports: ["6379:6379"]
+        options: --entrypoint redis-server
 
     steps:
       - uses: actions/checkout@v3
@@ -52,6 +56,7 @@ jobs:
           PGUSER: postgres
           PGPASSWORD: postgres
           RAILS_ENV: test
+          REDIS_URL: redis://localhost:6379/0
         run: |
           bin/rake test:prepare test
 
@@ -61,5 +66,6 @@ jobs:
           PGUSER: postgres
           PGPASSWORD: postgres
           RAILS_ENV: test
+          REDIS_URL: redis://localhost:6379/0
         run: |
           bin/rake test:prepare test:system
