@@ -11,9 +11,11 @@ gem "bootsnap", require: false # Reduces boot times through caching; required in
 gem "bcrypt" # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "image_processing", "~> 1.2" # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "importmap-rails" # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
+gem "kredis" # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 gem "propshaft" # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "pg" # Use postgresql as the database for Active Record
 gem "puma" # Use the Puma web server [https://github.com/puma/puma]
+gem "pwned" # Use Pwned to check if a password has been found in any of the huge data breaches [https://github.com/philnash/pwned]
 gem "redis" # Use Redis adapter to run Action Cable in production
 gem "stimulus-rails" # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "tailwindcss-rails" # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
@@ -37,3 +39,5 @@ group :test do
   gem "simplecov", require: false
   gem "webdrivers"
 end
+
+gem "rack-ratelimit", group: :production # Use Rack::Ratelimit to rate limit requests [https://github.com/jeremy/rack-ratelimit]
