@@ -1,7 +1,6 @@
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
-Webdrivers::Chromedriver.required_version = "114.0.5735.90"
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
@@ -22,8 +21,8 @@ class ActiveSupport::TestCase
       password: "Secret1*3*5*",
       city: "Brighton",
       country_code: "GB",
-      # lat: 50.827778,
-      # lng: -0.152778,
+      lat: 50.827778,
+      lng: -0.152778,
       demographic_year_started_ruby: 2023,
       demographic_year_started_programming: 2022,
       demographic_underrepresented_group: false,
