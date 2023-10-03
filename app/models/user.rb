@@ -5,6 +5,10 @@ class User < ApplicationRecord
   has_many :password_reset_tokens, dependent: :destroy
   has_many :sessions, dependent: :destroy
   has_many :events, dependent: :destroy
+  has_many :mentorship_roles_as_mentor, class_name: "Mentorship", foreign_key: "mentor_id"
+  has_many :mentorship_roles_as_applicant, class_name: "Mentorship", foreign_key: "applicant_id"
+  has_many :mentors, through: :mentorship_roles_as_mentor
+  has_many :applicants, through: :mentorship_roles_as_applicant
 
   validates :email, presence: true, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}
   validates :password, allow_nil: true, length: {minimum: 12}
