@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_28_155014) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_02_025529) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -49,7 +49,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_28_155014) do
     t.boolean "verified", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "unsubscribed_at"
+    t.string "unsubscribed_reason"
+    t.datetime "available_as_mentor_at"
+    t.datetime "requested_mentorship_at"
+    t.string "city"
+    t.string "country_code"
+    t.decimal "lat", precision: 10, scale: 6
+    t.decimal "lng", precision: 10, scale: 6
+    t.integer "demographic_year_of_birth"
+    t.integer "demographic_year_started_ruby"
+    t.integer "demographic_year_started_programming"
+    t.boolean "demographic_underrepresented_group"
+    t.index ["city"], name: "index_users_on_city"
+    t.index ["country_code"], name: "index_users_on_country_code"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["lat", "lng"], name: "index_users_on_lat_and_lng"
   end
 
   add_foreign_key "email_verification_tokens", "users"

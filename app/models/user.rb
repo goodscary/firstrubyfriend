@@ -9,6 +9,14 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}
   validates :password, allow_nil: true, length: {minimum: 12}
   validates :password, not_pwned: {message: "might easily be guessed"}
+  validates :lat, numericality: {greater_than_or_equal_to: -90, less_than_or_equal_to: 90}, allow_nil: true
+  validates :lng, numericality: {greater_than_or_equal_to: -180, less_than_or_equal_to: 180}, allow_nil: true
+
+  enum unsubscribed_reason: {
+    ghosted_mentor: "ghosted_mentor",
+    ghosted_applicant: "ghosted_applicant",
+    requested_removal: "requested_removal"
+  }
 
   before_validation if: -> { email.present? } do
     self.email = email.downcase.strip

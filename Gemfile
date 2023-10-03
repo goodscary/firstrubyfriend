@@ -37,7 +37,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "simplecov", require: false
-  gem "webdrivers"
+  # gem "webdrivers" # removing this because it's causing issues with the CI -> https://github.com/titusfortner/webdrivers/issues/247#issuecomment-1641879165
 end
 
 gem "rack-ratelimit", group: :production # Use Rack::Ratelimit to rate limit requests [https://github.com/jeremy/rack-ratelimit]
