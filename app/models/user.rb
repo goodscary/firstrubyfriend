@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :mentorship_roles_as_applicant, class_name: "Mentorship", foreign_key: "applicant_id"
   has_many :mentors, through: :mentorship_roles_as_mentor
   has_many :applicants, through: :mentorship_roles_as_applicant
+  has_one :mentor_questionnaire, foreign_key: "respondent_id"
 
   validates :email, presence: true, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}
   validates :password, allow_nil: true, length: {minimum: 12}
