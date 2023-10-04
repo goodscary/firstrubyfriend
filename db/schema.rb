@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_02_025529) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_03_222450) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,6 +27,26 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_02_025529) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_events_on_user_id"
+  end
+
+  create_table "mentorships", id: :binary, force: :cascade do |t|
+    t.binary "mentor_id", null: false
+    t.binary "applicant_id", null: false
+    t.string "standing", null: false
+    t.datetime "applicant_month_1_email_sent_at"
+    t.datetime "applicant_month_2_email_sent_at"
+    t.datetime "applicant_month_3_email_sent_at"
+    t.datetime "applicant_month_4_email_sent_at"
+    t.datetime "applicant_month_5_email_sent_at"
+    t.datetime "applicant_month_6_email_sent_at"
+    t.datetime "mentor_month_1_email_sent_at"
+    t.datetime "mentor_month_2_email_sent_at"
+    t.datetime "mentor_month_3_email_sent_at"
+    t.datetime "mentor_month_4_email_sent_at"
+    t.datetime "mentor_month_5_email_sent_at"
+    t.datetime "mentor_month_6_email_sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "password_reset_tokens", id: :binary, force: :cascade do |t|

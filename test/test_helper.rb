@@ -29,4 +29,20 @@ class ActiveSupport::TestCase
       verified: true
     )
   end
+
+  def create_mentor
+    User.create!(
+      email: "mentor@example.com",
+      password: "Secret1*3*5*",
+      verified: true
+    )
+  end
+
+  def create_applicant
+    User.create!(
+      email: "applicant@example.com",
+      password: "Secret1*3*5*",
+      verified: true
+    )
+  end
 end
