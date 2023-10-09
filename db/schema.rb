@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_03_222450) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_04_162014) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,6 +27,25 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_03_222450) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_events_on_user_id"
+  end
+
+  create_table "mentor_questionnaires", id: :binary, force: :cascade do |t|
+    t.binary "respondent_id", null: false
+    t.string "name", null: false
+    t.string "company_url", null: false
+    t.integer "year_started_ruby", null: false
+    t.string "country", null: false
+    t.string "city", null: false
+    t.string "twitter_handle"
+    t.string "github_handle"
+    t.string "personal_site_url"
+    t.text "previous_workplaces"
+    t.boolean "has_mentored_before", null: false
+    t.text "mentoring_reason", null: false
+    t.boolean "preferred_style_career", null: false
+    t.boolean "preferred_style_code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "mentorships", id: :binary, force: :cascade do |t|
@@ -89,6 +108,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_03_222450) do
 
   add_foreign_key "email_verification_tokens", "users"
   add_foreign_key "events", "users"
+  add_foreign_key "mentor_questionnaires", "users", column: "respondent_id"
   add_foreign_key "password_reset_tokens", "users"
   add_foreign_key "sessions", "users"
 end
