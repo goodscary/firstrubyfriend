@@ -5,8 +5,6 @@ class MentorQuestionnaire < ApplicationRecord
   validates :name, presence: true
   validates :company_url, presence: true
   validates :year_started_ruby, presence: true
-  validates :country, presence: true
-  validates :city, presence: true
   validates :has_mentored_before, presence: true
   validates :mentoring_reason, presence: true
   validates :preferred_style_career, presence: true

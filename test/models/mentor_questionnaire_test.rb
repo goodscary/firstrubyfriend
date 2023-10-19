@@ -8,8 +8,6 @@ class MentorQuestionnaireTest < ActiveSupport::TestCase
       name: "Andy Croll",
       company_url: "https://example.com",
       year_started_ruby: 2005,
-      country: "UK",
-      city: "Brighton",
       has_mentored_before: true,
       mentoring_reason: "To give back to the community",
       preferred_style_career: true,
@@ -29,16 +27,6 @@ class MentorQuestionnaireTest < ActiveSupport::TestCase
 
   test "year_started_ruby should be present" do
     @mentor_questionnaire.year_started_ruby = nil
-    assert_not @mentor_questionnaire.valid?
-  end
-
-  test "country should be present" do
-    @mentor_questionnaire.country = nil
-    assert_not @mentor_questionnaire.valid?
-  end
-
-  test "city should be present" do
-    @mentor_questionnaire.city = nil
     assert_not @mentor_questionnaire.valid?
   end
 

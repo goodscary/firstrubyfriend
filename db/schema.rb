@@ -51,8 +51,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_10_180442) do
     t.string "name", null: false
     t.string "company_url", null: false
     t.integer "year_started_ruby", null: false
-    t.string "country", null: false
-    t.string "city", null: false
     t.string "twitter_handle"
     t.string "github_handle"
     t.string "personal_site_url"
