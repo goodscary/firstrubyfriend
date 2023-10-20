@@ -5,8 +5,6 @@ class UserResource < Avo::BaseResource
   #   scope.ransack(id_eq: params[:q], m: "or").result(distinct: false)
   # end
 
-  field :id, as: :id
-  # Fields generated from the model
   field :email, as: :text
   field :verified, as: :boolean
   field :unsubscribed_at, as: :date_time
@@ -23,8 +21,6 @@ class UserResource < Avo::BaseResource
   field :demographic_underrepresented_group, as: :boolean
   # field :email_verification_tokens, as: :has_many
   # field :password_reset_tokens, as: :has_many
-  field :sessions, as: :has_many
-  field :events, as: :has_many
   field :mentorship_roles_as_mentor, as: :has_many
   field :mentorship_roles_as_applicant, as: :has_many
   field :mentors, as: :has_many, through: :mentorship_roles_as_mentor
