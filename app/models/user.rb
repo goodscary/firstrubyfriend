@@ -47,4 +47,8 @@ class User < ApplicationRecord
   after_update if: [:verified_previously_changed?, :verified?] do
     events.create! action: "email_verified"
   end
+
+  def is_admin?
+    email.in?(["andy@goodscary.com", "adrian@adrianthedev.com"])
+  end
 end

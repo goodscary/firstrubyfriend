@@ -93,10 +93,27 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    active_link_to (1.0.5)
+      actionpack
+      addressable
     addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
     authentication-zero (2.16.35)
+    avo (2.42.1)
+      actionview (>= 6.0)
+      active_link_to
+      activerecord (>= 6.0)
+      addressable
+      docile
+      dry-initializer
+      httparty
+      inline_svg
+      meta-tags
+      pagy
+      turbo-rails
+      view_component (>= 2.54.0)
+      zeitwerk (>= 2.6.2)
     base32-crockford (0.1.0)
     bcrypt (3.1.19)
     bindex (0.8.1)
@@ -120,14 +137,21 @@ GEM
       irb (>= 1.5.0)
       reline (>= 0.3.1)
     docile (1.4.0)
+    dry-initializer (3.1.1)
     erubi (1.12.0)
     globalid (1.1.0)
       activesupport (>= 5.0)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     importmap-rails (1.2.1)
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
+    inline_svg (1.9.0)
+      activesupport (>= 3.0)
+      nokogiri (>= 1.6)
     io-console (0.6.0)
     irb (1.7.1)
       reline (>= 0.3.0)
@@ -148,10 +172,13 @@ GEM
       net-smtp
     marcel (1.0.2)
     matrix (0.4.2)
+    meta-tags (2.19.0)
+      actionpack (>= 3.2.0, < 7.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
     minitest (5.18.1)
     msgpack (1.7.1)
+    multi_xml (0.6.0)
     net-imap (0.3.6)
       date
       net-protocol
@@ -166,6 +193,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.15.3-x86_64-linux)
       racc (~> 1.4)
+    pagy (6.1.0)
     parallel (1.23.0)
     parser (3.2.2.3)
       ast (~> 2.4.1)
@@ -264,6 +292,10 @@ GEM
       base32-crockford (~> 0.1)
       ulid (~> 1.0)
     unicode-display_width (2.4.2)
+    view_component (3.6.0)
+      activesupport (>= 5.2.0, < 8.0)
+      concurrent-ruby (~> 1.0)
+      method_source (~> 1.0)
     web-console (4.2.0)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -279,10 +311,12 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  arm64-darwin-23
   x86_64-linux
 
 DEPENDENCIES
   authentication-zero
+  avo
   bcrypt
   bootsnap
   capybara
