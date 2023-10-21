@@ -51,4 +51,16 @@ class User < ApplicationRecord
   def is_admin?
     email.in?(["andy@goodscary.com", "adrian@adrianthedev.com"])
   end
+
+  def unsubscribed
+    unsubscribed_at.present?
+  end
+
+  def unsubscribed=(value)
+    if value.present?
+      self.unsubscribed_at = Time.now
+    else
+      self.unsubscribed_at = nil
+    end
+  end
 end
