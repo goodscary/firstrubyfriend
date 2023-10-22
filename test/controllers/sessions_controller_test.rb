@@ -25,6 +25,16 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should sign in with oauth provider" do
+    User.stub :from_omniauth, @user do
+      get "/auth/:provider/callback"
+      assert_redirected_to sign_in_url
+
+      get root_url
+      assert_response :success
+    end
+  end
+
   test "should not sign in with wrong credentials" do
     post sign_in_url, params: {email: @user.email, password: "SecretWrong1*3"}
     assert_redirected_to sign_in_url(email_hint: @user.email)
