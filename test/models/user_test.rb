@@ -54,4 +54,31 @@ class UserTest < ActiveSupport::TestCase
     @user.lng = 181
     assert_not @user.valid?
   end
+
+  test ".from_omniauth should return user if user already signed up with provider" do
+    @user.update(
+      provider_uid: "provider",
+      password_digest: "Secret*1*2*3"
+    )
+
+    access_token = MockAccessToken.new(@user)
+
+    assert_equal User.from_omniauth(access_token), @user
+  end
+
+  test ".from_omniauth should create new user if user doesn't exist" do
+    new_user = User.new(email: "new_email@test.com")
+
+    access_token = MockAccessToken.new(new_user)
+
+    assert_difference 'User.count' do
+      User.from_omniauth(access_token)
+    end
+  end
+end
+
+MockAccessToken = Struct.new(:user) do
+  def uid() "provider" end
+
+  def info() { "email" => user.email } end
 end

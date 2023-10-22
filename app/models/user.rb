@@ -49,4 +49,20 @@ class User < ApplicationRecord
   after_update if: [:verified_previously_changed?, :verified?] do
     events.create! action: "email_verified"
   end
+
+  def self.from_omniauth(access_token)
+    provider_uid = access_token.uid
+    email = access_token.info['email']
+
+    user = User.find_or_create_by(email:, provider_uid:)
+    set_secure_password(user) unless user.password_digest.present?
+
+    user
+  end
+
+  private
+
+  def self.set_secure_password(user)
+    user.update!(password: SecureRandom.hex(10))
+  end
 end
