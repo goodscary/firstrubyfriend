@@ -33,5 +33,6 @@
 <% else %>
   <div>
     <%= link_to "Sign in", sign_in_path %>
+    <%= render "sessions/github_oauth_button" %>
   </div>
 <% end %>
