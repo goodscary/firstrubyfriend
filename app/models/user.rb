@@ -54,16 +54,10 @@ class User < ApplicationRecord
     provider_uid = auth.uid
     email = auth.info['email']
 
-    User.find_or_create_by(email:, provider_uid:) do |user|
+    user = User.find_or_create_by(email:, provider_uid:) do |user|
       user.password = SecureRandom.hex(10)
     end
 
     user
-  end
-
-  private
-
-  def self.set_secure_password(user)
-    user.update!(password: SecureRandom.hex(10))
   end
 end
