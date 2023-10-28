@@ -1,15 +1,1 @@
 /* Application styles */
-.github-button {
-  border: 2px solid black;
-  padding: 0.5em 1em;
-  border-radius: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.github-button img {
-  margin-left: 0.5em;
-  height: 1.5em;
-  width: 1.5em;
-}
