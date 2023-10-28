@@ -21,7 +21,7 @@ gem "stimulus-rails" # Hotwire's modest JavaScript framework [https://stimulus.h
 gem "tailwindcss-rails" # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
 gem "turbo-rails" # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "ulid-rails"
-gem "omniauth-github", github: "omniauth/omniauth-github", branch: "master"
+gem "omniauth-github"
 gem "omniauth-rails_csrf_protection"
 
 group :development, :test do
