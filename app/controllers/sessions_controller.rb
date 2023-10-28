@@ -11,9 +11,9 @@ class SessionsController < ApplicationController
   end
 
   def create
-    user = User.find_by(email: params[:email]) || User.from_omniauth(access_token)
+    user = User.find_by(email: params[:email]) || User.from_omniauth(auth)
 
-    if user&.authenticate(params[:password]) || !!access_token
+    if user&.authenticate(params[:password]) || !!auth
       @session = user.sessions.create!
       cookies.signed.permanent[:session_token] = {value: @session.id, httponly: true}
 
@@ -30,7 +30,7 @@ class SessionsController < ApplicationController
 
   private
 
-  def access_token
+  def auth
     request.env["omniauth.auth"]
   end
 

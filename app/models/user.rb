@@ -51,8 +51,8 @@ class User < ApplicationRecord
   end
 
   def self.from_omniauth(auth)
-    provider_uid = access_token.uid
-    email = access_token.info['email']
+    provider_uid = auth.uid
+    email = auth.info['email']
 
     User.find_or_create_by(email:, provider_uid:) do |user|
       user.password = SecureRandom.hex(10)
