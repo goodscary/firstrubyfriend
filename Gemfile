@@ -41,3 +41,4 @@ group :test do
 end
 
 gem "rack-ratelimit", group: :production # Use Rack::Ratelimit to rate limit requests [https://github.com/jeremy/rack-ratelimit]
+gem "avo"

@@ -18,4 +18,9 @@ Rails.application.routes.draw do
     resource :sudo, only: [:new, :create]
   end
   root "home#show"
+
+  # I don't yet know how to check for authenticated user with authentication-zero
+  # authenticate :user, ->(user) { user.is_admin? } do
+    mount Avo::Engine, at: Avo.configuration.root_path
+  # end
 end

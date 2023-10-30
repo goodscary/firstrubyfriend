@@ -49,4 +49,20 @@ class User < ApplicationRecord
   after_update if: [:verified_previously_changed?, :verified?] do
     events.create! action: "email_verified"
   end
+
+  def is_admin?
+    email.in?(["andy@goodscary.com", "adrian@adrianthedev.com"])
+  end
+
+  def unsubscribed
+    unsubscribed_at.present?
+  end
+
+  def unsubscribed=(value)
+    if value.present?
+      self.unsubscribed_at = Time.now
+    else
+      self.unsubscribed_at = nil
+    end
+  end
 end
