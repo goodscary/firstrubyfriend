@@ -20,6 +20,9 @@ gem "redis" # Use Redis adapter to run Action Cable in production
 gem "stimulus-rails" # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "tailwindcss-rails" # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
 gem "turbo-rails" # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
+gem "omniauth-github"
+# Provides a mitigation against CVE-2015-9284 [https://github.com/cookpad/omniauth-rails_csrf_protection]
+gem "omniauth-rails_csrf_protection"
 gem "ulid-rails"
 
 group :development, :test do
