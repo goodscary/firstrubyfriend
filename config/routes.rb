@@ -3,6 +3,9 @@ Rails.application.routes.draw do
   post "sign_in", to: "sessions#create"
   get "sign_up", to: "registrations#new"
   post "sign_up", to: "registrations#create"
+  get "/auth/failure", to: "sessions/omniauth#failure"
+  get "/auth/:provider/callback", to: "sessions/omniauth#create"
+  post "/auth/:provider/callback", to: "sessions/omniauth#create"
   resources :sessions, only: [:index, :show, :destroy]
   resource :password, only: [:edit, :update]
   namespace :identity do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_19_215817) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_01_072200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -133,6 +133,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_215817) do
     t.integer "demographic_year_started_programming"
     t.boolean "demographic_underrepresented_group"
     t.text "demographic_underrepresented_group_details"
+    t.string "provider"
+    t.string "uid"
     t.index ["city"], name: "index_users_on_city"
     t.index ["country_code"], name: "index_users_on_country_code"
     t.index ["email"], name: "index_users_on_email", unique: true

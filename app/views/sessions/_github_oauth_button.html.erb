@@ -1,0 +1,7 @@
+<%= button_to "/auth/github",
+      data: { turbo: false },
+      class: "flex justify-between items-center border rounded-md border-2 border-black py-2 px-4" do
+%>
+  Sign in with GitHub
+  <%= image_tag("github.svg", alt: "", class: "ml-2 w-6 h-6") %>
+<% end %>
