@@ -1,0 +1,102 @@
+<%= form_with(model: @mentor_questionnaire, url: mentor_questionnaires_path) do |form| %>
+  <div class="px-4 py-2 sm:p-8 space-y-8">
+    <% if @mentor_questionnaire.errors.any? %>
+      <div>
+        <strong >Please fix the following errors:</strong>
+        <ul>
+          <% @mentor_questionnaire.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="flex flex-col">
+      <%= form.label :name, "What's your name?*" %>
+      <%= form.text_field :name, placeholder: "Jane Smith"%>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :company_url, "Where do you work?*" %>
+      <p>Add the URL of your company</p>
+      <%= form.text_field :company_url %>
+    </div>
+
+    <%= form.fields_for :respondent do |user_form| %>
+      <div class="flex flex-col">
+        <%= user_form.label :demographic_year_started_ruby, "Year you started programming in Ruby*" %>
+        <p>Some folk will want to speak to someone who's within touching distance of the beginning of their careers, some will want grizzled veterans.</p>
+        <%= user_form.select :demographic_year_started_ruby, options_for_select((1993..Date.today.year).to_a.reverse, selected: @mentor_questionnaire.respondent.demographic_year_started_ruby), { include_blank: true } %>
+      </div>
+    <% end %>
+
+    <div class="flex flex-col">
+      <%= form.label :twitter_handle, "Twitter?" %>
+      <p>Optional</p>
+      <%= form.text_field :twitter_handle, placeholder:  "@regrettablepseudonym" %>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :github_handle,"Github?" %>
+      <p>Optional</p>
+      <%= form.text_field :github_handle %>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :personal_site_url, "Do you have a personal site?" %>
+      <p>Optional</p>
+      <%= form.text_field :personal_site_url, placeholder: "http://yoursite.com" %>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :previous_workplaces, "Worked anywhere else?" %>
+      <p>More context will hopefully give us more opportunity to make a good match</p>
+      <%= form.text_area :previous_workplaces %>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :has_mentored_before, "Have you done any mentoring before?*" %>
+        <div>
+          <%= form.label :has_mentored_before, 'Yes' %>
+          <%= form.radio_button :has_mentored_before, true %>
+        </div>
+        <div>
+          <%= form.label :has_mentored_before, 'No' %>
+          <%= form.radio_button :has_mentored_before, false %>
+        </div>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :mentoring_reason, "Why are you doing this?*" %>
+      <p>Anything else that might be useful for us to know.</p>
+      <%= form.text_area :mentoring_reason %>
+    </div>
+
+
+    <div class="flex flex-col">
+      <%= form.label :preferred_style_career, "Are you interested in mentoring on career advancement and professional development?" %>
+        <div>
+          <%= form.label :preferred_style_career, 'Yes' %>
+          <%= form.radio_button :preferred_style_career, true %>
+        </div>
+        <div>
+          <%= form.label :preferred_style_career, 'No' %>
+          <%= form.radio_button :preferred_style_career, false %>
+        </div>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :preferred_style_code, "Are you interested in mentoring on coding and technical skills?" %>
+        <div>
+          <%= form.label :preferred_style_code, 'Yes' %>
+          <%= form.radio_button :preferred_style_code, true %>
+        </div>
+        <div>
+          <%= form.label :preferred_style_code, 'No' %>
+          <%= form.radio_button :preferred_style_code, false %>
+        </div>
+    </div>
+
+    <%= form.submit "Send Answers" %>
+  </div>
+<% end %>

@@ -42,11 +42,16 @@ class MentorQuestionnaireTest < ActiveSupport::TestCase
 
   test "preferred_style_career should be present" do
     @mentor_questionnaire.preferred_style_career = nil
-    assert_not @mentor_questionnaire.valid?
+    assert_raises(ActiveRecord::NotNullViolation) do
+      @mentor_questionnaire.save
+    end
   end
 
   test "preferred_style_code should be present" do
     @mentor_questionnaire.preferred_style_code = nil
-    assert_not @mentor_questionnaire.valid?
+
+    assert_raises(ActiveRecord::NotNullViolation) do
+      @mentor_questionnaire.save
+    end
   end
 end
