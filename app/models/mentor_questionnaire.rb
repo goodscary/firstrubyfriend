@@ -7,6 +7,6 @@ class MentorQuestionnaire < ApplicationRecord
   validates :year_started_ruby, presence: true
   validates :has_mentored_before, presence: true
   validates :mentoring_reason, presence: true
-  validates :preferred_style_career, presence: true
-  validates :preferred_style_code, presence: true
+
+  accepts_nested_attributes_for :respondent
 end
