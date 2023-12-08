@@ -7,7 +7,6 @@ class MentorQuestionnaireTest < ActiveSupport::TestCase
       respondent: @user,
       name: "Andy Croll",
       company_url: "https://example.com",
-      year_started_ruby: 2005,
       has_mentored_before: true,
       mentoring_reason: "To give back to the community",
       preferred_style_career: true,
@@ -22,11 +21,6 @@ class MentorQuestionnaireTest < ActiveSupport::TestCase
 
   test "company_url should be present" do
     @mentor_questionnaire.company_url = nil
-    assert_not @mentor_questionnaire.valid?
-  end
-
-  test "year_started_ruby should be present" do
-    @mentor_questionnaire.year_started_ruby = nil
     assert_not @mentor_questionnaire.valid?
   end
 
