@@ -3,8 +3,7 @@ require "test_helper"
 class MentorQuestionnaireTest < ActiveSupport::TestCase
   def setup
     @user = create_user
-    @mentor_questionnaire = MentorQuestionnaire.new(
-      respondent: @user,
+    @mentor_questionnaire = @user.build_mentor_questionnaire(
       name: "Andy Croll",
       company_url: "https://example.com",
       has_mentored_before: true,

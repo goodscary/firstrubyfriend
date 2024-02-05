@@ -21,4 +21,5 @@ Rails.application.routes.draw do
     resource :sudo, only: [:new, :create]
   end
   root "home#show"
+  resources :mentor_questionnaires, only: [:new, :create, :edit, :update]
 end
