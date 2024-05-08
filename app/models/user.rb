@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+  include ULID::Rails
+  ulid :id, auto_generate: true
+
   has_secure_password
 
   has_many :email_verification_tokens, dependent: :destroy
