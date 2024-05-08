@@ -20,11 +20,7 @@ class User < ApplicationRecord
   validates :lat, numericality: {greater_than_or_equal_to: -90, less_than_or_equal_to: 90}, allow_nil: true
   validates :lng, numericality: {greater_than_or_equal_to: -180, less_than_or_equal_to: 180}, allow_nil: true
 
-  enum unsubscribed_reason: {
-    ghosted_mentor: "ghosted_mentor",
-    ghosted_applicant: "ghosted_applicant",
-    requested_removal: "requested_removal"
-  }
+  enum :unsubscribed_reason, %w[ghosted_mentor ghosted_applicant requested_removal].index_by(&:itself)
 
   before_validation if: -> { email.present? } do
     self.email = email.downcase.strip

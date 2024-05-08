@@ -2,10 +2,7 @@ class Mentorship < ApplicationRecord
   belongs_to :mentor, class_name: "User"
   belongs_to :applicant, class_name: "User"
 
-  enum standing: {
-    active: "active",
-    ended: "ended"
-  }
+  enum :standing, %w[active ended].index_by(&:itself)
 
   validates :standing, presence: true
   validate :mentor_and_applicant_cannot_be_same
