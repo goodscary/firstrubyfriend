@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby File.read(".ruby-version").strip
 
 # Use specific branch of Rails
-gem "rails", github: "rails/rails", branch: "7-0-stable"
+gem "rails", github: "rails/rails", branch: "main"
 
 gem "authentication-zero"
 gem "bootsnap", require: false # Reduces boot times through caching; required in config/boot.rb
