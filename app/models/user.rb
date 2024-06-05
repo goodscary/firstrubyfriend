@@ -17,6 +17,8 @@ class User < ApplicationRecord
   has_many :user_languages
   has_many :languages, through: :user_languages
 
+  accepts_nested_attributes_for :user_languages
+
   validates :email, presence: true, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}
   validates :password, allow_nil: true, length: {minimum: 12}
   validates :password, not_pwned: {message: "might easily be guessed"}

@@ -7,6 +7,7 @@ class MentorQuestionnairesController < ApplicationController
       redirect_to edit_mentor_questionnaire_path(@user.mentor_questionnaire)
     else
       @mentor_questionnaire = MentorQuestionnaire.new
+      @user.user_languages.build
     end
   end
 
@@ -22,10 +23,12 @@ class MentorQuestionnairesController < ApplicationController
   end
 
   def edit
+    @user = @mentor_questionnaire.respondent
   end
 
   def update
     if @mentor_questionnaire.update(mentor_questionnaire_params)
+      update_user_if_needed
       redirect_to root_path, notice: "Your Mentor Questionnaire has been updated."
     else
       render :edit, status: :unprocessable_entity
@@ -50,7 +53,10 @@ class MentorQuestionnairesController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:demographic_year_started_ruby)
+    params.require(:user).permit(
+      :demographic_year_started_ruby,
+      user_languages_attributes: [:language_id, :id, :_destroy]
+    )
   end
 
   def set_user
@@ -59,5 +65,11 @@ class MentorQuestionnairesController < ApplicationController
 
   def set_mentor_questionnaire
     @mentor_questionnaire = @user.mentor_questionnaire
+  end
+
+  def update_user_if_needed
+    if user_params.present? && @user.attributes.slice(*user_params.keys) != user_params
+      @user.update(user_params)
+    end
   end
 end

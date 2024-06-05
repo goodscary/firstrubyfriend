@@ -11,6 +11,13 @@ class MentorQuestionnairesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create mentor questionnaire" do
+    english_language = Language.create!(
+      iso639_alpha3: "eng",
+      iso639_alpha2: "",
+      english_name: "English",
+      french_name: "anglais",
+      local_name: nil
+    )
     assert_difference("MentorQuestionnaire.count") do
       post mentor_questionnaires_url, params: {
         mentor_questionnaire: {
@@ -21,7 +28,10 @@ class MentorQuestionnairesControllerTest < ActionDispatch::IntegrationTest
           preferred_style_career: true,
           preferred_style_code: false
         },
-        user: {demographic_year_started_ruby: 2005}
+        user: {
+          demographic_year_started_ruby: 2005,
+          language: english_language
+        }
       }
     end
 
