@@ -1,4 +1,7 @@
 class Language < ApplicationRecord
+  include ULID::Rails
+  ulid :id, auto_generate: true
+
   has_many :user_languages
   has_many :users, through: :user_languages
 

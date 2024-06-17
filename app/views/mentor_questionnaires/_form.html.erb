@@ -1,4 +1,4 @@
-<%= form_with(model: @mentor_questionnaire, url: mentor_questionnaires_path) do |form| %>
+<%= form_with(model: @mentor_questionnaire) do |form| %>
   <div class="px-4 py-2 sm:p-8 space-y-8">
     <% if @mentor_questionnaire.errors.any? %>
       <div>
@@ -22,11 +22,20 @@
       <%= form.text_field :company_url %>
     </div>
 
-    <div class="flex flex-col">
-      <%= label_tag 'user[demographic_year_started_ruby]', "Year you started programming in Ruby*" %>
-      <p>Some folk will want to speak to someone who's within touching distance of the beginning of their careers, some will want grizzled veterans.</p>
-      <%= select_tag 'user[demographic_year_started_ruby]', options_for_select((1993..Date.today.year).to_a.reverse, selected: @user.demographic_year_started_ruby), include_blank: true %>
-    </div>
+    <%= fields_for :user, @user do |user_form| %>
+      <div class="flex flex-col">
+        <%= user_form.label :demographic_year_started_ruby, "Year you started programming in Ruby*" %>
+        <%= user_form.select :demographic_year_started_ruby, options_for_select((1993..Date.today.year).to_a.reverse, selected: @user.demographic_year_started_ruby), include_blank: true %>
+      </div>
+
+      <%= user_form.fields_for :user_languages do |fl| %>
+        <div>
+          <%= fl.label :language_id %>
+          <%= fl.collection_select :language_id, Language.all, :id, :english_name %>
+        </div>
+      <% end %>
+    <% end %>
+
 
     <div class="flex flex-col">
       <%= form.label :twitter_handle, "Twitter?" %>
