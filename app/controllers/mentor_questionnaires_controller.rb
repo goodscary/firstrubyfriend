@@ -54,6 +54,8 @@ class MentorQuestionnairesController < ApplicationController
 
   def user_params
     params.require(:user).permit(
+      :city,
+      :country_code,
       :demographic_year_started_ruby,
       user_languages_attributes: [:language_id, :id, :_destroy]
     )

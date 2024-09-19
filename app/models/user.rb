@@ -50,4 +50,12 @@ class User < ApplicationRecord
   after_update if: [:verified_previously_changed?, :verified?] do
     events.create! action: "email_verified"
   end
+
+  geocoded_by :address, latitude: :lat, longitude: :lng
+
+  after_validation :geocode, if: ->(obj) { obj.city_changed? || obj.country_code_changed? }
+
+  def address
+    [city, country_code].compact.join(", ")
+  end
 end

@@ -24,6 +24,18 @@
 
     <%= fields_for :user, @user do |user_form| %>
       <div class="flex flex-col">
+        <%= user_form.label :city, "City*" %>
+        <%= user_form.text_field :city, class: "form-input" %>
+      </div>
+
+      <div class="flex flex-col">
+        <%= user_form.label :country_code, "Country*" %>
+        <%= user_form.country_select :country_code,
+            { include_blank: "Select a country" },
+            { class: "form-select" } %>
+      </div>
+
+      <div class="flex flex-col">
         <%= user_form.label :demographic_year_started_ruby, "Year you started programming in Ruby*" %>
         <%= user_form.select :demographic_year_started_ruby, options_for_select((1993..Date.today.year).to_a.reverse, selected: @user.demographic_year_started_ruby), include_blank: true %>
       </div>
