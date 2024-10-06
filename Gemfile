@@ -9,6 +9,8 @@ gem "rails", github: "rails/rails", branch: "main"
 gem "authentication-zero"
 gem "bootsnap", require: false # Reduces boot times through caching; required in config/boot.rb
 gem "bcrypt" # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
+gem "country_select"
+gem "geocoder"
 # gem "image_processing", "~> 1.2" # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "importmap-rails" # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "kredis" # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
@@ -24,7 +26,6 @@ gem "omniauth-github"
 # Provides a mitigation against CVE-2015-9284 [https://github.com/cookpad/omniauth-rails_csrf_protection]
 gem "omniauth-rails_csrf_protection"
 gem "ulid-rails"
-
 group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "standard"
