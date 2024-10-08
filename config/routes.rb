@@ -22,4 +22,5 @@ Rails.application.routes.draw do
   end
   root "home#show"
   resources :mentor_questionnaires, only: [:new, :create, :edit, :update]
+  resources :mentee_questionnaires, only: [:new, :create, :edit, :update]
 end

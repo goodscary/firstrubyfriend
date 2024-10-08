@@ -1,0 +1,150 @@
+<%= form_with(model: @mentee_questionnaire) do |form| %>
+  <div class="px-4 py-2 sm:p-8 space-y-8">
+    <% if @mentee_questionnaire.errors.any? %>
+      <div>
+        <strong >Please fix the following errors:</strong>
+        <ul>
+          <% @mentee_questionnaire.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="flex flex-col">
+      <%= form.label :name, "What's your name?*" %>
+      <%= form.text_field :name, placeholder: "Jane Smith"%>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :work_url, "Are you working anywhere yet?*" %>
+      <p>Add the URL of the place you're working</p>
+      <%= form.text_field :work_url %>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :currently_writing_ruby, "Are you writing ruby there?*" %>
+      <div>
+        <%= form.label :currently_writing_ruby, 'Yes' %>
+        <%= form.radio_button :currently_writing_ruby, true %>
+      </div>
+      <div>
+        <%= form.label :currently_writing_ruby, 'No' %>
+        <%= form.radio_button :currently_writing_ruby, false %>
+      </div>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :where_started_coding, "Where'd you get your start?" %>
+      <p>Which bootcamp? Which university? Self-taught?</p>
+      <%= form.text_field :where_started_coding %>
+    </div>
+
+    <%= fields_for :user, @user do |user_form| %>
+      <div class="flex flex-col">
+        <%= user_form.label :city, "City*" %>
+        <%= user_form.text_field :city, class: "form-input" %>
+      </div>
+
+      <div class="flex flex-col">
+        <%= user_form.label :country_code, "Country*" %>
+        <%= user_form.country_select :country_code,
+            { include_blank: "Select a country" },
+            { class: "form-select" } %>
+      </div>
+
+      <div class="flex flex-col">
+        <%= user_form.label :demographic_underrepresented_group, "Would you consider yourself in an underrepresented group?*" %>
+        <p>We're prioritising these folks for mentorship, but the plan is for everyone to get a mentor.</p>
+        <%= user_form.text_field :demographic_underrepresented_group %>
+      </div>
+
+      <div class="flex flex-col">
+        <%= user_form.label :demographic_underrepresented_group_details, "Do you have a strong preference to mentor someone from a particular demographic?*" %>
+        <p>e.g. woman/man/non-binary. If you don't mind, leave blank, and please bear in mind we may not be able to accommodate this preference.</p>
+        <%= user_form.text_field :demographic_underrepresented_group_details %>
+      </div>
+
+      <%= user_form.fields_for :user_languages do |fl| %>
+        <div>
+          <%= fl.label :language_id, "Any languages other than English?"  %>
+          <p>I'm in the UK, so I'll be managing this programme in English, but if you speak other languages, that might be useful!</p>
+          <%= fl.collection_select :language_id, Language.all, :id, :english_name %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <div class="flex flex-col">
+      <%= form.label :twitter_handle, "Twitter?" %>
+      <p>Optional</p>
+      <%= form.text_field :twitter_handle, placeholder:  "@regrettablepseudonym" %>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :github_handle,"Github?" %>
+      <p>Optional</p>
+      <%= form.text_field :github_handle %>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :personal_site_url, "Do you have a personal site?" %>
+      <p>Optional</p>
+      <%= form.text_field :personal_site_url, placeholder: "http://yoursite.com" %>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :previous_job, "What did you do before you became a programmer?" %>
+      <%= form.text_area :previous_job %>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :mentorship_goals, "What are you looking to get out of the mentoring?" %>
+      <p>What sort of experience are you looking to draw on? Are you looking for technical help? Interviewing skills? Working out whether your current job is right for you?</p>
+      <%= form.text_area :mentorship_goals %>
+    </div>
+
+    <div>
+      <%= form.label :wnbrb_member, "Are you a member of the WNB.rb community? (https://wnb-rb.dev)"%>
+      <div>
+        <%= form.label :wnbrb_member, 'Yes' %>
+        <%= form.radio_button :wnbrb_member, true %>
+      </div>
+      <div>
+        <%= form.label :wnbrb_member, 'No' %>
+        <%= form.radio_button :wnbrb_member, false %>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :self_description, "How would you describe yourself?" %>
+      <p>e.g. woman/man/non-binary. Please feel free to leave blank.</p>
+      <%= form.text_field :self_description %>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :looking_for_career_mentorship, "Are you interested in mentorship on career advancement and professional development?" %>
+        <div>
+          <%= form.label :looking_for_career_mentorship, 'Yes' %>
+          <%= form.radio_button :looking_for_career_mentorship, true %>
+        </div>
+        <div>
+          <%= form.label :looking_for_career_mentorship, 'No' %>
+          <%= form.radio_button :looking_for_career_mentorship, false %>
+        </div>
+    </div>
+
+    <div class="flex flex-col">
+      <%= form.label :looking_for_code_mentorship, "Are you interested in mentorship on coding and technical skills?" %>
+        <div>
+          <%= form.label :looking_for_code_mentorship, 'Yes' %>
+          <%= form.radio_button :looking_for_code_mentorship, true %>
+        </div>
+        <div>
+          <%= form.label :looking_for_code_mentorship, 'No' %>
+          <%= form.radio_button :looking_for_code_mentorship, false %>
+        </div>
+    </div>
+
+    <%= form.submit "Send Answers" %>
+  </div>
+<% end %>
