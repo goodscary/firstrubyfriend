@@ -10,17 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_08_221018) do
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+ActiveRecord::Schema[8.0].define(version: 2024_11_13_213250) do
+  create_table "applicant_questionnaires", id: :string, default: -> { "ULID_WITH_PREFIX('app_qst')" }, force: :cascade do |t|
+    t.string "respondent_id", null: false
+    t.string "name", null: false
+    t.string "work_url"
+    t.boolean "currently_writing_ruby", null: false
+    t.string "where_started_coding", null: false
+    t.string "twitter_handle"
+    t.string "github_handle"
+    t.string "personal_site_url"
+    t.string "previous_job"
+    t.text "mentorship_goals", null: false
+    t.boolean "looking_for_career_mentorship", null: false
+    t.boolean "looking_for_code_mentorship", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "self_description"
+    t.boolean "wnbrb_member"
+  end
 
-  create_table "email_verification_tokens", id: :binary, force: :cascade do |t|
-    t.binary "user_id", null: false
+  create_table "email_verification_tokens", id: :string, default: -> { "ULID_WITH_PREFIX('email_token')" }, force: :cascade do |t|
+    t.string "user_id", null: false
     t.index ["user_id"], name: "index_email_verification_tokens_on_user_id"
   end
 
-  create_table "events", id: :binary, force: :cascade do |t|
-    t.binary "user_id", null: false
+  create_table "events", id: :string, default: -> { "ULID_WITH_PREFIX('event')" }, force: :cascade do |t|
+    t.string "user_id", null: false
     t.string "action", null: false
     t.string "user_agent"
     t.string "ip_address"
@@ -29,7 +45,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_08_221018) do
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
-  create_table "languages", id: :binary, force: :cascade do |t|
+  create_table "languages", id: :string, default: -> { "ULID_WITH_PREFIX('lang')" }, force: :cascade do |t|
     t.string "iso639_alpha3", null: false
     t.string "iso639_alpha2"
     t.string "english_name"
@@ -58,8 +74,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_08_221018) do
     t.boolean "wnbrb_member"
   end
 
-  create_table "mentor_questionnaires", id: :binary, force: :cascade do |t|
-    t.binary "respondent_id", null: false
+  create_table "mentor_questionnaires", id: :string, default: -> { "ULID_WITH_PREFIX('ment_qst')" }, force: :cascade do |t|
+    t.string "respondent_id", null: false
     t.string "name", null: false
     t.string "company_url", null: false
     t.string "twitter_handle"
@@ -74,9 +90,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_08_221018) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "mentorships", id: :binary, force: :cascade do |t|
-    t.binary "mentor_id", null: false
-    t.binary "applicant_id", null: false
+  create_table "mentorships", id: :string, default: -> { "ULID_WITH_PREFIX('mnt')" }, force: :cascade do |t|
+    t.string "mentor_id", null: false
+    t.string "applicant_id", null: false
     t.string "standing", null: false
     t.datetime "applicant_month_1_email_sent_at"
     t.datetime "applicant_month_2_email_sent_at"
@@ -94,13 +110,13 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_08_221018) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "password_reset_tokens", id: :binary, force: :cascade do |t|
-    t.binary "user_id", null: false
+  create_table "password_reset_tokens", id: :string, default: -> { "ULID_WITH_PREFIX('pass_token')" }, force: :cascade do |t|
+    t.string "user_id", null: false
     t.index ["user_id"], name: "index_password_reset_tokens_on_user_id"
   end
 
-  create_table "sessions", id: :binary, force: :cascade do |t|
-    t.binary "user_id", null: false
+  create_table "sessions", id: :string, default: -> { "ULID_WITH_PREFIX('sess')" }, force: :cascade do |t|
+    t.string "user_id", null: false
     t.string "user_agent"
     t.string "ip_address"
     t.datetime "created_at", null: false
@@ -108,14 +124,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_08_221018) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
-  create_table "user_languages", id: :binary, force: :cascade do |t|
-    t.binary "user_id", null: false
-    t.binary "language_id", null: false
+  create_table "user_languages", id: :string, default: -> { "ULID_WITH_PREFIX('user_lang')" }, force: :cascade do |t|
+    t.string "user_id", null: false
+    t.string "language_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "users", id: :binary, force: :cascade do |t|
+  create_table "users", id: :string, default: -> { "ULID_WITH_PREFIX('user')" }, force: :cascade do |t|
     t.string "email", null: false
     t.string "password_digest", null: false
     t.boolean "verified", default: false, null: false
@@ -144,6 +160,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_08_221018) do
 
   add_foreign_key "email_verification_tokens", "users"
   add_foreign_key "events", "users"
+  add_foreign_key "mentee_questionnaires", "users", column: "respondent_id"
   add_foreign_key "mentee_questionnaires", "users", column: "respondent_id"
   add_foreign_key "mentor_questionnaires", "users", column: "respondent_id"
   add_foreign_key "password_reset_tokens", "users"

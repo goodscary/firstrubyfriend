@@ -3,7 +3,6 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby file: ".ruby-version"
 
-# Use specific branch of Rails
 gem "rails", "~> 8"
 
 gem "authentication-zero"
@@ -15,10 +14,11 @@ gem "geocoder"
 gem "importmap-rails" # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "kredis" # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 gem "propshaft" # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
-gem "pg" # Use postgresql as the database for Active Record
+gem "sqlite3" # Use SQLite3 as the database for Active Record [https://github.com/rails/rails/blob/v8.0.0/activerecord/README.md]
 gem "puma" # Use the Puma web server [https://github.com/puma/puma]
 gem "pwned" # Use Pwned to check if a password has been found in any of the huge data breaches [https://github.com/philnash/pwned]
 gem "redis" # Use Redis adapter to run Action Cable in production
+gem "sqlpkg"
 gem "stimulus-rails" # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "tailwindcss-rails" # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
 gem "turbo-rails" # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
@@ -26,6 +26,7 @@ gem "omniauth-github"
 # Provides a mitigation against CVE-2015-9284 [https://github.com/cookpad/omniauth-rails_csrf_protection]
 gem "omniauth-rails_csrf_protection"
 gem "ulid-rails"
+
 group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "standard"
