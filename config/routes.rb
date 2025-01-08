@@ -6,21 +6,26 @@ Rails.application.routes.draw do
   get "/auth/failure", to: "sessions/omniauth#failure"
   get "/auth/:provider/callback", to: "sessions/omniauth#create"
   post "/auth/:provider/callback", to: "sessions/omniauth#create"
-  resources :sessions, only: [:index, :show, :destroy]
-  resource :password, only: [:edit, :update]
+
+  namespace :authentications do
+    resources :events, only: :index
+  end
+  resource :dashboard, only: [:show]
   namespace :identity do
     resource :email, only: [:edit, :update]
     resource :email_verification, only: [:show, :create]
     resource :password_reset, only: [:new, :edit, :create, :update]
   end
-  namespace :authentications do
-    resources :events, only: :index
-  end
-  post "users/:user_id/masquerade", to: "masquerades#create", as: :user_masquerade
+  resource :password, only: [:edit, :update]
+  resources :sessions, only: [:index, :show, :destroy]
   namespace :sessions do
     resource :sudo, only: [:new, :create]
   end
-  root "home#show"
+
   resources :mentor_questionnaires, only: [:new, :create, :edit, :update]
   resources :mentee_questionnaires, only: [:new, :create, :edit, :update]
+
+  post "users/:user_id/masquerade", to: "masquerades#create", as: :user_masquerade
+
+  root "home#show"
 end
