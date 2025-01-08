@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="h-full bg-gray-100">
   <head>
     <title>Firstrubyfriend</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -11,9 +11,89 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
-      <%= yield %>
-    </main>
+  <body class="h-full">
+    <div class="min-h-full">
+      <div class="bg-gray-800 pb-32">
+        <nav class="bg-gray-800">
+          <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="border-b border-gray-700">
+              <div class="flex h-16 items-center justify-between px-4 sm:px-0">
+                <div class="flex items-center">
+                  <div class="shrink-0 text-white">
+                    FRF
+                    
+                  </div>
+                  <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                      <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+                      <!--
+                      <a href="#" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page">Dashboard</a>
+                      <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Team</a>
+                      <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Projects</a>
+                      <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Calendar</a>
+                      <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Reports</a>
+                      -->
+                    </div>
+                  </div>
+                </div>
+                <% if Current.session %>
+                  <div class="block">
+                    <div class="ml-4 flex items-center md:ml-6">
+                      <!-- Profile dropdown -->
+                      <div
+                        data-controller="dropdown"
+                        data-action="click@window->dropdown#hide touchstart@window->dropdown#hide keydown.up->dropdown#previousItem keydown.down->dropdown#nextItem keydown.esc->dropdown#hide"
+                        class="relative ml-3">
+                        <div>
+                          <button 
+                            data-action="dropdown#toggle:stop" 
+                            type="button" class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                            <span class="absolute -inset-1.5"></span>
+                            <span class="sr-only">Open user menu</span>
+                            <img class="size-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                          </button>
+                        </div>
+
+                        <div data-dropdown-target="menu" class="hidden absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                          <!-- Active: "bg-gray-100 outline-none", Not Active: "" -->
+                          <div class="py-1" role="none">
+                            <div class="block px-4 py-2 text-sm text-gray-700 border-bottom-1 border-color-black"><%= Current.user.email %></div>
+                          </div>
+                          <div class="py-1" role="none">
+                            <%= link_to "Change password", edit_password_path, class: "block px-4 py-2 text-sm text-gray-700", role: "menuitem", tabindex: "-1" %>
+                            <%= link_to "Change email address", edit_identity_email_path, class: "block px-4 py-2 text-sm text-gray-700", role: "menuitem", tabindex: "-1" %>
+                            <%= link_to "Devices & Sessions", sessions_path, class: "block px-4 py-2 text-sm text-gray-700", role: "menuitem", tabindex: "-1" %>
+                            <%= link_to "Activity Log", authentications_events_path, class: "block px-4 py-2 text-sm text-gray-700", role: "menuitem", tabindex: "-1" %>
+                          </div>
+                          <div class="py-1" role="none">
+                            <%= button_to "Log out", Current.session, method: :delete, form_class: "block px-4 py-2 text-sm text-gray-700", role: "menuitem", tabindex: "-1" %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="py-10">
+          <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-bold tracking-tight text-white">Dashboard</h1>
+          </div>
+        </header>
+      </div>
+
+      <main class="-mt-32">
+        <div class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+          <div class="rounded-lg bg-white px-5 py-6 shadow sm:px-6">
+            <%= yield %>
+          </div>
+        </div>
+      </main>
+    </div>
   </body>
 </html>
+
