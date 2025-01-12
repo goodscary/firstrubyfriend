@@ -1,0 +1,28 @@
+<div class="md:flex md:items-center gap-4 md:justify-between bg-green-700 rounded p-2 mb-3">
+  <%= icon "check-badge", class: "size-16 text-white" %>
+  <div class="min-w-0 flex-1">
+    <h2 class="text-2xl/7 font-bold text-white sm:truncate sm:text-3xl sm:tracking-tight">
+      You've requested a mentor. We're working on it.
+    </h2>
+  </div>
+</div>
+
+<div class="col-span-1 rounded-lg bg-white border shadow flex flex-col justify-between min-h-[150px] p-6">
+  <div>
+    <%= icon "check-badge" %>
+
+    <p class="text-sm font-medium text-gray-900">Applied! You will be matched shortly.</p>
+    <p class="text-sm text-gray-500 mt-1">Matches occur at the start of the month.</p>
+    You requested a mentor <%= @mentee_questionaire.created_at %>
+  </div>
+  <div class="mt-4 flex justify-center">
+    <button type="button" class="inline-flex items-center rounded-md bg-gray-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+      <svg class="-ml-0.5 mr-1.5 size-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path d="M4 13.75V16h2.25l6.92-6.92-2.25-2.25L4 13.75zM15.75 6.34a.75.75 0 0 0 0-1.06l-1.88-1.88a.75.75 0 0 0-1.06 0l-1.06 1.06 2.25 2.25 1.75-1.75z" />
+      </svg>
+      Update Answers
+    </button>
+  </div>
+</div>
+
+<%# link to delete with confirmation %>

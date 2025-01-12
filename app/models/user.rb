@@ -17,6 +17,12 @@ class User < ApplicationRecord
   has_many :user_languages
   has_many :languages, through: :user_languages
 
+  def active_applicant = mentorship_roles_as_applicant.active.first
+
+  def active_mentor = mentorship_roles_as_mentor.active.first
+
+  def active_mentorship = active_mentor || active_applicant
+
   accepts_nested_attributes_for :user_languages
 
   validates :email, presence: true, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}

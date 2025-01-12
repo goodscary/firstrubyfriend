@@ -1,3 +1,43 @@
-<div class="bg-blue-500 text-white p-4 rounded-lg">
-  <h1>Dashboard</h1>
-</div>
+<% if Current.user.active_mentor %> 
+  <%= render "active_mentor" %>
+<% elsif Current.user.active_applicant %>
+  <%= render "active_applicant" %>
+<% elsif Current.user.mentor_questionnaire %>
+  <%= render "mentor_awaiting_match" %>
+<% elsif Current.user.mentee_questionnaire %>
+  <%= render "applicant_awaiting_match" %>
+<% else %>
+  <%# List previous mentorships %>
+  <div class="grid gap-6 md:grid-cols-2">
+    <%= link_to new_mentee_questionnaire_path do %>
+      <div class="bg-card text-card-foreground cursor-pointer rounded-xl border p-6 shadow transition-all duration-200 hover:scale-[1.02] hover:shadow-xl">
+        <div class="flex flex-col items-center p-6 text-center">
+          <div class="mb-4 rounded-full bg-red-100 p-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
+            </svg>
+          </div>
+          <h2 class="text-2xl font-semibold">Get Help?</h2>
+          <h3 class="mb-2 text-xl font-semibold">Request help from a mentor</h2>
+          <p class="mb-4 text-gray-600">If you’re starting out or in your first year of a programming career we will pair you up with an existing Rubyist. We match you with someone with the experience you’re looking for and you can ask whatever you like.</p>
+        </div>
+      </div>
+    <% end %>
+
+    <%= link_to new_mentor_questionnaire_path do %>
+      <div class="bg-card text-card-foreground cursor-pointer rounded-xl border p-6 shadow transition-all duration-200 hover:scale-[1.02] hover:shadow-xl">
+        <div class="flex flex-col items-center p-6 text-center">
+          <div class="mb-4 rounded-full bg-red-100 p-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
+            </svg>
+
+          </div>
+          <h2 class="text-2xl font-semibold">Help Someone</h2>
+          <h3 class="mb-2 text-xl font-semibold">Volunteer your time & skill</h2>
+          <p class="mb-4 text-gray-600">Every working Ruby developer has experiences to offer to those following us into our community. You only need a year of programming before you can give back.</p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

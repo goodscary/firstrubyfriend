@@ -4,6 +4,8 @@ class Mentorship < ApplicationRecord
 
   enum :standing, %w[active ended].index_by(&:itself)
 
+  scope :active, -> { where(standing: :active) }
+
   validates :standing, presence: true
   validate :mentor_and_applicant_cannot_be_same
 
