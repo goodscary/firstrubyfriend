@@ -1,12 +1,12 @@
 require "test_helper"
 
-class MenteeQuestionnairesControllerTest < ActionDispatch::IntegrationTest
+class ApplicantQuestionnairesControllerTest < ActionDispatch::IntegrationTest
   def setup
     @user = sign_in_as(User.create(email: "andy@goodscary.com", password: "Secret1*3*5*"))
   end
 
   test "should get new" do
-    get new_mentee_questionnaire_url
+    get new_applicant_questionnaire_url
     assert_response :success
   end
 
@@ -18,9 +18,9 @@ class MenteeQuestionnairesControllerTest < ActionDispatch::IntegrationTest
       french_name: "anglais",
       local_name: nil
     )
-    assert_difference("MenteeQuestionnaire.count") do
-      post mentee_questionnaires_url, params: {
-        mentee_questionnaire: {
+    assert_difference("ApplicantQuestionnaire.count") do
+      post applicant_questionnaires_url, params: {
+        applicant_questionnaire: {
           name: "John Doe",
           work_url: "https://example.com",
           currently_writing_ruby: true,
@@ -40,8 +40,8 @@ class MenteeQuestionnairesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should not create mentee questionnaire with invalid data" do
-    assert_no_difference("MenteeQuestionnaire.count") do
-      post mentee_questionnaires_url, params: {mentee_questionnaire: {name: "", currently_writing_ruby: nil}}
+    assert_no_difference("ApplicantQuestionnaire.count") do
+      post applicant_questionnaires_url, params: {applicant_questionnaire: {name: "", currently_writing_ruby: nil}}
     end
     assert_response :unprocessable_entity
   end

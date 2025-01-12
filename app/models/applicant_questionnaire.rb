@@ -1,4 +1,4 @@
-class MenteeQuestionnaire < ApplicationRecord
+class ApplicantQuestionnaire < ApplicationRecord
   include ULID::Rails
   ulid :id, auto_generate: true
   ulid :respondent_id

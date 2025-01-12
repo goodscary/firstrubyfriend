@@ -4,12 +4,12 @@
   <%= render "active_applicant" %>
 <% elsif Current.user.mentor_questionnaire %>
   <%= render "mentor_awaiting_match" %>
-<% elsif Current.user.mentee_questionnaire %>
+<% elsif Current.user.applicant_questionnaire %>
   <%= render "applicant_awaiting_match" %>
 <% else %>
   <%# List previous mentorships %>
   <div class="grid gap-6 md:grid-cols-2">
-    <%= link_to new_mentee_questionnaire_path do %>
+    <%= link_to new_applicant_questionnaire_path do %>
       <div class="bg-card text-card-foreground cursor-pointer rounded-xl border p-6 shadow transition-all duration-200 hover:scale-[1.02] hover:shadow-xl">
         <div class="flex flex-col items-center p-6 text-center">
           <div class="mb-4 rounded-full bg-red-100 p-4">

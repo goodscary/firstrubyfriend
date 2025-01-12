@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   end
 
   resources :mentor_questionnaires, only: [:new, :create, :edit, :update]
-  resources :mentee_questionnaires, only: [:new, :create, :edit, :update]
+  resources :applicant_questionnaires, only: [:new, :create, :edit, :update]
 
   post "users/:user_id/masquerade", to: "masquerades#create", as: :user_masquerade
 

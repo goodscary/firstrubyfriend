@@ -1,20 +1,20 @@
-class MenteeQuestionnairesController < ApplicationController
+class ApplicantQuestionnairesController < ApplicationController
   before_action :set_user
-  before_action :set_mentee_questionnaire, only: [:edit, :update]
+  before_action :set_applicant_questionnaire, only: [:edit, :update]
 
   def new
-    if @user.mentee_questionnaire.present?
-      redirect_to edit_mentee_questionnaire_path(@user.mentee_questionnaire)
+    if @user.applicant_questionnaire.present?
+      redirect_to edit_applicant_questionnaire_path(@user.applicant_questionnaire)
     else
-      @mentee_questionnaire = MenteeQuestionnaire.new
+      @applicant_questionnaire = ApplicantQuestionnaire.new
       @user.user_languages.build
     end
   end
 
   def create
-    @mentee_questionnaire = @user.build_mentee_questionnaire(mentee_questionnaire_params)
+    @applicant_questionnaire = @user.build_applicant_questionnaire(applicant_questionnaire_params)
 
-    if @mentee_questionnaire.save
+    if @applicant_questionnaire.save
       @user.update(user_params)
       redirect_to root_path, notice: "Your Mentee Questionnaire answers have been saved"
     else
@@ -23,11 +23,11 @@ class MenteeQuestionnairesController < ApplicationController
   end
 
   def edit
-    @user = @mentee_questionnaire.respondent
+    @user = @applicant_questionnaire.respondent
   end
 
   def update
-    if @mentee_questionnaire.update(mentee_questionnaire_params)
+    if @applicant_questionnaire.update(applicant_questionnaire_params)
       update_user_if_needed
       redirect_to root_path, notice: "Your Mentee Questionnaire has been updated."
     else
@@ -37,8 +37,8 @@ class MenteeQuestionnairesController < ApplicationController
 
   private
 
-  def mentee_questionnaire_params
-    params.require(:mentee_questionnaire).permit(
+  def applicant_questionnaire_params
+    params.require(:applicant_questionnaire).permit(
       :name,
       :work_url,
       :currently_writing_ruby,
@@ -68,8 +68,8 @@ class MenteeQuestionnairesController < ApplicationController
     @user = Current.user
   end
 
-  def set_mentee_questionnaire
-    @mentee_questionnaire = @user.mentee_questionnaire
+  def set_applicant_questionnaire
+    @applicant_questionnaire = @user.applicant_questionnaire
   end
 
   def update_user_if_needed

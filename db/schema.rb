@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_13_213250) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_12_163649) do
   create_table "applicant_questionnaires", id: :string, default: -> { "ULID_WITH_PREFIX('app_qst')" }, force: :cascade do |t|
     t.string "respondent_id", null: false
     t.string "name", null: false
@@ -53,25 +53,6 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_13_213250) do
     t.string "local_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "mentee_questionnaires", id: :binary, force: :cascade do |t|
-    t.binary "respondent_id", null: false
-    t.string "name", null: false
-    t.string "work_url"
-    t.boolean "currently_writing_ruby", null: false
-    t.string "where_started_coding", null: false
-    t.string "twitter_handle"
-    t.string "github_handle"
-    t.string "personal_site_url"
-    t.string "previous_job"
-    t.text "mentorship_goals", null: false
-    t.boolean "looking_for_career_mentorship", null: false
-    t.boolean "looking_for_code_mentorship", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.text "self_description"
-    t.boolean "wnbrb_member"
   end
 
   create_table "mentor_questionnaires", id: :string, default: -> { "ULID_WITH_PREFIX('ment_qst')" }, force: :cascade do |t|
@@ -160,8 +141,6 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_13_213250) do
 
   add_foreign_key "email_verification_tokens", "users"
   add_foreign_key "events", "users"
-  add_foreign_key "mentee_questionnaires", "users", column: "respondent_id"
-  add_foreign_key "mentee_questionnaires", "users", column: "respondent_id"
   add_foreign_key "mentor_questionnaires", "users", column: "respondent_id"
   add_foreign_key "password_reset_tokens", "users"
   add_foreign_key "sessions", "users"

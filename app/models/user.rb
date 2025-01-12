@@ -13,7 +13,7 @@ class User < ApplicationRecord
   has_many :mentors, through: :mentorship_roles_as_mentor
   has_many :applicants, through: :mentorship_roles_as_applicant
   has_one :mentor_questionnaire, foreign_key: "respondent_id"
-  has_one :mentee_questionnaire, foreign_key: "respondent_id"
+  has_one :applicant_questionnaire, foreign_key: "respondent_id"
   has_many :user_languages
   has_many :languages, through: :user_languages
 

@@ -1,6 +1,6 @@
 class DashboardsController < ApplicationController
   def show
     @mentor_questionnaire = Current.user.mentor_questionnaire
-    @mentee_questionnaire = Current.user.mentee_questionnaire
+    @applicant_questionnaire = Current.user.applicant_questionnaire
   end
 end

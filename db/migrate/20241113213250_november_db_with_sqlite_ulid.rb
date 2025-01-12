@@ -132,10 +132,9 @@ class NovemberDbWithSqliteUlid < ActiveRecord::Migration[8.0]
 
     add_foreign_key "email_verification_tokens", "users"
     add_foreign_key "events", "users"
-    add_foreign_key "mentee_questionnaires", "users", column: "respondent_id"
+    add_foreign_key "applicant_questionnaires", "users", column: "respondent_id"
     add_foreign_key "mentor_questionnaires", "users", column: "respondent_id"
     add_foreign_key "password_reset_tokens", "users"
     add_foreign_key "sessions", "users"
-
   end
 end
