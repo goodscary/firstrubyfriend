@@ -17,6 +17,7 @@ gem "propshaft" # The modern asset pipeline for Rails [https://github.com/rails/
 gem "sqlite3" # Use SQLite3 as the database for Active Record [https://github.com/rails/rails/blob/v8.0.0/activerecord/README.md]
 gem "puma" # Use the Puma web server [https://github.com/puma/puma]
 gem "pwned" # Use Pwned to check if a password has been found in any of the huge data breaches [https://github.com/philnash/pwned]
+gem "rails_icons"
 gem "redis" # Use Redis adapter to run Action Cable in production
 gem "sqlpkg"
 gem "stimulus-rails" # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
