@@ -1,12 +1,12 @@
 class MentorshipMatcher
-  LANGUAGE_MATCH_SCORE = 40
+  COUNTRY_MATCH_SCORE = 40
   LOCAL_PREFERENCE_SCORE = 15
   REMOTE_PREFERENCE_SCORE = 5
   DISTANCE_SCORES = {
-    (0..300) => 30,        # Same timezone
-    (301..1000) => 10      # Near timezone (+/- 1-2 hours)
+    (0..300) => 30,      # Same timezone
+    (301..1000) => 10,   # Near timezone (+/- 1-2 hours)
+    :long_distance => 5  # Distant timezone
   }.freeze
-  LONG_DISTANCE_SCORE = 5  # Distant timezone
 
   def initialize(applicant)
     @applicant = applicant
@@ -15,92 +15,92 @@ class MentorshipMatcher
   end
 
   def matches
-    scored_mentors = available_mentors.map do |mentor|
-      [mentor, calculate_match_score(mentor)]
-    end
-
-    scored_mentors.sort_by { |_, score| -score }
+    User.available_mentors
+      .includes(:languages, :mentor_questionnaire)
+      .filter_map { |mentor| match_score_for(mentor) }
+      .sort_by { |_, score| -score }
   end
 
   private
 
   attr_reader :applicant, :applicant_languages, :applicant_questionnaire
 
-  def available_mentors
-    Mentorship.available_mentors.includes(:languages, :mentor_questionnaire)
-  end
-
   # Calculates match score (max 100 points) based on:
-  # 1. Languages: 40 points for any shared language
+  # 1. Country: 40 points for same country
   # 2. Location: 30 points same timezone, 10 points near timezone (+/-2h), 5 points distant timezone
   # 3. Preferences: Each matching preference (code/career)
   #    - 15 points if in same/near timezone
   #    - 5 points if in distant timezone
-  def calculate_match_score(mentor)
-    @mentor = mentor
-    @mentor_questionnaire = mentor.mentor_questionnaire
-    return 0 unless valid_for_matching?
 
-    total_score = 0
-    distance = calculate_distance
+  def match_score_for(mentor)
+    return unless valid_match?(mentor)
+    return unless language_match?(mentor)
 
-    total_score += LANGUAGE_MATCH_SCORE if languages_match?
-    total_score += calculate_distance_score(distance)
-    total_score += calculate_preference_score(distance)
+    distance = calculate_distance(mentor)
 
-    total_score
+    score = country_score(mentor) +
+      distance_score(distance) +
+      preference_score(mentor, distance)
+
+    [mentor, score]
   end
 
-  def valid_for_matching?
-    applicant && applicant_languages && applicant_questionnaire && @mentor && @mentor_questionnaire
+  def valid_match?(mentor)
+    applicant &&
+      mentor &&
+      applicant_questionnaire &&
+      mentor.mentor_questionnaire
   end
 
-  def calculate_distance
-    return nil unless @mentor.lat && @mentor.lng && applicant.lat && applicant.lng
+  def country_score(mentor)
+    (mentor.country_code == applicant.country_code) ? COUNTRY_MATCH_SCORE : 0
+  end
+
+  def language_match?(mentor)
+    (mentor.languages & applicant_languages).any?
+  end
+
+  def calculate_distance(mentor)
+    return unless geocoded?(mentor) && geocoded?(applicant)
 
     Geocoder::Calculations.distance_between(
-      [@mentor.lat, @mentor.lng],
+      [mentor.lat, mentor.lng],
       [applicant.lat, applicant.lng]
     )
   end
 
-  def calculate_distance_score(distance)
-    return LONG_DISTANCE_SCORE if distance.nil?
+  def geocoded?(user)
+    user.lat.present? && user.lng.present?
+  end
+
+  def distance_score(distance)
+    return DISTANCE_SCORES[:long_distance] if distance.nil?
 
     matching_score = DISTANCE_SCORES.find do |range, score|
-      range.include?(distance)
+      range.is_a?(Range) && range.include?(distance)
     end&.last
 
-    matching_score || LONG_DISTANCE_SCORE
+    matching_score || DISTANCE_SCORES[:long_distance]
   end
 
-  def languages_match?
-    (@mentor.languages & applicant_languages).any?
+  def preference_score(mentor, distance)
+    base_score = (distance.present? && distance <= 1000) ?
+                 LOCAL_PREFERENCE_SCORE :
+                 REMOTE_PREFERENCE_SCORE
+
+    scores = []
+    scores << base_score if career_match?(mentor)
+    scores << base_score if code_match?(mentor)
+    scores.sum
   end
 
-  def calculate_preference_score(distance)
-    preference_score = 0
-
-    preference_value = (distance <= 1000) ? LOCAL_PREFERENCE_SCORE : REMOTE_PREFERENCE_SCORE
-
-    if career_preference_match?
-      preference_score += preference_value
-    end
-
-    if code_preference_match?
-      preference_score += preference_value
-    end
-
-    preference_score
-  end
-
-  def career_preference_match?
-    @mentor.mentor_questionnaire.preferred_style_career &&
+  def career_match?(mentor)
+    mentor.mentor_questionnaire.preferred_style_career &&
       applicant_questionnaire.looking_for_career_mentorship
   end
 
-  def code_preference_match?
-    @mentor.mentor_questionnaire.preferred_style_code &&
+  def code_match?(mentor)
+    mentor.mentor_questionnaire.preferred_style_code &&
       applicant_questionnaire.looking_for_code_mentorship
   end
 end

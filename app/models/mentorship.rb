@@ -5,11 +5,6 @@ class Mentorship < ApplicationRecord
   enum :standing, %w[active ended].index_by(&:itself)
 
   scope :active, -> { where(standing: :active) }
-  scope :available_mentors, -> {
-    User.joins(:mentor_questionnaire)
-      .where.not(available_as_mentor_at: nil)
-      .where.not(id: active.select(:mentor_id))
-  }
 
   validates :standing, presence: true
   validate :mentor_and_applicant_cannot_be_same
