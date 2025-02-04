@@ -24,12 +24,12 @@ class MentorshipMatcherTest < ActiveSupport::TestCase
     # Medium mentor: different country + near timezone + 1 pref
     # 0 + 10 + 15 = 25
     assert_equal medium_mentor, matches[1][0], "Medium mentor should be second"
-    assert_equal 25, matches[1][1], "Medium mentor should have 85 points"
+    assert_equal 25, matches[1][1], "Medium mentor should have 25 points"
 
     # Lowest mentor: different country + distant timezone + no prefs
     # 0 + 5 + 0 = 5
     assert_equal lowest_mentor, matches[2][0], "Lowest mentor should be last"
-    assert_equal 5, matches[2][1], "Lowest mentor should have 45 points"
+    assert_equal 5, matches[2][1], "Lowest mentor should have 5 points"
   end
 
   test "should exclude mentors without language match" do
@@ -135,7 +135,7 @@ class MentorshipMatcherTest < ActiveSupport::TestCase
       password: "Secret1*3*5*",
       verified: true,
       city: "Bournemouth",
-      country_code: "UK",
+      country_code: "GB",
       available_as_mentor_at: Time.current
     )
     user.languages << @hindi
