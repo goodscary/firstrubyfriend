@@ -9,6 +9,10 @@ class Mentorship < ApplicationRecord
   validates :standing, presence: true
   validate :mentor_and_applicant_cannot_be_same
 
+  def self.find_matches_for_applicant(applicant)
+    MentorshipMatcher.new(applicant).matches
+  end
+
   private
 
   def mentor_and_applicant_cannot_be_same

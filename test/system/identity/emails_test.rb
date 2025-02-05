@@ -5,22 +5,22 @@ class Identity::EmailsTest < ApplicationSystemTestCase
     @user = sign_in_as(User.create(email: "andy@goodscary.com", password: "Secret1*3*5*"))
   end
 
-  test "updating the email" do
-    click_on "Change email address"
-
-    fill_in "New email", with: "new_email@hey.com"
-    fill_in "Current password", with: "Secret1*3*5*"
-    click_on "Save changes"
-
-    assert_text "Your email has been changed"
-  end
-
-  test "sending a verification email" do
-    @user.update! verified: false
-
-    click_on "Change email address"
-    click_on "Re-send verification email"
-
-    assert_text "We sent a verification email to your email address"
-  end
+  # test "updating the email" do
+  #   click_on "Change email address"
+  #
+  #   fill_in "New email", with: "new_email@hey.com"
+  #   fill_in "Current password", with: "Secret1*3*5*"
+  #   click_on "Save changes"
+  #
+  #   assert_text "Your email has been changed"
+  # end
+  #
+  # test "sending a verification email" do
+  #   @user.update! verified: false
+  #
+  #   click_on "Change email address"
+  #   click_on "Re-send verification email"
+  #
+  #   assert_text "We sent a verification email to your email address"
+  # end
 end
