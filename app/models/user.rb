@@ -61,6 +61,13 @@ class User < ApplicationRecord
 
   after_validation :geocode, if: ->(obj) { obj.city_changed? || obj.country_code_changed? }
 
+  scope :available_mentors, -> {
+    includes(:languages, :mentor_questionnaire)
+      .joins(:mentor_questionnaire)
+      .where.not(available_as_mentor_at: nil)
+      .where.not(id: Mentorship.active.select(:mentor_id))
+  }
+
   def address
     [city, country_code].compact.join(", ")
   end

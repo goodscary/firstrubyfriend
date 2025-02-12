@@ -9,6 +9,6 @@ class RegistrationsTest < ApplicationSystemTestCase
     fill_in "Password confirmation", with: "Secret6*4*2*"
     click_on "Sign up"
 
-    assert_text "Welcome! You have signed up successfully"
+    assert_text "Dashboard"
   end
 end
