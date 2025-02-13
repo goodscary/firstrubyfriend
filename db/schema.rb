@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_12_163649) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_13_164956) do
   create_table "applicant_questionnaires", id: :string, default: -> { "ULID_WITH_PREFIX('app_qst')" }, force: :cascade do |t|
     t.string "respondent_id", null: false
     t.string "name", null: false
@@ -133,6 +133,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_12_163649) do
     t.text "demographic_underrepresented_group_details"
     t.string "provider"
     t.string "uid"
+    t.boolean "admin", default: false
     t.index ["city"], name: "index_users_on_city"
     t.index ["country_code"], name: "index_users_on_country_code"
     t.index ["email"], name: "index_users_on_email", unique: true

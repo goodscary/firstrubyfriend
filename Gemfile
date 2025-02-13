@@ -31,6 +31,7 @@ gem "ulid-rails"
 group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "standard"
+  gem "faker"
 end
 
 group :development do

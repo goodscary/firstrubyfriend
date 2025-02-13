@@ -23,6 +23,8 @@ class User < ApplicationRecord
 
   def active_mentorship = active_mentor || active_applicant
 
+  def admin? = admin
+
   accepts_nested_attributes_for :user_languages
 
   validates :email, presence: true, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}
@@ -60,6 +62,16 @@ class User < ApplicationRecord
   geocoded_by :address, latitude: :lat, longitude: :lng
 
   after_validation :geocode, if: ->(obj) { obj.city_changed? || obj.country_code_changed? }
+
+  scope :all_mentors, -> {
+    includes(:languages, :mentor_questionnaire)
+      .joins(:mentor_questionnaire)
+  }
+
+  scope :all_applicants, -> {
+    includes(:languages, :applicant_questionnaire)
+      .joins(:applicant_questionnaire)
+  }
 
   scope :available_mentors, -> {
     includes(:languages, :mentor_questionnaire)
