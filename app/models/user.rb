@@ -23,8 +23,6 @@ class User < ApplicationRecord
 
   def active_mentorship = active_mentor || active_applicant
 
-  def admin? = admin
-
   accepts_nested_attributes_for :user_languages
 
   validates :email, presence: true, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}

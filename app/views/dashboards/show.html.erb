@@ -1,6 +1,4 @@
-<% if Current.user.admin? %>
-  <%= render "admin" %>
-<% elsif Current.user.active_mentor %>
+<% if Current.user.active_mentor %>
   <%= render "active_mentor" %>
 <% elsif Current.user.active_applicant %>
   <%= render "active_applicant" %>

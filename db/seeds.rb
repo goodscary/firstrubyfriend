@@ -128,6 +128,5 @@ User.create!(
   demographic_year_started_ruby: 2023,
   demographic_year_started_programming: 2022,
   demographic_underrepresented_group: false,
-  verified: true,
-  admin: true
+  verified: true
 )
