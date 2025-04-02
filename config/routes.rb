@@ -24,6 +24,9 @@ Rails.application.routes.draw do
 
   resources :mentor_questionnaires, only: [:new, :create, :edit, :update]
   resources :applicant_questionnaires, only: [:new, :create, :edit, :update]
+  resources :mentors, only: [:index]
+  resources :applicants, only: [:index]
+  resources :mentorships, only: [:index]
 
   post "users/:user_id/masquerade", to: "masquerades#create", as: :user_masquerade
 
