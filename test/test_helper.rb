@@ -18,7 +18,7 @@ class ActiveSupport::TestCase
 
   def create_user
     User.create!(
-      email: "andy@goodscary.com",
+      email: "user-#{SecureRandom.hex(8)}@goodscary.com",
       password: "Secret1*3*5*",
       city: "Brighton",
       country_code: "GB",
@@ -33,7 +33,7 @@ class ActiveSupport::TestCase
 
   def create_mentor
     User.create!(
-      email: "mentor@example.com",
+      email: "mentor-#{SecureRandom.hex(8)}@example.com",
       password: "Secret1*3*5*",
       verified: true
     )
@@ -41,7 +41,7 @@ class ActiveSupport::TestCase
 
   def create_applicant
     User.create!(
-      email: "applicant@example.com",
+      email: "applicant-#{SecureRandom.hex(8)}@example.com",
       password: "Secret1*3*5*",
       verified: true
     )

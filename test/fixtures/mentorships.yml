@@ -1,35 +1,6 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-<%# one: %>
-<%#   mentor: one %>
-<%#   applicant: one %>
-<%#   standing: MyString %>
-<%#   applicant_month_1_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   applicant_month_2_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   applicant_month_3_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   applicant_month_4_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   applicant_month_5_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   applicant_month_6_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   mentor_month_1_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   mentor_month_2_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   mentor_month_3_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   mentor_month_4_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   mentor_month_5_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   mentor_month_6_email_sent_at: 2023-10-03 23:24:50 %>
-
-<%# two: %>
-<%#   mentor: two %>
-<%#   applicant: two %>
-<%#   standing: MyString %>
-<%#   applicant_month_1_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   applicant_month_2_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   applicant_month_3_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   applicant_month_4_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   applicant_month_5_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   applicant_month_6_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   mentor_month_1_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   mentor_month_2_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   mentor_month_3_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   mentor_month_4_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   mentor_month_5_email_sent_at: 2023-10-03 23:24:50 %>
-<%#   mentor_month_6_email_sent_at: 2023-10-03 23:24:50 %>
+active_no_emails_sent:
+  mentor: mentor_user
+  applicant: applicant_user
+  standing: active

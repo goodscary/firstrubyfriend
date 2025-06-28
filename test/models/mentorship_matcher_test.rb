@@ -44,7 +44,7 @@ class MentorshipMatcherTest < ActiveSupport::TestCase
 
   def setup_applicant
     user = User.create!(
-      email: "applicant@example.com",
+      email: "applicant-#{SecureRandom.hex(8)}@example.com",
       password: "Secret1*3*5*",
       verified: true,
       city: "Bournemouth",
