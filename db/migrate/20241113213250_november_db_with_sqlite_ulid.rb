@@ -1,14 +1,12 @@
 class NovemberDbWithSqliteUlid < ActiveRecord::Migration[8.0]
   def change
-    create_table "email_verification_tokens", id: false, force: :cascade do |t|
-      t.primary_key :id, :string, default: -> { "ULID_WITH_PREFIX('email_token')" }
-      t.string "user_id", null: false
+    create_table "email_verification_tokens", force: :cascade do |t|
+      t.bigint "user_id", null: false
       t.index ["user_id"], name: "index_email_verification_tokens_on_user_id"
     end
 
-    create_table "events", id: false, force: :cascade do |t|
-      t.primary_key :id, :string, default: -> { "ULID_WITH_PREFIX('event')" }
-      t.string "user_id", null: false
+    create_table "events", force: :cascade do |t|
+      t.bigint "user_id", null: false
       t.string "action", null: false
       t.string "user_agent"
       t.string "ip_address"
@@ -16,8 +14,7 @@ class NovemberDbWithSqliteUlid < ActiveRecord::Migration[8.0]
       t.index ["user_id"], name: "index_events_on_user_id"
     end
 
-    create_table "languages", id: false, force: :cascade do |t|
-      t.primary_key :id, :string, default: -> { "ULID_WITH_PREFIX('lang')" }
+    create_table "languages", force: :cascade do |t|
       t.string "iso639_alpha3", null: false
       t.string "iso639_alpha2"
       t.string "english_name"
@@ -26,9 +23,8 @@ class NovemberDbWithSqliteUlid < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    create_table "applicant_questionnaires", id: false, force: :cascade do |t|
-      t.primary_key :id, :string, default: -> { "ULID_WITH_PREFIX('app_qst')" }
-      t.string "respondent_id", null: false
+    create_table "applicant_questionnaires", force: :cascade do |t|
+      t.bigint "respondent_id", null: false
       t.string "name", null: false
       t.string "work_url"
       t.boolean "currently_writing_ruby", null: false
@@ -45,9 +41,8 @@ class NovemberDbWithSqliteUlid < ActiveRecord::Migration[8.0]
       t.boolean "wnbrb_member"
     end
 
-    create_table "mentor_questionnaires", id: false, force: :cascade do |t|
-      t.primary_key :id, :string, default: -> { "ULID_WITH_PREFIX('ment_qst')" }
-      t.string "respondent_id", null: false
+    create_table "mentor_questionnaires", force: :cascade do |t|
+      t.bigint "respondent_id", null: false
       t.string "name", null: false
       t.string "company_url", null: false
       t.string "twitter_handle"
@@ -61,10 +56,9 @@ class NovemberDbWithSqliteUlid < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    create_table "mentorships", id: false, force: :cascade do |t|
-      t.primary_key :id, :string, default: -> { "ULID_WITH_PREFIX('mnt')" }
-      t.string "mentor_id", null: false
-      t.string "applicant_id", null: false
+    create_table "mentorships", force: :cascade do |t|
+      t.bigint "mentor_id", null: false
+      t.bigint "applicant_id", null: false
       t.string "standing", null: false
       t.datetime "applicant_month_1_email_sent_at"
       t.datetime "applicant_month_2_email_sent_at"
@@ -81,30 +75,26 @@ class NovemberDbWithSqliteUlid < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    create_table "password_reset_tokens", id: false, force: :cascade do |t|
-      t.primary_key :id, :string, default: -> { "ULID_WITH_PREFIX('pass_token')" }
-      t.string "user_id", null: false
+    create_table "password_reset_tokens", force: :cascade do |t|
+      t.bigint "user_id", null: false
       t.index ["user_id"], name: "index_password_reset_tokens_on_user_id"
     end
 
-    create_table "sessions", id: false, force: :cascade do |t|
-      t.primary_key :id, :string, default: -> { "ULID_WITH_PREFIX('sess')" }
-      t.string "user_id", null: false
+    create_table "sessions", force: :cascade do |t|
+      t.bigint "user_id", null: false
       t.string "user_agent"
       t.string "ip_address"
       t.timestamps
       t.index ["user_id"], name: "index_sessions_on_user_id"
     end
 
-    create_table "user_languages", id: false, force: :cascade do |t|
-      t.primary_key :id, :string, default: -> { "ULID_WITH_PREFIX('user_lang')" }
-      t.string "user_id", null: false
+    create_table "user_languages", force: :cascade do |t|
+      t.bigint "user_id", null: false
       t.string "language_id", null: false
       t.timestamps
     end
 
-    create_table "users", id: false, force: :cascade do |t|
-      t.primary_key :id, :string, default: -> { "ULID_WITH_PREFIX('user')" }
+    create_table "users", force: :cascade do |t|
       t.string "email", null: false
       t.string "password_digest", null: false
       t.boolean "verified", default: false, null: false

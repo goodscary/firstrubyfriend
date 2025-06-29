@@ -1,6 +1,4 @@
 class User < ApplicationRecord
-  include ULID::Rails
-  ulid :id, auto_generate: true
 
   has_secure_password
 

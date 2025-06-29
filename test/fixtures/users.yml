@@ -1,16 +1,14 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-lazaro_nixon:
-  email: lazaronixon@hotmail.com
+basic:
+  email: basic@example.com
   password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
   verified: true
 
-mentor_user:
+mentor:
   email: mentor@example.com
   password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
   verified: true
 
-applicant_user:
+applicant:
   email: applicant@example.com
   password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
   verified: true

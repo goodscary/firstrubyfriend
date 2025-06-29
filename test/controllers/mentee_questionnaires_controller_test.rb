@@ -1,6 +1,8 @@
 require "test_helper"
 
 class ApplicantQuestionnairesControllerTest < ActionDispatch::IntegrationTest
+  fixtures :languages
+
   def setup
     @user = sign_in_as(User.create(email: "andy@goodscary.com", password: "Secret1*3*5*"))
   end
@@ -11,13 +13,7 @@ class ApplicantQuestionnairesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create mentee questionnaire" do
-    english_language = Language.create!(
-      iso639_alpha3: "eng",
-      iso639_alpha2: "",
-      english_name: "English",
-      french_name: "anglais",
-      local_name: nil
-    )
+    english_language = languages(:english)
     assert_difference("ApplicantQuestionnaire.count") do
       post applicant_questionnaires_url, params: {
         applicant_questionnaire: {

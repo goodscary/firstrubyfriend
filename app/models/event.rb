@@ -1,5 +1,4 @@
 class Event < ApplicationRecord
-  ulid :user_id
   belongs_to :user
 
   before_create do

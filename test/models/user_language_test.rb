@@ -1,8 +1,10 @@
 require "test_helper"
 
 class UserLanguageTest < ActiveSupport::TestCase
+  fixtures :languages
+
   def setup
-    @language = Language.create!(iso639_alpha3: "eng")
+    @language = languages(:english)
     @user = create_user
   end
 

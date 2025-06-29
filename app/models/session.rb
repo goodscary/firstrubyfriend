@@ -1,5 +1,4 @@
 class Session < ApplicationRecord
-  ulid :user_id
   belongs_to :user
 
   kredis_flag :sudo, expires_in: 30.minutes

@@ -1,6 +1,6 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 active_no_emails_sent:
-  mentor: mentor_user
-  applicant: applicant_user
+  mentor: mentor
+  applicant: applicant
   standing: active

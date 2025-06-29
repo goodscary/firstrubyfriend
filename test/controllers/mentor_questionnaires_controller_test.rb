@@ -1,8 +1,10 @@
 require "test_helper"
 
 class MentorQuestionnairesControllerTest < ActionDispatch::IntegrationTest
+  fixtures :users, :languages
+
   def setup
-    @user = sign_in_as(User.create(email: "andy@goodscary.com", password: "Secret1*3*5*"))
+    @user = sign_in_as(users(:basic))
   end
 
   test "should get new" do
@@ -11,13 +13,6 @@ class MentorQuestionnairesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create mentor questionnaire" do
-    english_language = Language.create!(
-      iso639_alpha3: "eng",
-      iso639_alpha2: "",
-      english_name: "English",
-      french_name: "anglais",
-      local_name: nil
-    )
     assert_difference("MentorQuestionnaire.count") do
       post mentor_questionnaires_url, params: {
         mentor_questionnaire: {
@@ -30,7 +25,7 @@ class MentorQuestionnairesControllerTest < ActionDispatch::IntegrationTest
         },
         user: {
           demographic_year_started_ruby: 2005,
-          language: english_language
+          language: languages(:english)
         }
       }
     end
