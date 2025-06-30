@@ -1,11 +1,11 @@
 require "test_helper"
 
 class UserLanguageTest < ActiveSupport::TestCase
-  fixtures :languages
+  fixtures :languages, :users
 
   def setup
     @language = languages(:english)
-    @user = create_user
+    @user = users(:basic)
   end
 
   test "should save with valid user and language" do

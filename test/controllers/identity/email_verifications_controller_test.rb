@@ -1,9 +1,10 @@
 require "test_helper"
 
 class Identity::EmailVerificationsControllerTest < ActionDispatch::IntegrationTest
+  fixtures :users
+
   setup do
-    @user = sign_in_as(User.create(email: "andy@goodscary.com", password: "Secret1*3*5*"))
-    @user.update! verified: false
+    @user = sign_in_as(users(:unverified))
   end
 
   test "should send a verification email" do

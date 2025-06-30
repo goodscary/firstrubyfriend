@@ -1,8 +1,10 @@
 require "test_helper"
 
 class PasswordsControllerTest < ActionDispatch::IntegrationTest
+  fixtures :users
+
   setup do
-    @user = sign_in_as(User.create(email: "andy@goodscary.com", password: "Secret1*3*5*"))
+    @user = sign_in_as(users(:basic))
   end
 
   test "should get edit" do

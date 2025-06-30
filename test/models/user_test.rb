@@ -1,8 +1,10 @@
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
+  fixtures :users
+
   def setup
-    @user = create_user
+    @user = users(:with_location)
   end
 
   test "should be invalid without email" do

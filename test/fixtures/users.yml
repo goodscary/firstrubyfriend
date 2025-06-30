@@ -12,3 +12,27 @@ applicant:
   email: applicant@example.com
   password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
   verified: true
+
+unverified:
+  email: unverified@example.com
+  password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
+  verified: false
+
+with_location:
+  email: located@example.com
+  password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
+  verified: true
+  city: Brighton
+  country_code: GB
+  lat: 50.827778
+  lng: -0.152778
+  demographic_year_started_ruby: 2023
+  demographic_year_started_programming: 2022
+  demographic_underrepresented_group: false
+
+github_user:
+  email: github_user@example.com
+  password_digest: <%= BCrypt::Password.create("Secret1*3*5*") %>
+  verified: true
+  provider: github
+  uid: "123456"
