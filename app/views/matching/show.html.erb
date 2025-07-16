@@ -1,0 +1,173 @@
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-2xl py-8 lg:max-w-none">
+    <div class="mb-4">
+      <%= link_to "← Back to Matching", matching_index_path,
+          class: "text-indigo-600 hover:text-indigo-500 text-sm font-medium" %>
+    </div>
+
+    <h2 class="text-2xl font-bold text-gray-900 mb-6">
+      Matches for <%= @applicant.applicant_questionnaire.name %>
+    </h2>
+
+    <!-- Sticky Applicant Summary Card -->
+    <div class="sticky top-0 z-10 bg-blue-50 p-6 rounded-lg mb-8 shadow-md border-2 border-blue-200">
+      <h3 class="text-lg font-semibold text-gray-900 mb-3">Applicant Profile</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p class="text-sm"><strong>Location:</strong>
+            <% if @applicant.city.present? %>
+              <%= @applicant.city %>, <%= @applicant.country_code %>
+            <% else %>
+              Not specified
+            <% end %>
+          </p>
+          <p class="text-sm mt-2"><strong>Currently writing Ruby:</strong>
+            <%= @applicant.applicant_questionnaire.currently_writing_ruby? ? "Yes" : "No" %>
+          </p>
+        </div>
+        <div>
+          <p class="text-sm"><strong>Looking for:</strong></p>
+          <div class="flex gap-2 mt-1">
+            <% if @applicant.applicant_questionnaire.looking_for_career_mentorship %>
+              <span class="inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">Career</span>
+            <% end %>
+            <% if @applicant.applicant_questionnaire.looking_for_code_mentorship %>
+              <span class="inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-800">Code</span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4">
+        <p class="text-sm"><strong>Goals:</strong> <%= @applicant.applicant_questionnaire.mentorship_goals %></p>
+      </div>
+      <% if @applicant.languages.any? %>
+        <div class="mt-4">
+          <p class="text-sm"><strong>Languages:</strong></p>
+          <div class="flex flex-wrap gap-1 mt-1">
+            <% @applicant.languages.each do |language| %>
+              <span class="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">
+                <%= language.english_name %>
+              </span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Matches List -->
+    <% if @matches.any? %>
+      <h3 class="text-lg font-semibold text-gray-900 mb-6">
+        Suggested Matches (<%= @matches.count %>)
+      </h3>
+
+      <div class="space-y-6">
+        <% @matches.each do |mentor, score| %>
+          <div class="bg-white border rounded-lg p-6 shadow-sm">
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <div class="flex items-center justify-between mb-4">
+                  <h4 class="text-lg font-semibold text-gray-900">
+                    <%= mentor.mentor_questionnaire.name %>
+                  </h4>
+                  <div class="flex items-center">
+                    <span class="text-2xl font-bold text-indigo-600"><%= score %></span>
+                    <span class="text-sm text-gray-500 ml-1">/ 100</span>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p class="text-sm text-gray-600 mb-2">
+                      <strong>Location:</strong>
+                      <% if mentor.city.present? %>
+                        <%= mentor.city %>, <%= mentor.country_code %>
+                      <% else %>
+                        Not specified
+                      <% end %>
+                    </p>
+
+                    <p class="text-sm text-gray-600 mb-2">
+                      <strong>Company:</strong>
+                      <% if mentor.mentor_questionnaire.company_url.present? %>
+                        <%= link_to mentor.mentor_questionnaire.company_url, mentor.mentor_questionnaire.company_url,
+                            target: "_blank", class: "text-indigo-600 hover:text-indigo-500" %>
+                      <% else %>
+                        Not specified
+                      <% end %>
+                    </p>
+
+                    <p class="text-sm text-gray-600">
+                      <strong>Previously mentored:</strong>
+                      <%= mentor.mentor_questionnaire.has_mentored_before? ? "Yes" : "No" %>
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="text-sm text-gray-600 mb-2"><strong>Mentoring style:</strong></p>
+                    <div class="flex gap-2 mb-3">
+                      <% if mentor.mentor_questionnaire.preferred_style_career %>
+                        <span class="inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">Career</span>
+                      <% end %>
+                      <% if mentor.mentor_questionnaire.preferred_style_code %>
+                        <span class="inline-flex items-center rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-800">Code</span>
+                      <% end %>
+                    </div>
+
+                    <% if mentor.languages.any? %>
+                      <p class="text-sm text-gray-600 mb-1"><strong>Languages:</strong></p>
+                      <div class="flex flex-wrap gap-1">
+                        <% mentor.languages.each do |language| %>
+                          <% is_shared = @applicant.languages.include?(language) %>
+                          <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium
+                                       <%= is_shared ? 'bg-yellow-100 text-yellow-800 ring-1 ring-yellow-600' : 'bg-gray-100 text-gray-700' %>">
+                            <%= language.english_name %>
+                            <% if is_shared %>
+                              <span class="ml-1">✓</span>
+                            <% end %>
+                          </span>
+                        <% end %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+
+                <div class="mt-4">
+                  <p class="text-sm text-gray-600">
+                    <strong>Why mentoring:</strong>
+                    <%= truncate(mentor.mentor_questionnaire.mentoring_reason, length: 150) %>
+                  </p>
+                </div>
+              </div>
+
+              <div class="ml-6 flex flex-col gap-2">
+                <%= button_to "Approve Match", matching_index_path,
+                    params: { applicant_id: @applicant.id, mentor_id: mentor.id },
+                    method: :post,
+                    data: {
+                      confirm: "Create mentorship between #{@applicant.applicant_questionnaire.name} and #{mentor.mentor_questionnaire.name}?"
+                    },
+                    class: "inline-flex items-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600" %>
+
+                <button type="button"
+                        class="inline-flex items-center rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500">
+                  Skip
+                </button>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-12">
+        <div class="text-gray-400">
+          <%= icon "exclamation-triangle", class: "mx-auto h-12 w-12" %>
+        </div>
+        <h3 class="mt-2 text-sm font-semibold text-gray-900">No matches found</h3>
+        <p class="mt-1 text-sm text-gray-500">
+          No available mentors match this applicant's criteria.
+          Consider reviewing the matching algorithm or expanding the criteria.
+        </p>
+      </div>
+    <% end %>
+  </div>
+</div>

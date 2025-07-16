@@ -78,6 +78,12 @@ class User < ApplicationRecord
       .where.not(id: Mentorship.active.select(:mentor_id))
   }
 
+  scope :unmatched_applicants, -> {
+    includes(:languages, :applicant_questionnaire)
+      .joins(:applicant_questionnaire)
+      .where.not(id: Mentorship.active.select(:applicant_id))
+  }
+
   def address
     [city, country_code].compact.join(", ")
   end

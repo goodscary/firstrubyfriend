@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   resources :mentors, only: [:index]
   resources :applicants, only: [:index]
   resources :mentorships, only: [:index]
+  resources :matching, only: [:index, :show, :create]
 
   post "users/:user_id/masquerade", to: "masquerades#create", as: :user_masquerade
 

@@ -26,7 +26,7 @@ end
 
 puts "Creating users..."
 50.times do |i|
-  User.create!(
+  user = User.create!(
     email: Faker::Internet.unique.email,
     password: "Secret1*3*5*",
     verified: [true, false].sample,
@@ -39,7 +39,13 @@ puts "Creating users..."
     demographic_year_started_programming: rand(2000..2020),
     demographic_underrepresented_group: [true, false].sample
   )
-  puts "Created user #{i + 1}"
+
+  # Assign 1-3 random languages to each user
+  available_languages = Language.all
+  languages_to_assign = available_languages.sample(rand(1..3))
+  user.languages = languages_to_assign
+
+  puts "Created user #{i + 1} with languages: #{languages_to_assign.map(&:english_name).join(", ")}"
 end
 
 # Select 30 users to be applicants
@@ -58,8 +64,8 @@ applicant_users.each do |user|
     personal_site_url: Faker::Internet.url,
     previous_job: Faker::Job.title,
     mentorship_goals: Faker::Lorem.paragraph,
-    looking_for_career_mentorship: [true, false].sample,
-    looking_for_code_mentorship: [true, false].sample,
+    looking_for_career_mentorship: (choice = [1, 2, 3].sample) != 2,
+    looking_for_code_mentorship: choice != 1,
     self_description: Faker::Lorem.paragraph,
     wnbrb_member: [true, false].sample
   )
@@ -81,8 +87,8 @@ mentor_users.each do |user|
     previous_workplaces: Faker::Company.name,
     has_mentored_before: [true, false].sample,
     mentoring_reason: Faker::Lorem.paragraph,
-    preferred_style_career: [true, false].sample,
-    preferred_style_code: [true, false].sample
+    preferred_style_career: (mentor_choice = [1, 2, 3].sample) != 2,
+    preferred_style_code: mentor_choice != 1
   )
   user.update!(available_as_mentor_at: Faker::Time.between(from: 6.months.ago, to: Time.now))
 end
@@ -118,7 +124,8 @@ puts "- #{ApplicantQuestionnaire.count} applicants"
 puts "- #{MentorQuestionnaire.count} mentors"
 puts "- #{Mentorship.count} mentorships"
 
-User.create!(
+# Create admin user with good test data
+admin_user = User.create!(
   email: "andy@goodscary.com",
   password: "Secret1*3*5*",
   city: "Brighton",
@@ -130,3 +137,9 @@ User.create!(
   demographic_underrepresented_group: false,
   verified: true
 )
+
+# Give admin user English language
+english_language = Language.find_by(english_name: "English")
+admin_user.languages = [english_language] if english_language
+
+puts "Created admin user: andy@goodscary.com"
