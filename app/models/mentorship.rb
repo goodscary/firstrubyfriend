@@ -1,4 +1,9 @@
 class Mentorship < ApplicationRecord
+  include ULID::Rails
+  ulid :id, auto_generate: true
+  ulid :mentor_id
+  ulid :applicant_id
+
   belongs_to :mentor, class_name: "User"
   belongs_to :applicant, class_name: "User"
 
