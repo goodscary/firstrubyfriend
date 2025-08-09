@@ -1,0 +1,42 @@
+name: first-ruby-friend
+type: rails-application
+version: 1.0.0
+
+environment:
+  language: ruby
+  framework: rails
+  database: sqlite
+  test_framework: minitest
+  
+commands:
+  test: "rails test"
+  server: "rails s"
+  console: "rails c"
+  migrate: "rails db:migrate"
+  seed: "rails db:seed"
+  setup: "bin/setup"
+  
+paths:
+  models: "app/models"
+  controllers: "app/controllers"
+  views: "app/views"
+  tests: "test"
+  migrations: "db/migrate"
+  config: "config"
+  
+conventions:
+  - Use Rails MVC patterns
+  - Follow RESTful routing
+  - Write tests first (TDD)
+  - Use strong parameters
+  - Leverage ActiveRecord associations
+  - Use Tailwind CSS utilities
+  
+dependencies:
+  - rails
+  - sqlite3
+  - tailwindcss-rails
+  - stimulus-rails
+  - geocoder
+  - pwned
+  - bcrypt
