@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_29_094957) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_07_215542) do
   create_table "applicant_questionnaires", force: :cascade do |t|
     t.integer "respondent_id", null: false
     t.string "name", null: false
@@ -37,6 +37,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_29_094957) do
     t.string "ip_address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["action"], name: "index_events_on_action"
+    t.index ["user_id", "created_at"], name: "index_events_on_user_and_created_at"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
@@ -64,6 +66,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_29_094957) do
     t.boolean "preferred_style_code", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["respondent_id"], name: "index_mentor_questionnaires_on_respondent_id", unique: true
   end
 
   create_table "mentorships", force: :cascade do |t|
@@ -84,6 +87,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_29_094957) do
     t.datetime "mentor_month_6_email_sent_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["applicant_id", "standing"], name: "index_mentorships_on_applicant_and_standing"
+    t.index ["applicant_id"], name: "index_mentorships_on_applicant_id"
+    t.index ["mentor_id", "applicant_id"], name: "index_mentorships_on_mentor_and_applicant", unique: true
+    t.index ["mentor_id", "standing"], name: "index_mentorships_on_mentor_and_standing"
+    t.index ["mentor_id"], name: "index_mentorships_on_mentor_id"
+    t.index ["standing"], name: "index_mentorships_on_standing"
   end
 
   create_table "password_reset_tokens", force: :cascade do |t|
@@ -97,6 +106,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_29_094957) do
     t.string "ip_address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "created_at"], name: "index_sessions_on_user_and_created_at"
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
@@ -105,6 +115,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_29_094957) do
     t.string "language_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "language_id"], name: "index_user_languages_on_user_and_language", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -128,10 +139,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_29_094957) do
     t.text "demographic_underrepresented_group_details"
     t.string "provider"
     t.string "uid"
+    t.index ["available_as_mentor_at"], name: "index_users_on_available_as_mentor_at"
     t.index ["city"], name: "index_users_on_city"
     t.index ["country_code"], name: "index_users_on_country_code"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["lat", "lng"], name: "index_users_on_lat_and_lng"
+    t.index ["requested_mentorship_at"], name: "index_users_on_requested_mentorship_at"
+    t.index ["unsubscribed_at", "unsubscribed_reason"], name: "index_users_on_unsubscribed"
+    t.index ["verified"], name: "index_users_on_verified"
   end
 
   add_foreign_key "applicant_questionnaires", "users", column: "respondent_id"

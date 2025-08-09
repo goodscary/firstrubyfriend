@@ -4,7 +4,7 @@ class MentorshipTest < ActiveSupport::TestCase
   fixtures :users
 
   test "should save with valid mentor and applicant" do
-    mentorship = Mentorship.new(mentor: users(:mentor), applicant: users(:applicant), standing: "active")
+    mentorship = Mentorship.new(mentor: users(:basic), applicant: users(:unverified), standing: "active")
     assert mentorship.save
   end
 
