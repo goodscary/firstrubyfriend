@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   resources :mentors, only: [:index]
   resources :applicants, only: [:index]
   resources :mentorships, only: [:index]
+  resources :matching, only: [:index, :show, :create]
 
   root "home#show"
 end
