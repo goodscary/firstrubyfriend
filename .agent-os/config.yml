@@ -1,10 +1,12 @@
 name: first-ruby-friend
 type: rails-application
 version: 1.0.0
+description: Ruby mentorship platform connecting experienced developers with newcomers
 
 environment:
   language: ruby
   framework: rails
+  rails_version: "~> 8"
   database: sqlite
   test_framework: minitest
   
@@ -15,6 +17,7 @@ commands:
   migrate: "rails db:migrate"
   seed: "rails db:seed"
   setup: "bin/setup"
+  debug: "rails s"  # Use rails s for debugging with binding.break
   
 paths:
   models: "app/models"
@@ -23,6 +26,7 @@ paths:
   tests: "test"
   migrations: "db/migrate"
   config: "config"
+  concerns: "app/models/concerns"
   
 conventions:
   - Use Rails MVC patterns
@@ -31,12 +35,18 @@ conventions:
   - Use strong parameters
   - Leverage ActiveRecord associations
   - Use Tailwind CSS utilities
-  
+  - Prefer concerns over service objects
+  - Keep controllers thin
+
 dependencies:
   - rails
   - sqlite3
   - tailwindcss-rails
   - stimulus-rails
+  - turbo-rails
   - geocoder
   - pwned
   - bcrypt
+  - authentication-zero
+  - country_select
+  - omniauth-github
