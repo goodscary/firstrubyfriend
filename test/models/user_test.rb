@@ -56,4 +56,29 @@ class UserTest < ActiveSupport::TestCase
     @user.lng = 181
     assert_not @user.valid?
   end
+
+  test "should generate prefixed ID with usr_ prefix" do
+    user = User.create!(email: "test@example.com", password: "SecurePassword123*&^")
+    assert user.prefix_id.start_with?("usr_")
+    assert user.prefix_id.length > 4
+  end
+
+  test "should find user by prefixed ID" do
+    user = User.create!(email: "test@example.com", password: "SecurePassword123*&^")
+    found_user = User.find_by_prefix_id(user.prefix_id)
+    assert_equal user, found_user
+  end
+
+  test "should return nil when finding by invalid prefixed ID" do
+    result = User.find_by_prefix_id("usr_invalid")
+    assert_nil result
+  end
+
+  test "prefixed ID should be stable for same record" do
+    user = User.create!(email: "test@example.com", password: "SecurePassword123*&^")
+    prefixed_id_1 = user.prefix_id
+    user.reload
+    prefixed_id_2 = user.prefix_id
+    assert_equal prefixed_id_1, prefixed_id_2
+  end
 end

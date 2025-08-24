@@ -45,4 +45,21 @@ class ApplicantQuestionnaireTest < ActiveSupport::TestCase
     @applicant_questionnaire.looking_for_code_mentorship = nil
     assert_not @applicant_questionnaire.valid?
   end
+
+  test "should generate prefixed ID with aqr_ prefix" do
+    @applicant_questionnaire.save!
+    assert @applicant_questionnaire.prefix_id.start_with?("aqr_")
+    assert @applicant_questionnaire.prefix_id.length > 4
+  end
+
+  test "should find applicant questionnaire by prefixed ID" do
+    @applicant_questionnaire.save!
+    found_questionnaire = ApplicantQuestionnaire.find_by_prefix_id(@applicant_questionnaire.prefix_id)
+    assert_equal @applicant_questionnaire, found_questionnaire
+  end
+
+  test "should return nil when finding by invalid prefixed ID" do
+    result = ApplicantQuestionnaire.find_by_prefix_id("aqr_invalid")
+    assert_nil result
+  end
 end

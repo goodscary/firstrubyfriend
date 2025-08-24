@@ -1,4 +1,6 @@
 class Event < ApplicationRecord
+  has_prefix_id :evt
+
   belongs_to :user
 
   before_create do

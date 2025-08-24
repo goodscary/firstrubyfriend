@@ -84,4 +84,21 @@ class EventTest < ActiveSupport::TestCase
     assert_equal original_user_agent, event.user_agent
     assert_equal original_ip_address, event.ip_address
   end
+
+  test "should generate prefixed ID with evt_ prefix" do
+    event = Event.create!(user: @user, action: "test_action")
+    assert event.prefix_id.start_with?("evt_")
+    assert event.prefix_id.length > 4
+  end
+
+  test "should find event by prefixed ID" do
+    event = Event.create!(user: @user, action: "test_action")
+    found_event = Event.find_by_prefix_id(event.prefix_id)
+    assert_equal event, found_event
+  end
+
+  test "should return nil when finding by invalid prefixed ID" do
+    result = Event.find_by_prefix_id("evt_invalid")
+    assert_nil result
+  end
 end

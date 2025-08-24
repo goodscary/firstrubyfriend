@@ -22,7 +22,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_215542) do
     t.string "work_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["respondent_id"], name: "index_applicant_questionnaires_on_respondent_id"
+    t.index ["respondent_id"], name: "index_applicant_questionnaires_on_respondent_id", unique: true
   end
 
   create_table "email_verification_tokens", force: :cascade do |t|

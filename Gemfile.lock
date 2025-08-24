@@ -76,7 +76,6 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.2)
     authentication-zero (4.0.3)
-    base32-crockford (0.1.0)
     base64 (0.2.0)
     bcrypt (3.1.20)
     benchmark (0.4.0)
@@ -157,6 +156,7 @@ GEM
       csv (>= 3.0.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    hashids (1.0.6)
     hashie (5.0.0)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
@@ -237,6 +237,9 @@ GEM
     parser (3.3.9.0)
       ast (~> 2.4.1)
       racc
+    prefixed_ids (1.8.1)
+      hashids (>= 1.0.0, < 2.0.0)
+      rails (>= 6.0.0)
     prism (1.4.0)
     propshaft (1.2.1)
       actionpack (>= 7.0.0)
@@ -389,13 +392,6 @@ GEM
       railties (>= 7.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    ulid (1.4.0)
-    ulid-rails (2.1.0)
-      activemodel (>= 5.2)
-      activerecord (>= 5.2)
-      activesupport (>= 5.2)
-      base32-crockford (~> 0.1)
-      ulid (~> 1.0)
     unaccent (0.4.0)
     unicode-display_width (2.6.0)
     uri (1.0.2)
@@ -435,6 +431,7 @@ DEPENDENCIES
   kredis
   omniauth-github
   omniauth-rails_csrf_protection
+  prefixed_ids
   propshaft
   puma
   pwned
@@ -452,7 +449,6 @@ DEPENDENCIES
   stimulus-rails
   tailwindcss-rails
   turbo-rails
-  ulid-rails
   web-console
 
 RUBY VERSION

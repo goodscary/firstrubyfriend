@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_prefix_id :usr
 
   has_secure_password
 

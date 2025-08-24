@@ -1,4 +1,5 @@
 class MentorQuestionnaire < ApplicationRecord
+  has_prefix_id :mqr
 
   belongs_to :respondent, class_name: "User", foreign_key: "respondent_id"
 

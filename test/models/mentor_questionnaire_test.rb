@@ -49,4 +49,21 @@ class MentorQuestionnaireTest < ActiveSupport::TestCase
       @mentor_questionnaire.save
     end
   end
+
+  test "should generate prefixed ID with mqr_ prefix" do
+    @mentor_questionnaire.save!
+    assert @mentor_questionnaire.prefix_id.start_with?("mqr_")
+    assert @mentor_questionnaire.prefix_id.length > 4
+  end
+
+  test "should find mentor questionnaire by prefixed ID" do
+    @mentor_questionnaire.save!
+    found_questionnaire = MentorQuestionnaire.find_by_prefix_id(@mentor_questionnaire.prefix_id)
+    assert_equal @mentor_questionnaire, found_questionnaire
+  end
+
+  test "should return nil when finding by invalid prefixed ID" do
+    result = MentorQuestionnaire.find_by_prefix_id("mqr_invalid")
+    assert_nil result
+  end
 end

@@ -47,4 +47,19 @@ class EmailVerificationTokenTest < ActiveSupport::TestCase
     assert_includes @user.email_verification_tokens, @token
     assert_includes @user.email_verification_tokens, second_token
   end
+
+  test "should generate prefixed ID with evt_ prefix" do
+    assert @token.prefix_id.start_with?("evt_")
+    assert @token.prefix_id.length > 4
+  end
+
+  test "should find email verification token by prefixed ID" do
+    found_token = EmailVerificationToken.find_by_prefix_id(@token.prefix_id)
+    assert_equal @token, found_token
+  end
+
+  test "should return nil when finding by invalid prefixed ID" do
+    result = EmailVerificationToken.find_by_prefix_id("evt_invalid")
+    assert_nil result
+  end
 end

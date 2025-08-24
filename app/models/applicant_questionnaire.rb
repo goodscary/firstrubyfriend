@@ -1,4 +1,5 @@
 class ApplicantQuestionnaire < ApplicationRecord
+  has_prefix_id :aqr
 
   belongs_to :respondent, class_name: "User", foreign_key: "respondent_id"
 

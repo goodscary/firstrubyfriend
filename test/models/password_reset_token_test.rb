@@ -54,4 +54,19 @@ class PasswordResetTokenTest < ActiveSupport::TestCase
     found_token = PasswordResetToken.find_signed(signed_id, purpose: :password_reset)
     assert_nil found_token
   end
+
+  test "should generate prefixed ID with prt_ prefix" do
+    assert @token.prefix_id.start_with?("prt_")
+    assert @token.prefix_id.length > 4
+  end
+
+  test "should find password reset token by prefixed ID" do
+    found_token = PasswordResetToken.find_by_prefix_id(@token.prefix_id)
+    assert_equal @token, found_token
+  end
+
+  test "should return nil when finding by invalid prefixed ID" do
+    result = PasswordResetToken.find_by_prefix_id("prt_invalid")
+    assert_nil result
+  end
 end

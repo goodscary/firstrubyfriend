@@ -85,4 +85,21 @@ class SessionTest < ActiveSupport::TestCase
     assert_nil session.user_agent
     assert_nil session.ip_address
   end
+
+  test "should generate prefixed ID with ses_ prefix" do
+    session = Session.create!(user: @user)
+    assert session.prefix_id.start_with?("ses_")
+    assert session.prefix_id.length > 4
+  end
+
+  test "should find session by prefixed ID" do
+    session = Session.create!(user: @user)
+    found_session = Session.find_by_prefix_id(session.prefix_id)
+    assert_equal session, found_session
+  end
+
+  test "should return nil when finding by invalid prefixed ID" do
+    result = Session.find_by_prefix_id("ses_invalid")
+    assert_nil result
+  end
 end

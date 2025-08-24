@@ -26,7 +26,7 @@ gem "turbo-rails" # Hotwire's SPA-like page accelerator [https://turbo.hotwired.
 gem "omniauth-github"
 # Provides a mitigation against CVE-2015-9284 [https://github.com/cookpad/omniauth-rails_csrf_protection]
 gem "omniauth-rails_csrf_protection"
-gem "ulid-rails"
+gem "prefixed_ids"
 
 group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

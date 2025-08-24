@@ -1,4 +1,6 @@
 class Session < ApplicationRecord
+  has_prefix_id :ses
+
   belongs_to :user
 
   kredis_flag :sudo, expires_in: 30.minutes
