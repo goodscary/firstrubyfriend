@@ -4,7 +4,7 @@ class MentorQuestionnaireTest < ActiveSupport::TestCase
   fixtures :users
 
   def setup
-    @user = users(:mentor)
+    @user = users(:basic)
     @mentor_questionnaire = @user.build_mentor_questionnaire(
       name: "Andy Croll",
       company_url: "https://example.com",

@@ -5,7 +5,7 @@ class ApplicantQuestionnaireTest < ActiveSupport::TestCase
 
   def setup
     @applicant_questionnaire = ApplicantQuestionnaire.new(
-      respondent: users(:applicant),
+      respondent: users(:unverified),
       name: "Pratik",
       work_url: "https://example.com",
       currently_writing_ruby: true,
