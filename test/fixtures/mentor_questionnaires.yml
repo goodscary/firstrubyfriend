@@ -1,37 +1,14 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-# one:
-#   respondent: one
-#   name: MyString
-#   email: MyString
-#   company_url: MyString
-#   year_started_ruby: 1
-#   country: MyString
-#   city: MyString
-#   twitter_handle: MyString
-#   github_handle: MyString
-#   personal_site_url: MyString
-#   previous_workplaces: MyText
-#   has_mentored_before: false
-#   mentoring_reason: MyText
-#   additional_info: MyText
-#   preferred_style_career: false
-#   preferred_style_code: false
-
-# two:
-#   respondent: two
-#   name: MyString
-#   email: MyString
-#   company_url: MyString
-#   year_started_ruby: 1
-#   country: MyString
-#   city: MyString
-#   twitter_handle: MyString
-#   github_handle: MyString
-#   personal_site_url: MyString
-#   previous_workplaces: MyText
-#   has_mentored_before: false
-#   mentoring_reason: MyText
-#   additional_info: MyText
-#   preferred_style_career: false
-#   preferred_style_code: false
+complete_questionnaire:
+  respondent: mentor
+  name: Test Mentor
+  company_url: https://example.com
+  twitter_handle: testmentor
+  github_handle: testmentor
+  personal_site_url: https://testmentor.dev
+  previous_workplaces: Previous Company Inc
+  has_mentored_before: true
+  mentoring_reason: I want to give back to the Ruby community
+  preferred_style_career: true
+  preferred_style_code: true

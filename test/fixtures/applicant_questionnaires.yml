@@ -1,0 +1,12 @@
+# Applicant questionnaire fixtures
+
+applicant_questionnaire:
+  respondent: applicant
+  name: "Test Applicant"
+  currently_writing_ruby: true
+  where_started_coding: "Online tutorials and bootcamp"
+  mentorship_goals: "Learn Rails development and best practices"
+  looking_for_career_mentorship: true
+  looking_for_code_mentorship: true
+  work_url: "https://github.com/testapplicant"
+  created_at: <%= 1.day.ago %>

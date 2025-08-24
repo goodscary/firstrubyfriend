@@ -1,0 +1,4 @@
+# Email verification token fixtures
+
+basic_token:
+  user: unverified
