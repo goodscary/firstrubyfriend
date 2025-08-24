@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     resource :password_reset, only: [:new, :edit, :create, :update]
   end
   resource :password, only: [:edit, :update]
-  resources :sessions, only: [:index, :show, :destroy]
+  resources :sessions, only: [:index, :destroy]
   namespace :sessions do
     resource :sudo, only: [:new, :create]
   end
