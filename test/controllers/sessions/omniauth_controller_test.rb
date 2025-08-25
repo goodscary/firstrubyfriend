@@ -33,7 +33,7 @@ class Sessions::OmniauthControllerTest < ActionDispatch::IntegrationTest
 
   test "should sign in existing user from github oauth" do
     # Use existing github_user fixture
-    existing_user = users(:github_user)
+    users(:github_user)
 
     post "/auth/github/callback"
 

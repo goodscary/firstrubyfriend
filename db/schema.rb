@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_07_215542) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_25_140656) do
   create_table "applicant_questionnaires", force: :cascade do |t|
     t.integer "respondent_id", null: false
     t.string "name", null: false
@@ -40,6 +40,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_215542) do
     t.index ["action"], name: "index_events_on_action"
     t.index ["user_id", "created_at"], name: "index_events_on_user_and_created_at"
     t.index ["user_id"], name: "index_events_on_user_id"
+  end
+
+  create_table "import_reports", force: :cascade do |t|
+    t.string "report_id", null: false
+    t.string "import_type"
+    t.string "status"
+    t.integer "imported_count", default: 0
+    t.integer "failed_count", default: 0
+    t.text "error_messages"
+    t.text "row_errors"
+    t.text "metadata"
+    t.datetime "started_at"
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["import_type"], name: "index_import_reports_on_import_type"
+    t.index ["report_id"], name: "index_import_reports_on_report_id", unique: true
+    t.index ["status"], name: "index_import_reports_on_status"
   end
 
   create_table "languages", force: :cascade do |t|
@@ -120,7 +138,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_215542) do
 
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
-    t.string "password_digest", null: false
+    t.string "password_digest"
     t.boolean "verified", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -139,6 +157,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_07_215542) do
     t.text "demographic_underrepresented_group_details"
     t.string "provider"
     t.string "uid"
+    t.string "first_name"
+    t.string "last_name"
+    t.text "questionnaire_responses", default: "{}"
     t.index ["available_as_mentor_at"], name: "index_users_on_available_as_mentor_at"
     t.index ["city"], name: "index_users_on_city"
     t.index ["country_code"], name: "index_users_on_country_code"

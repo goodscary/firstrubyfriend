@@ -1,7 +1,11 @@
 class User < ApplicationRecord
   has_prefix_id :usr
 
-  has_secure_password
+  attr_accessor :skip_password_validation
+
+  has_secure_password validations: false
+
+  serialize :questionnaire_responses, coder: JSON
 
   has_many :email_verification_tokens, dependent: :destroy
   has_many :password_reset_tokens, dependent: :destroy
@@ -25,8 +29,8 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :user_languages
 
   validates :email, presence: true, uniqueness: true, format: {with: URI::MailTo::EMAIL_REGEXP}
-  validates :password, allow_nil: true, length: {minimum: 12}
-  validates :password, not_pwned: {message: "might easily be guessed"}
+  validates :password, allow_nil: true, length: {minimum: 12}, unless: :skip_password_validation
+  validates :password, not_pwned: {message: "might easily be guessed"}, unless: :skip_password_validation
   validates :lat, numericality: {greater_than_or_equal_to: -90, less_than_or_equal_to: 90}, allow_nil: true
   validates :lng, numericality: {greater_than_or_equal_to: -180, less_than_or_equal_to: 180}, allow_nil: true
 
@@ -85,5 +89,13 @@ class User < ApplicationRecord
 
   def address
     [city, country_code].compact.join(", ")
+  end
+
+  def mentor?
+    available_as_mentor_at.present? || mentorship_roles_as_mentor.exists?
+  end
+
+  def applicant?
+    requested_mentorship_at.present? || mentorship_roles_as_applicant.exists?
   end
 end

@@ -6,7 +6,7 @@ class ApplicantQuestionnairesControllerTest < ActionDispatch::IntegrationTest
   def setup
     @user = users(:basic)
     sign_in_as(@user)
-    
+
     @applicant_questionnaire = ApplicantQuestionnaire.create!(
       respondent: @user,
       name: "Test Applicant",
@@ -29,7 +29,7 @@ class ApplicantQuestionnairesControllerTest < ActionDispatch::IntegrationTest
 
   test "should require authentication" do
     reset!
-    
+
     get edit_applicant_questionnaire_path(@applicant_questionnaire)
     assert_response :redirect
   end

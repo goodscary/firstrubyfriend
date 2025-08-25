@@ -30,7 +30,7 @@ class SessionTest < ActiveSupport::TestCase
     assert_difference "Event.count", 1 do
       Session.create!(user: @user)
     end
-    
+
     event = Event.last
     assert_equal @user, event.user
     assert_equal "signed_in", event.action
@@ -38,11 +38,11 @@ class SessionTest < ActiveSupport::TestCase
 
   test "should create signed_out event on destroy" do
     session = Session.create!(user: @user)
-    
+
     assert_difference "Event.count", 1 do
       session.destroy
     end
-    
+
     event = Event.last
     assert_equal @user, event.user
     assert_equal "signed_out", event.action
@@ -56,13 +56,13 @@ class SessionTest < ActiveSupport::TestCase
   test "sudo should expire after 30 minutes" do
     session = Session.create!(user: @user)
     assert session.sudo.marked?
-    
+
     # Kredis uses Redis TTL, so we can't easily test expiration in unit tests
     # This would require Redis running and time manipulation
   end
 
   test "should delete when user is destroyed" do
-    session = Session.create!(user: @user)
+    Session.create!(user: @user)
     assert_difference "Session.count", -1 do
       @user.destroy
     end
@@ -71,7 +71,7 @@ class SessionTest < ActiveSupport::TestCase
   test "can have multiple sessions for same user" do
     session1 = Session.create!(user: @user)
     session2 = Session.create!(user: @user)
-    
+
     assert_equal 2, @user.sessions.count
     assert_includes @user.sessions, session1
     assert_includes @user.sessions, session2
@@ -80,7 +80,7 @@ class SessionTest < ActiveSupport::TestCase
   test "should handle nil Current values" do
     Current.user_agent = nil
     Current.ip_address = nil
-    
+
     session = Session.create!(user: @user)
     assert_nil session.user_agent
     assert_nil session.ip_address

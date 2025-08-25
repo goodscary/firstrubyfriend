@@ -9,16 +9,16 @@ class DashboardsControllerTest < ActionDispatch::IntegrationTest
 
   test "should get dashboard when signed in" do
     sign_in_as(@user)
-    
+
     get dashboard_path
     assert_response :success
   end
 
   test "should load mentor questionnaire if exists" do
     sign_in_as(@user)
-    
+
     # Create a mentor questionnaire for the user
-    mentor_questionnaire = MentorQuestionnaire.create!(
+    MentorQuestionnaire.create!(
       respondent: @user,
       name: "Test Mentor",
       company_url: "https://example.com",
@@ -27,7 +27,7 @@ class DashboardsControllerTest < ActionDispatch::IntegrationTest
       preferred_style_career: true,
       preferred_style_code: false
     )
-    
+
     get dashboard_path
     assert_response :success
     # Just verify the page loads successfully when questionnaire exists
@@ -35,9 +35,9 @@ class DashboardsControllerTest < ActionDispatch::IntegrationTest
 
   test "should load applicant questionnaire if exists" do
     sign_in_as(@user)
-    
+
     # Create an applicant questionnaire for the user
-    applicant_questionnaire = ApplicantQuestionnaire.create!(
+    ApplicantQuestionnaire.create!(
       respondent: @user,
       name: "Test Applicant",
       currently_writing_ruby: true,
@@ -46,7 +46,7 @@ class DashboardsControllerTest < ActionDispatch::IntegrationTest
       looking_for_career_mentorship: true,
       looking_for_code_mentorship: false
     )
-    
+
     get dashboard_path
     assert_response :success
     # Just verify the page loads successfully when questionnaire exists
@@ -54,7 +54,7 @@ class DashboardsControllerTest < ActionDispatch::IntegrationTest
 
   test "should handle user with no questionnaires" do
     sign_in_as(@user)
-    
+
     get dashboard_path
     assert_response :success
     # Just verify the page loads successfully when no questionnaires exist
@@ -62,7 +62,7 @@ class DashboardsControllerTest < ActionDispatch::IntegrationTest
 
   test "should require authentication" do
     get dashboard_path
-    
+
     # Should redirect to sign in due to authenticate before_action
     assert_response :redirect
   end
