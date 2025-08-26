@@ -109,11 +109,11 @@ namespace :imports do
         else ""
         end
 
-        puts "#{status_color}#{report.report_id.ljust(20)}\e[0m" +
-          "#{report.import_type.ljust(10)}" +
-          "#{report.status.ljust(12)}" +
-          "#{(report.imported_count || 0).to_s.rjust(8)}" +
-          "#{(report.failed_count || 0).to_s.rjust(8)}" +
+        puts "#{status_color}#{report.report_id.ljust(20)}\e[0m" \
+          "#{report.import_type.ljust(10)}" \
+          "#{report.status.ljust(12)}" \
+          "#{(report.imported_count || 0).to_s.rjust(8)}" \
+          "#{(report.failed_count || 0).to_s.rjust(8)}" \
           "  #{report.created_at&.strftime("%Y-%m-%d %H:%M")}"
       end
     else
