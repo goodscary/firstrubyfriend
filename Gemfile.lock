@@ -213,6 +213,7 @@ GEM
     nokogiri (1.17.2)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    oaken (0.9.1)
     oauth2 (2.0.9)
       faraday (>= 0.17.3, < 3.0)
       jwt (>= 1.0, < 3.0)
@@ -429,6 +430,7 @@ DEPENDENCIES
   geocoder
   importmap-rails
   kredis
+  oaken
   omniauth-github
   omniauth-rails_csrf_protection
   prefixed_ids

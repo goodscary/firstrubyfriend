@@ -1,10 +1,8 @@
 require "test_helper"
 
 class PasswordResetTokenTest < ActiveSupport::TestCase
-  fixtures :users
-
   def setup
-    @user = users(:basic)
+    @user = users.basic
     @token = PasswordResetToken.create!(user: @user)
   end
 

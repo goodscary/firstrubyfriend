@@ -1,10 +1,8 @@
 require "test_helper"
 
 class MentorQuestionnairesControllerTest < ActionDispatch::IntegrationTest
-  fixtures :users, :languages
-
   def setup
-    @user = sign_in_as(users(:basic))
+    @user = sign_in_as(users.basic)
   end
 
   test "should get new" do
@@ -25,7 +23,7 @@ class MentorQuestionnairesControllerTest < ActionDispatch::IntegrationTest
         },
         user: {
           demographic_year_started_ruby: 2005,
-          language: languages(:english)
+          language: languages.english
         }
       }
     end

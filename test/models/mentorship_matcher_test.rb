@@ -1,10 +1,8 @@
 require "test_helper"
 
 class MentorshipMatcherTest < ActiveSupport::TestCase
-  fixtures :languages
-
   def setup
-    @english = languages(:english)
+    @english = languages.english
     @french = Language.create!(iso639_alpha3: "fra", iso639_alpha2: "fr", english_name: "French", french_name: "français", local_name: "Français")
     @hindi = Language.create!(iso639_alpha3: "hin", iso639_alpha2: "hi", english_name: "Hindi", french_name: "hindi", local_name: "हिन्दी")
     @applicant = setup_applicant

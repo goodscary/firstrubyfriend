@@ -1,10 +1,8 @@
 require "test_helper"
 
 class Authentications::EventsControllerTest < ActionDispatch::IntegrationTest
-  fixtures :users
-
   def setup
-    @user = users(:basic)
+    @user = users.basic
   end
 
   test "should get index when signed in" do
@@ -31,7 +29,7 @@ class Authentications::EventsControllerTest < ActionDispatch::IntegrationTest
 
   test "should only show current user events" do
     sign_in_as(@user)
-    other_user = users(:mentor)
+    other_user = users.mentor
 
     # Create events for both users
     Event.create!(user: @user, action: "signed_in")

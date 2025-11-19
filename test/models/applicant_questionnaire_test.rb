@@ -1,11 +1,9 @@
 require "test_helper"
 
 class ApplicantQuestionnaireTest < ActiveSupport::TestCase
-  fixtures :users
-
   def setup
     @applicant_questionnaire = ApplicantQuestionnaire.new(
-      respondent: users(:applicant),
+      respondent: users.applicant,
       name: "Pratik",
       work_url: "https://example.com",
       currently_writing_ruby: true,

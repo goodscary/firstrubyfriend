@@ -1,7 +1,6 @@
 require "test_helper"
 
 class Sessions::OmniauthControllerTest < ActionDispatch::IntegrationTest
-  fixtures :users
   def setup
     # Mock OmniAuth auth hash
     OmniAuth.config.test_mode = true
@@ -33,7 +32,7 @@ class Sessions::OmniauthControllerTest < ActionDispatch::IntegrationTest
 
   test "should sign in existing user from github oauth" do
     # Use existing github_user fixture
-    users(:github_user)
+    users.github_user
 
     post "/auth/github/callback"
 
@@ -44,7 +43,7 @@ class Sessions::OmniauthControllerTest < ActionDispatch::IntegrationTest
 
   test "should update existing user without oauth to add oauth" do
     # Use existing user without OAuth - just add email to mock
-    existing_user = users(:basic)
+    existing_user = users.basic
     OmniAuth.config.mock_auth[:github].info.email = existing_user.email
 
     post "/auth/github/callback"

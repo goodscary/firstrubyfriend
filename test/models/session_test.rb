@@ -1,10 +1,8 @@
 require "test_helper"
 
 class SessionTest < ActiveSupport::TestCase
-  fixtures :users
-
   def setup
-    @user = users(:basic)
+    @user = users.basic
     Current.user_agent = "Mozilla/5.0 Test Browser"
     Current.ip_address = "127.0.0.1"
   end

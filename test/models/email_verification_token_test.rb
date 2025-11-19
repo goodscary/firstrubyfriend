@@ -1,10 +1,8 @@
 require "test_helper"
 
 class EmailVerificationTokenTest < ActiveSupport::TestCase
-  fixtures :users
-
   def setup
-    @user = users(:basic)
+    @user = users.basic
     @token = EmailVerificationToken.create!(user: @user)
   end
 

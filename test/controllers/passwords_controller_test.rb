@@ -1,10 +1,8 @@
 require "test_helper"
 
 class PasswordsControllerTest < ActionDispatch::IntegrationTest
-  fixtures :users
-
   setup do
-    @user = sign_in_as(users(:basic))
+    @user = sign_in_as(users.basic)
   end
 
   test "should get edit" do

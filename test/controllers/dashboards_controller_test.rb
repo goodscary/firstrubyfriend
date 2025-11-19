@@ -1,10 +1,8 @@
 require "test_helper"
 
 class DashboardsControllerTest < ActionDispatch::IntegrationTest
-  fixtures :users
-
   def setup
-    @user = users(:basic)
+    @user = users.basic
   end
 
   test "should get dashboard when signed in" do

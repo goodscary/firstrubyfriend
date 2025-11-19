@@ -1,10 +1,8 @@
 require "test_helper"
 
 class ApplicantQuestionnairesControllerTest < ActionDispatch::IntegrationTest
-  fixtures :users
-
   def setup
-    @user = users(:basic)
+    @user = users.basic
     sign_in_as(@user)
 
     @applicant_questionnaire = ApplicantQuestionnaire.create!(

@@ -1,10 +1,8 @@
 require "test_helper"
 
 class EventTest < ActiveSupport::TestCase
-  fixtures :users
-
   def setup
-    @user = users(:basic)
+    @user = users.basic
     Current.user_agent = "Mozilla/5.0 Test Browser"
     Current.ip_address = "192.168.1.1"
   end

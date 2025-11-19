@@ -45,6 +45,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "simplecov", require: false
+  gem "oaken" # Ruby-based test fixtures [https://github.com/erlingur/oaken]
   # gem "webdrivers" # removing this because it's causing issues with the CI -> https://github.com/titusfortner/webdrivers/issues/247#issuecomment-1641879165
 end
 

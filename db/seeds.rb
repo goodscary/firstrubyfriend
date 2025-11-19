@@ -6,6 +6,12 @@
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
 
+# Load test seeds from db/seeds/test/ directory for test environment
+if Rails.env.test?
+  Oaken.seed :seeds
+  return
+end
+
 require "faker"
 
 common_languages = %w[English Spanish French Portuguese Russian Chinese Hindi Arabic German Japanese]
