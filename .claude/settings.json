@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -n \"$CLAUDE_CODE_REMOTE\" ]; then rbenv install 3.4.4 --skip-existing && rbenv local 3.4.4 && bundle install && bin/rails db:prepare; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
