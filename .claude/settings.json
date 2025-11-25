@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "if [ -n \"$CLAUDE_CODE_REMOTE\" ]; then rbenv install 3.4.4 --skip-existing && rbenv local 3.4.4 && bundle install && bin/rails db:prepare; fi"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
           }
         ]
       }
