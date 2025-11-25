@@ -1,5 +1,5 @@
 # SimpleCov must be started before any of your application code is loaded
-if ENV["RAILS_ENV"] == "test"
+if ENV["COVERAGE"] || ENV["CI"]
   require "simplecov"
   SimpleCov.start "rails" do
     # Add coverage groups
@@ -17,7 +17,10 @@ if ENV["RAILS_ENV"] == "test"
     add_filter "/db/"
 
     # Set minimum coverage percentage
-    minimum_coverage 80  # Commented out temporarily to analyze coverage
+    minimum_coverage 80
+
+    # Enable branch coverage
+    enable_coverage :branch
 
     # Use multiple formatters
     if ENV["CI"]
@@ -36,6 +39,17 @@ require_relative "support/geocoder_stubs"
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
   parallelize(workers: :number_of_processors)
+
+  # Combine SimpleCov results from parallelized tests
+  if ENV["COVERAGE"] || ENV["CI"]
+    parallelize_setup do |worker|
+      SimpleCov.command_name "#{SimpleCov.command_name}-#{worker}"
+    end
+
+    parallelize_teardown do |worker|
+      SimpleCov.result
+    end
+  end
 
   # Setup Oaken test fixtures
   include Oaken.loader.test_setup
