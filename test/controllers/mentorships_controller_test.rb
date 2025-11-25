@@ -5,6 +5,27 @@ class MentorshipsControllerTest < ActionDispatch::IntegrationTest
     @user = users.basic
     @mentor = users.mentor
     @applicant = users.applicant
+
+    # Create questionnaires for the seed mentorship to display properly
+    MentorQuestionnaire.create!(
+      respondent: @mentor,
+      name: "Test Mentor",
+      company_url: "https://example.com",
+      has_mentored_before: true,
+      mentoring_reason: "To help others",
+      preferred_style_career: true,
+      preferred_style_code: true
+    )
+
+    ApplicantQuestionnaire.create!(
+      respondent: @applicant,
+      name: "Test Applicant",
+      currently_writing_ruby: true,
+      where_started_coding: "Self-taught",
+      mentorship_goals: "Learn Ruby",
+      looking_for_career_mentorship: true,
+      looking_for_code_mentorship: true
+    )
   end
 
   test "should require authentication" do
@@ -35,28 +56,7 @@ class MentorshipsControllerTest < ActionDispatch::IntegrationTest
   test "should display mentorship data when mentorships exist" do
     sign_in_as(@user)
 
-    # Create questionnaires for mentor and applicant
-    MentorQuestionnaire.create!(
-      respondent: @mentor,
-      name: "Test Mentor",
-      company_url: "https://example.com",
-      has_mentored_before: true,
-      mentoring_reason: "To help others",
-      preferred_style_career: true,
-      preferred_style_code: true
-    )
-
-    ApplicantQuestionnaire.create!(
-      respondent: @applicant,
-      name: "Test Applicant",
-      currently_writing_ruby: true,
-      where_started_coding: "Self-taught",
-      mentorship_goals: "Learn Ruby",
-      looking_for_career_mentorship: true,
-      looking_for_code_mentorship: true
-    )
-
-    # Create a mentorship (or use the seed one)
+    # Use the seed mentorship (questionnaires created in setup)
     mentorship = mentorships.active_no_emails_sent
 
     get mentorships_url
