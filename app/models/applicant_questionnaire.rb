@@ -10,4 +10,12 @@ class ApplicantQuestionnaire < ApplicationRecord
   validates :mentorship_goals, presence: true
   validates :looking_for_career_mentorship, inclusion: [true, false]
   validates :looking_for_code_mentorship, inclusion: [true, false]
+
+  after_create_commit :subscribe_to_mailcoach
+
+  private
+
+  def subscribe_to_mailcoach
+    SubscribeToMailcoachJob.perform_later(respondent_id, "applicant")
+  end
 end

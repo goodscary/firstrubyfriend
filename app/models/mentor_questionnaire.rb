@@ -8,4 +8,12 @@ class MentorQuestionnaire < ApplicationRecord
   validates :company_url, presence: true
   validates :has_mentored_before, inclusion: [true, false]
   validates :mentoring_reason, presence: true
+
+  after_create_commit :subscribe_to_mailcoach
+
+  private
+
+  def subscribe_to_mailcoach
+    SubscribeToMailcoachJob.perform_later(respondent_id, "mentor")
+  end
 end
