@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include Matchable
+
   has_prefix_id :usr
 
   attr_accessor :skip_password_validation
@@ -78,13 +80,13 @@ class User < ApplicationRecord
     includes(:languages, :mentor_questionnaire)
       .joins(:mentor_questionnaire)
       .where.not(available_as_mentor_at: nil)
-      .where.not(id: Mentorship.active.select(:mentor_id))
+      .where.not(id: Mentorship.active_or_pending.select(:mentor_id))
   }
 
   scope :unmatched_applicants, -> {
     includes(:languages, :applicant_questionnaire)
       .joins(:applicant_questionnaire)
-      .where.not(id: Mentorship.active.select(:applicant_id))
+      .where.not(id: Mentorship.active_or_pending.select(:applicant_id))
   }
 
   def address

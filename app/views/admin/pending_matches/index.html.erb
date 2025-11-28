@@ -1,0 +1,97 @@
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-4xl py-8">
+    <div class="flex justify-between items-center">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900">Pending Matches</h2>
+        <p class="mt-2 text-gray-600"><%= @pending_matches.count %> matches awaiting approval.</p>
+      </div>
+      <div class="flex gap-3">
+        <%= button_to "Run Auto-Match", auto_match_admin_pending_matches_path,
+            method: :post,
+            class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500",
+            data: { turbo_confirm: "This will create pending matches for all unmatched applicants. Continue?" } %>
+        <% if @pending_matches.any? %>
+          <%= button_to "Approve All", approve_all_admin_pending_matches_path,
+              method: :post,
+              class: "inline-flex items-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500",
+              data: { turbo_confirm: "Approve all #{@pending_matches.count} pending matches?" } %>
+        <% end %>
+      </div>
+    </div>
+
+    <% if @pending_matches.any? %>
+      <div class="mt-6 space-y-4">
+        <% @pending_matches.each do |mentorship| %>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+            <div class="flex justify-between items-start">
+              <div class="flex-1 grid grid-cols-2 gap-6">
+                <div>
+                  <h4 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Applicant</h4>
+                  <p class="mt-1 text-lg font-semibold text-gray-900">
+                    <%= mentorship.applicant.applicant_questionnaire&.name || mentorship.applicant.email %>
+                  </p>
+                  <p class="text-sm text-gray-500"><%= mentorship.applicant.email %></p>
+                  <% if mentorship.applicant.city.present? %>
+                    <p class="text-sm text-gray-500">
+                      <%= mentorship.applicant.city %>, <%= mentorship.applicant.country_code %>
+                    </p>
+                  <% end %>
+                  <div class="mt-2 flex gap-2">
+                    <% if mentorship.applicant.applicant_questionnaire&.looking_for_career_mentorship %>
+                      <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">Career</span>
+                    <% end %>
+                    <% if mentorship.applicant.applicant_questionnaire&.looking_for_code_mentorship %>
+                      <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-700/10">Code</span>
+                    <% end %>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Mentor</h4>
+                  <p class="mt-1 text-lg font-semibold text-gray-900">
+                    <%= mentorship.mentor.mentor_questionnaire&.name || mentorship.mentor.email %>
+                  </p>
+                  <p class="text-sm text-gray-500"><%= mentorship.mentor.email %></p>
+                  <% if mentorship.mentor.city.present? %>
+                    <p class="text-sm text-gray-500">
+                      <%= mentorship.mentor.city %>, <%= mentorship.mentor.country_code %>
+                    </p>
+                  <% end %>
+                  <div class="mt-2 flex gap-2">
+                    <% if mentorship.mentor.mentor_questionnaire&.preferred_style_career %>
+                      <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">Career</span>
+                    <% end %>
+                    <% if mentorship.mentor.mentor_questionnaire&.preferred_style_code %>
+                      <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-700/10">Code</span>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ml-6 flex gap-2">
+                <%= button_to "Approve", admin_match_path(mentorship),
+                    method: :post,
+                    class: "inline-flex items-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500" %>
+                <%= button_to "Reject", admin_match_path(mentorship),
+                    method: :delete,
+                    class: "inline-flex items-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500",
+                    data: { turbo_confirm: "Are you sure you want to reject this match?" } %>
+              </div>
+            </div>
+
+            <p class="mt-4 text-xs text-gray-400">
+              Created <%= time_ago_in_words(mentorship.created_at) %> ago
+            </p>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="mt-8 text-center py-12 bg-gray-50 rounded-lg">
+        <p class="text-gray-500">No pending matches.</p>
+        <p class="mt-2 text-sm text-gray-400">
+          Click "Run Auto-Match" to generate matches for unmatched applicants.
+        </p>
+      </div>
+    <% end %>
+  </div>
+</div>
