@@ -4,9 +4,11 @@ class Mentorship < ApplicationRecord
   belongs_to :mentor, class_name: "User"
   belongs_to :applicant, class_name: "User"
 
-  enum :standing, %w[active ended].index_by(&:itself)
+  enum :standing, %w[pending_approval active ended].index_by(&:itself)
 
+  scope :pending_approval, -> { where(standing: :pending_approval) }
   scope :active, -> { where(standing: :active) }
+  scope :active_or_pending, -> { where(standing: [:pending_approval, :active]) }
 
   validates :standing, presence: true
   validate :mentor_and_applicant_cannot_be_same

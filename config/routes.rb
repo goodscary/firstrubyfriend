@@ -29,5 +29,18 @@ Rails.application.routes.draw do
   resources :mentorships, only: [:index]
   resources :matching, only: [:index, :show, :create]
 
+  namespace :admin do
+    resources :pending_matches, only: [:index] do
+      member do
+        post :approve
+        post :reject
+      end
+      collection do
+        post :auto_match
+        post :approve_all
+      end
+    end
+  end
+
   root "home#show"
 end
