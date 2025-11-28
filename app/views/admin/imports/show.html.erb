@@ -1,0 +1,110 @@
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-4xl py-8">
+    <div class="mb-6">
+      <%= link_to "&larr; Back to Import Reports".html_safe, admin_imports_path, class: "text-sm text-gray-500 hover:text-gray-700" %>
+    </div>
+
+    <div class="bg-white shadow overflow-hidden rounded-lg">
+      <div class="px-4 py-5 sm:px-6 flex justify-between items-start">
+        <div>
+          <h3 class="text-lg font-medium leading-6 text-gray-900">Import Report</h3>
+          <p class="mt-1 max-w-2xl text-sm text-gray-500"><%= @import_report.report_id %></p>
+        </div>
+        <% case @import_report.status %>
+        <% when "completed" %>
+          <span class="inline-flex items-center rounded-md bg-green-50 px-3 py-2 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Completed</span>
+        <% when "failed" %>
+          <span class="inline-flex items-center rounded-md bg-red-50 px-3 py-2 text-sm font-medium text-red-700 ring-1 ring-inset ring-red-600/10">Failed</span>
+        <% when "processing" %>
+          <span class="inline-flex items-center rounded-md bg-yellow-50 px-3 py-2 text-sm font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">Processing</span>
+        <% else %>
+          <span class="inline-flex items-center rounded-md bg-gray-50 px-3 py-2 text-sm font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10"><%= @import_report.status %></span>
+        <% end %>
+      </div>
+
+      <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+        <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+          <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Import Type</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= @import_report.import_type.capitalize %></dd>
+          </div>
+
+          <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Duration</dt>
+            <dd class="mt-1 text-sm text-gray-900">
+              <% if @import_report.duration %>
+                <%= number_with_precision(@import_report.duration, precision: 2) %> seconds
+              <% else %>
+                -
+              <% end %>
+            </dd>
+          </div>
+
+          <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Records Imported</dt>
+            <dd class="mt-1 text-sm text-gray-900 text-green-600 font-semibold"><%= @import_report.imported_count %></dd>
+          </div>
+
+          <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Records Failed</dt>
+            <dd class="mt-1 text-sm text-gray-900 text-red-600 font-semibold"><%= @import_report.failed_count %></dd>
+          </div>
+
+          <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Started At</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= @import_report.started_at&.strftime("%Y-%m-%d %H:%M:%S") || "-" %></dd>
+          </div>
+
+          <div class="sm:col-span-1">
+            <dt class="text-sm font-medium text-gray-500">Completed At</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= @import_report.completed_at&.strftime("%Y-%m-%d %H:%M:%S") || "-" %></dd>
+          </div>
+        </dl>
+      </div>
+
+      <% if @import_report.import_errors.present? && @import_report.import_errors.any? %>
+        <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+          <h4 class="text-sm font-medium text-gray-900">General Errors</h4>
+          <div class="mt-2 bg-red-50 rounded-md p-4">
+            <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
+              <% @import_report.import_errors.each do |error| %>
+                <li><%= error %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @import_report.row_errors.present? && @import_report.row_errors.any? %>
+        <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
+          <h4 class="text-sm font-medium text-gray-900">Row Errors (<%= @import_report.row_errors.size %>)</h4>
+          <div class="mt-2 overflow-hidden rounded-md border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Row</th>
+                  <th scope="col" class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Error</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <% @import_report.row_errors.first(50).each do |row_error| %>
+                  <tr>
+                    <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-500"><%= row_error["row"] %></td>
+                    <td class="px-3 py-2 text-sm text-red-600"><%= row_error["error"] %></td>
+                  </tr>
+                <% end %>
+                <% if @import_report.row_errors.size > 50 %>
+                  <tr>
+                    <td colspan="2" class="px-3 py-2 text-sm text-gray-500 text-center">
+                      ... and <%= @import_report.row_errors.size - 50 %> more errors
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

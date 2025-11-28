@@ -29,5 +29,9 @@ Rails.application.routes.draw do
   resources :mentorships, only: [:index]
   resources :matching, only: [:index, :show, :create]
 
+  namespace :admin do
+    resources :imports, only: [:index, :new, :create, :show]
+  end
+
   root "home#show"
 end
