@@ -16,6 +16,6 @@ module User::Matchable
   private
 
   def previously_rejected_mentor_ids
-    Mentorship.where(applicant: self, standing: :ended).pluck(:mentor_id)
+    Mentorship.where(applicant: self, standing: :rejected).pluck(:mentor_id)
   end
 end

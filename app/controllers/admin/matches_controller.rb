@@ -15,7 +15,7 @@ module Admin
       @mentorship = Mentorship.find(params[:id])
 
       if @mentorship.pending?
-        @mentorship.update!(standing: "ended")
+        @mentorship.update!(standing: "rejected")
         redirect_to admin_pending_matches_path, notice: "Match rejected."
       else
         redirect_to admin_pending_matches_path, alert: "Match is not pending."

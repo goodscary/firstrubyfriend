@@ -6,7 +6,7 @@ class Mentorship < ApplicationRecord
   belongs_to :mentor, class_name: "User"
   belongs_to :applicant, class_name: "User"
 
-  enum :standing, %w[pending active ended].index_by(&:itself)
+  enum :standing, %w[pending active ended rejected].index_by(&:itself)
 
   scope :pending, -> { where(standing: :pending) }
   scope :active, -> { where(standing: :active) }
