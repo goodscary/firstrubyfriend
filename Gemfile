@@ -46,6 +46,7 @@ group :test do
   gem "selenium-webdriver"
   gem "simplecov", require: false
   gem "oaken" # Ruby-based test fixtures [https://github.com/erlingur/oaken]
+  gem "webmock" # Mock HTTP requests in tests [https://github.com/bblimke/webmock]
   # gem "webdrivers" # removing this because it's causing issues with the CI -> https://github.com/titusfortner/webdrivers/issues/247#issuecomment-1641879165
 end
 
