@@ -6,12 +6,12 @@
         <p class="mt-2 text-gray-600"><%= @pending_matches.count %> matches awaiting approval.</p>
       </div>
       <div class="flex gap-3">
-        <%= button_to "Run Auto-Match", auto_match_admin_pending_matches_path,
+        <%= button_to "Run Auto-Match", admin_auto_matches_path,
             method: :post,
             class: "inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500",
             data: { turbo_confirm: "This will create pending matches for all unmatched applicants. Continue?" } %>
         <% if @pending_matches.any? %>
-          <%= button_to "Approve All", approve_all_admin_pending_matches_path,
+          <%= button_to "Approve All", admin_bulk_approvals_path,
               method: :post,
               class: "inline-flex items-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500",
               data: { turbo_confirm: "Approve all #{@pending_matches.count} pending matches?" } %>
