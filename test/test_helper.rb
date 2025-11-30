@@ -34,11 +34,17 @@ end
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
+require "webmock/minitest"
 require_relative "support/geocoder_stubs"
 
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
   parallelize(workers: :number_of_processors)
+
+  # Stub external APIs for all tests
+  setup do
+    stub_request(:any, /pwnedpasswords\.com/).to_return(status: 200, body: "")
+  end
 
   # Combine SimpleCov results from parallelized tests
   if ENV["COVERAGE"] || ENV["CI"]
