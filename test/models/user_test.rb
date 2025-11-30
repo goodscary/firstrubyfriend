@@ -225,4 +225,26 @@ class UserTest < ActiveSupport::TestCase
       assert_nil @user.active_mentorship
     end
   end
+
+  class MailcoachSubscription < UserTest
+    include ActiveJob::TestHelper
+
+    test "enqueues mailcoach subscription job after create" do
+      assert_enqueued_with(job: User::SubscribeToMailcoachJob) do
+        User.create!(email: "newuser@example.com", password: "SecurePassword123*&^")
+      end
+    end
+
+    test "subscribe_to_mailcoach handles missing credentials gracefully" do
+      # When credentials are missing, MailcoachClient.new raises MissingCredentials
+      # The subscribe_to_mailcoach method should rescue this and log a warning
+      assert_nothing_raised do
+        @user.subscribe_to_mailcoach
+      end
+    end
+
+    test "responds to subscribe_to_mailcoach_later" do
+      assert_respond_to @user, :subscribe_to_mailcoach_later
+    end
+  end
 end

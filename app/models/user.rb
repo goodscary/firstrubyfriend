@@ -1,7 +1,10 @@
 class User < ApplicationRecord
   include Matchable
+  extend ActiveJob::Performs
 
   has_prefix_id :usr
+
+  performs :subscribe_to_mailcoach
 
   attr_accessor :skip_password_validation
 
@@ -62,6 +65,8 @@ class User < ApplicationRecord
     events.create! action: "email_verified"
   end
 
+  after_create_commit :subscribe_to_mailcoach_later
+
   geocoded_by :address, latitude: :lat, longitude: :lng
 
   after_validation :geocode, if: ->(obj) { obj.city_changed? || obj.country_code_changed? }
@@ -99,5 +104,13 @@ class User < ApplicationRecord
 
   def applicant?
     requested_mentorship_at.present? || mentorship_roles_as_applicant.exists?
+  end
+
+  def subscribe_to_mailcoach
+    MailcoachClient.new.add(email)
+  rescue MailcoachClient::MissingCredentials
+    Rails.logger.warn "Mailcoach credentials not configured, skipping subscription for #{email}"
+  rescue MailcoachClient::Error => e
+    Rails.logger.error "Failed to subscribe #{email} to Mailcoach: #{e.message}"
   end
 end
