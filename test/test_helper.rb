@@ -37,6 +37,9 @@ require "rails/test_help"
 require "webmock/minitest"
 require_relative "support/geocoder_stubs"
 
+# Allow localhost connections for Selenium WebDriver in system tests
+WebMock.disable_net_connect!(allow_localhost: true)
+
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
   parallelize(workers: :number_of_processors)
