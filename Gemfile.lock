@@ -47,6 +47,8 @@ GEM
       erubi (~> 1.11)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.6)
+    active_job-performs (0.4.0)
+      activejob (>= 6.1)
     activejob (8.1.1)
       activesupport (= 8.1.1)
       globalid (>= 0.3.6)
@@ -457,6 +459,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  active_job-performs
   authentication-zero
   bcrypt
   bootsnap
