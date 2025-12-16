@@ -1,4 +1,5 @@
 require "test_helper"
+require "csv"
 
 class MentorshipTest < ActiveSupport::TestCase
   def setup
@@ -84,6 +85,310 @@ class MentorshipTest < ActiveSupport::TestCase
     test "delegates to MentorshipMatcher" do
       result = Mentorship.find_matches_for_applicant(@applicant)
       assert_kind_of Array, result
+    end
+  end
+
+  class ImportMatchesFromCsv < MentorshipTest
+    setup do
+      @test_mentor1 = User.create!(
+        email: "import_mentor1@example.com",
+        first_name: "Mentor",
+        last_name: "One",
+        skip_password_validation: true,
+        available_as_mentor_at: 1.month.ago
+      )
+
+      @test_mentor2 = User.create!(
+        email: "import_mentor2@example.com",
+        first_name: "Mentor",
+        last_name: "Two",
+        skip_password_validation: true,
+        available_as_mentor_at: 1.month.ago
+      )
+
+      @test_applicant1 = User.create!(
+        email: "import_applicant1@example.com",
+        first_name: "Applicant",
+        last_name: "One",
+        skip_password_validation: true,
+        requested_mentorship_at: 1.month.ago
+      )
+
+      @test_applicant2 = User.create!(
+        email: "import_applicant2@example.com",
+        first_name: "Applicant",
+        last_name: "Two",
+        skip_password_validation: true,
+        requested_mentorship_at: 1.month.ago
+      )
+
+      @valid_csv = CSV.generate do |csv|
+        csv << ["Applicant Email", "Applicant Country", "Applicant City", "Mentor Email"]
+        csv << ["import_applicant1@example.com", "USA", "Portland", "import_mentor1@example.com"]
+        csv << ["import_applicant2@example.com", "Canada", "Toronto", "import_mentor2@example.com"]
+      end
+
+      @reassignment_csv = CSV.generate do |csv|
+        csv << ["Applicant Email", "Applicant Country", "Applicant City", "Mentor Email"]
+        csv << ["import_applicant1@example.com", "USA", "Portland", "import_mentor1@example.com"]
+        csv << ["import_applicant1@example.com", "USA", "Portland", "import_mentor2@example.com"]
+      end
+
+      @orphaned_match_csv = CSV.generate do |csv|
+        csv << ["Applicant Email", "Applicant Country", "Applicant City", "Mentor Email"]
+        csv << ["nonexistent@example.com", "USA", "Portland", "import_mentor1@example.com"]
+        csv << ["import_applicant1@example.com", "USA", "Portland", "nonexistent@example.com"]
+      end
+    end
+
+    test "imports matches successfully" do
+      assert_difference "Mentorship.count", 2 do
+        result = Mentorship.import_matches_from_csv(@valid_csv)
+        assert result.success?
+        assert_equal 2, result.imported_count
+      end
+
+      mentorship1 = Mentorship.find_by(mentor: @test_mentor1, applicant: @test_applicant1)
+      assert_not_nil mentorship1
+      assert_equal "active", mentorship1.standing
+
+      mentorship2 = Mentorship.find_by(mentor: @test_mentor2, applicant: @test_applicant2)
+      assert_not_nil mentorship2
+      assert_equal "active", mentorship2.standing
+    end
+
+    test "handles match reassignments by voiding previous match" do
+      assert_difference "Mentorship.count", 2 do
+        result = Mentorship.import_matches_from_csv(@reassignment_csv)
+        assert_equal 2, result.imported_count
+      end
+
+      old_mentorship = Mentorship.find_by(mentor: @test_mentor1, applicant: @test_applicant1)
+      assert_equal "ended", old_mentorship.standing
+
+      new_mentorship = Mentorship.find_by(mentor: @test_mentor2, applicant: @test_applicant1)
+      assert_equal "active", new_mentorship.standing
+    end
+
+    test "reports orphaned matches" do
+      result = Mentorship.import_matches_from_csv(@orphaned_match_csv)
+
+      assert_not result.success?
+      assert_equal 0, result.imported_count
+      assert_equal 2, result.failed_count
+
+      assert result.row_errors.any? { |e| e[:error].include?("Applicant not found: nonexistent@example.com") }
+      assert result.row_errors.any? { |e| e[:error].include?("Mentor not found: nonexistent@example.com") }
+    end
+
+    test "validates required headers" do
+      invalid_csv = CSV.generate do |csv|
+        csv << ["Email", "Mentor"]
+        csv << ["test@example.com", "mentor@example.com"]
+      end
+
+      result = Mentorship.import_matches_from_csv(invalid_csv)
+
+      assert_not result.success?
+      assert result.errors.any? { |e| e.include?("Missing required headers") }
+    end
+
+    test "prevents duplicate active matches" do
+      Mentorship.create!(
+        mentor: @test_mentor1,
+        applicant: @test_applicant1,
+        standing: "active"
+      )
+
+      result = Mentorship.import_matches_from_csv(@valid_csv)
+
+      assert_equal 1, result.imported_count
+      assert_equal 1, result.failed_count
+      assert result.row_errors.any? { |e| e[:error].include?("already has an active mentorship") }
+    end
+
+    test "updates applicant location from match data" do
+      csv_with_location = CSV.generate do |csv|
+        csv << ["Applicant Email", "Applicant Country", "Applicant City", "Mentor Email"]
+        csv << ["import_applicant1@example.com", "US", "Seattle", "import_mentor1@example.com"]
+      end
+
+      Mentorship.import_matches_from_csv(csv_with_location)
+
+      @test_applicant1.reload
+      assert_equal "Seattle", @test_applicant1.city
+      assert_equal "US", @test_applicant1.country_code
+    end
+
+    test "handles case-insensitive email matching" do
+      csv_with_mixed_case = CSV.generate do |csv|
+        csv << ["Applicant Email", "Applicant Country", "Applicant City", "Mentor Email"]
+        csv << ["IMPORT_APPLICANT1@EXAMPLE.COM", "USA", "Portland", "IMPORT_MENTOR1@EXAMPLE.COM"]
+      end
+
+      assert_difference "Mentorship.count", 1 do
+        result = Mentorship.import_matches_from_csv(csv_with_mixed_case)
+        assert result.success?
+      end
+
+      mentorship = Mentorship.find_by(mentor: @test_mentor1, applicant: @test_applicant1)
+      assert_not_nil mentorship
+    end
+
+    test "uses transaction for rollback on failure" do
+      csv_with_error = CSV.generate do |csv|
+        csv << ["Applicant Email", "Applicant Country", "Applicant City", "Mentor Email"]
+        csv << ["import_applicant1@example.com", "USA", "Portland", "import_mentor1@example.com"]
+        csv << ["nonexistent@example.com", "USA", "Portland", "import_mentor2@example.com"]
+      end
+
+      assert_no_difference "Mentorship.count" do
+        result = Mentorship.import_matches_from_csv(csv_with_error, use_transaction: true)
+        assert_not result.success?
+      end
+    end
+  end
+
+  class BackfillEmailDates < MentorshipTest
+    setup do
+      Mentorship.destroy_all
+
+      @backfill_mentor = User.create!(
+        email: "backfill_mentor@example.com",
+        first_name: "Mentor",
+        last_name: "User",
+        skip_password_validation: true
+      )
+
+      @backfill_applicant = User.create!(
+        email: "backfill_applicant@example.com",
+        first_name: "Applicant",
+        last_name: "User",
+        skip_password_validation: true
+      )
+
+      @old_mentorship = Mentorship.create!(
+        mentor: @backfill_mentor,
+        applicant: @backfill_applicant,
+        standing: "ended",
+        created_at: 7.months.ago
+      )
+
+      @recent_mentorship = Mentorship.create!(
+        mentor: User.create!(email: "backfill_mentor2@example.com", first_name: "M", last_name: "2", skip_password_validation: true),
+        applicant: User.create!(email: "backfill_applicant2@example.com", first_name: "A", last_name: "2", skip_password_validation: true),
+        standing: "active",
+        created_at: 2.months.ago
+      )
+
+      @new_mentorship = Mentorship.create!(
+        mentor: User.create!(email: "backfill_mentor3@example.com", first_name: "M", last_name: "3", skip_password_validation: true),
+        applicant: User.create!(email: "backfill_applicant3@example.com", first_name: "A", last_name: "3", skip_password_validation: true),
+        standing: "active",
+        created_at: 1.week.ago
+      )
+    end
+
+    test "backfills email dates based on mentorship creation date" do
+      result = Mentorship.backfill_email_dates
+
+      assert result.success?
+      assert_equal 3, result.processed_count
+
+      @old_mentorship.reload
+      assert_not_nil @old_mentorship.applicant_month_1_email_sent_at
+      assert_not_nil @old_mentorship.applicant_month_2_email_sent_at
+      assert_not_nil @old_mentorship.applicant_month_3_email_sent_at
+      assert_not_nil @old_mentorship.applicant_month_4_email_sent_at
+      assert_not_nil @old_mentorship.applicant_month_5_email_sent_at
+      assert_not_nil @old_mentorship.applicant_month_6_email_sent_at
+
+      assert_not_nil @old_mentorship.mentor_month_1_email_sent_at
+      assert_not_nil @old_mentorship.mentor_month_2_email_sent_at
+      assert_not_nil @old_mentorship.mentor_month_3_email_sent_at
+      assert_not_nil @old_mentorship.mentor_month_4_email_sent_at
+      assert_not_nil @old_mentorship.mentor_month_5_email_sent_at
+      assert_not_nil @old_mentorship.mentor_month_6_email_sent_at
+    end
+
+    test "only backfills emails for elapsed months" do
+      Mentorship.backfill_email_dates
+
+      @recent_mentorship.reload
+      assert_not_nil @recent_mentorship.applicant_month_1_email_sent_at
+      assert_not_nil @recent_mentorship.applicant_month_2_email_sent_at
+      assert_nil @recent_mentorship.applicant_month_3_email_sent_at
+      assert_nil @recent_mentorship.applicant_month_4_email_sent_at
+
+      assert_not_nil @recent_mentorship.mentor_month_1_email_sent_at
+      assert_not_nil @recent_mentorship.mentor_month_2_email_sent_at
+      assert_nil @recent_mentorship.mentor_month_3_email_sent_at
+      assert_nil @recent_mentorship.mentor_month_4_email_sent_at
+    end
+
+    test "does not backfill for very recent mentorships" do
+      Mentorship.backfill_email_dates
+
+      @new_mentorship.reload
+      assert_nil @new_mentorship.applicant_month_1_email_sent_at
+      assert_nil @new_mentorship.mentor_month_1_email_sent_at
+    end
+
+    test "skips mentorships that already have email dates" do
+      @old_mentorship.update!(
+        applicant_month_1_email_sent_at: 5.months.ago,
+        mentor_month_1_email_sent_at: 5.months.ago
+      )
+
+      Mentorship.backfill_email_dates
+
+      @old_mentorship.reload
+      assert_equal 5.months.ago.to_date, @old_mentorship.applicant_month_1_email_sent_at.to_date
+      assert_equal 5.months.ago.to_date, @old_mentorship.mentor_month_1_email_sent_at.to_date
+
+      assert_not_nil @old_mentorship.applicant_month_2_email_sent_at
+    end
+
+    test "calculates correct email send dates" do
+      Mentorship.backfill_email_dates
+
+      @old_mentorship.reload
+      created = @old_mentorship.created_at
+
+      month1_expected = created + 1.month
+      assert_not_nil @old_mentorship.applicant_month_1_email_sent_at
+      assert_in_delta month1_expected.to_i, @old_mentorship.applicant_month_1_email_sent_at.to_i, 3.days.to_i
+
+      month2_expected = created + 2.months
+      assert_not_nil @old_mentorship.applicant_month_2_email_sent_at
+      assert_in_delta month2_expected.to_i, @old_mentorship.applicant_month_2_email_sent_at.to_i, 3.days.to_i
+
+      month6_expected = created + 6.months
+      assert_not_nil @old_mentorship.applicant_month_6_email_sent_at
+      assert_in_delta month6_expected.to_i, @old_mentorship.applicant_month_6_email_sent_at.to_i, 3.days.to_i
+    end
+
+    test "provides audit trail of backfilled dates" do
+      result = Mentorship.backfill_email_dates(audit: true)
+
+      assert result.success?
+      assert result.audit_trail.present?
+      assert result.audit_trail.any? { |entry| entry[:mentorship_id] == @old_mentorship.id }
+
+      audit_entry = result.audit_trail.find { |e| e[:mentorship_id] == @old_mentorship.id }
+      assert audit_entry[:backfilled_fields].include?("applicant_month_1_email_sent_at")
+      assert audit_entry[:backfilled_fields].include?("mentor_month_1_email_sent_at")
+    end
+
+    test "handles specific mentorship backfill" do
+      result = @old_mentorship.backfill_email_dates_for_mentorship
+
+      assert result[:success]
+      assert_equal 12, result[:backfilled_count]
+
+      @old_mentorship.reload
+      assert_not_nil @old_mentorship.applicant_month_6_email_sent_at
+      assert_not_nil @old_mentorship.mentor_month_6_email_sent_at
     end
   end
 end

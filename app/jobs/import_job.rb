@@ -13,20 +13,19 @@ class ImportJob < ApplicationJob
     )
 
     begin
-      # Select appropriate importer
-      importer = case import_type
+      use_transaction = options[:use_transaction] || false
+
+      # Perform import using model class methods
+      result = case import_type
       when "mentor"
-        MentorImporter.new(csv_content, options)
+        User.import_mentors_from_csv(csv_content, use_transaction: use_transaction)
       when "applicant"
-        ApplicantImporter.new(csv_content, options)
+        User.import_applicants_from_csv(csv_content, use_transaction: use_transaction)
       when "match"
-        MatchImporter.new(csv_content, options)
+        Mentorship.import_matches_from_csv(csv_content, use_transaction: use_transaction)
       else
         raise ArgumentError, "Unknown import type: #{import_type}"
       end
-
-      # Perform import
-      result = importer.import
 
       # Update report with results
       report.update!(
@@ -40,8 +39,7 @@ class ImportJob < ApplicationJob
 
       # Backfill email dates if this was a match import
       if import_type == "match" && result.success?
-        backfiller = EmailDateBackfiller.new
-        backfill_result = backfiller.backfill_all
+        backfill_result = Mentorship.backfill_email_dates
 
         report.update!(
           metadata: {

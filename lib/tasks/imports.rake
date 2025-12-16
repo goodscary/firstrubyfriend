@@ -60,8 +60,7 @@ namespace :imports do
   task backfill_emails: :environment do
     puts "Backfilling email dates for mentorships..."
 
-    backfiller = EmailDateBackfiller.new(audit: true)
-    result = backfiller.backfill_all
+    result = Mentorship.backfill_email_dates(audit: true)
 
     puts result.summary
 
