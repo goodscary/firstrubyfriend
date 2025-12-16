@@ -34,6 +34,7 @@ Rails.application.routes.draw do
     resources :matches, only: [:create, :destroy]
     resource :auto_matches, only: [:create]
     resource :bulk_approvals, only: [:create]
+    resources :imports, only: [:index, :new, :create, :show]
   end
 
   root "home#show"

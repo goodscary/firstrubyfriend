@@ -1,0 +1,55 @@
+<div class="mx-auto max-w-2xl">
+  <h1 class="text-2xl font-bold mb-6">Import Data</h1>
+
+  <div class="bg-amber-50 border border-amber-200 rounded-md p-4 mb-6">
+    <p class="text-sm text-amber-800">
+      <strong>Import order matters:</strong> Import mentors first, then applicants, then matches.
+      Match imports require existing mentor and applicant emails.
+    </p>
+  </div>
+
+  <%= form_with url: admin_imports_path, method: :post, multipart: true, class: "space-y-6" do |f| %>
+    <% if flash[:alert] %>
+      <div class="bg-red-50 border border-red-200 rounded-md p-4">
+        <p class="text-sm text-red-800"><%= flash[:alert] %></p>
+      </div>
+    <% end %>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Import Type</label>
+      <div class="space-y-2">
+        <label class="flex items-center">
+          <%= radio_button_tag :import_type, "mentor", true, class: "mr-2" %>
+          <span>Mentors</span>
+        </label>
+        <label class="flex items-center">
+          <%= radio_button_tag :import_type, "applicant", false, class: "mr-2" %>
+          <span>Applicants</span>
+        </label>
+        <label class="flex items-center">
+          <%= radio_button_tag :import_type, "match", false, class: "mr-2" %>
+          <span>Matches</span>
+        </label>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">CSV File</label>
+      <%= file_field_tag :file, accept: ".csv",
+          class: "block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
+                  file:rounded-md file:border-0 file:text-sm file:font-semibold
+                  file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" %>
+    </div>
+
+    <div>
+      <%= submit_tag "Start Import",
+          class: "bg-indigo-600 hover:bg-indigo-500 text-white rounded-md px-4 py-2
+                  text-sm font-semibold shadow-sm" %>
+    </div>
+  <% end %>
+
+  <div class="mt-8 border-t pt-6">
+    <%= link_to "View Import History", admin_imports_path,
+        class: "text-indigo-600 hover:text-indigo-500 text-sm font-medium" %>
+  </div>
+</div>

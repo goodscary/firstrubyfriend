@@ -1,0 +1,53 @@
+<div class="mx-auto max-w-4xl">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">Import History</h1>
+    <%= link_to "New Import", new_admin_import_path,
+        class: "bg-indigo-600 hover:bg-indigo-500 text-white rounded-md px-4 py-2
+                text-sm font-semibold shadow-sm" %>
+  </div>
+
+  <% if @reports.empty? %>
+    <p class="text-gray-500 text-center py-12">No imports yet</p>
+  <% else %>
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Results</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+            <th class="px-6 py-3"></th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% @reports.each do |report| %>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">
+                <%= report.import_type %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <%= import_status_badge(report) %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <% if report.completed? || report.failed? %>
+                  <span class="text-green-600"><%= report.imported_count || 0 %></span> /
+                  <span class="text-red-600"><%= report.failed_count || 0 %></span>
+                <% else %>
+                  —
+                <% end %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <%= time_ago_in_words(report.created_at) %> ago
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right">
+                <%= link_to "View", admin_import_path(report.report_id),
+                    class: "text-indigo-600 hover:text-indigo-500 text-sm font-medium" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

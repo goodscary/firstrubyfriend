@@ -1,7 +1,8 @@
 class ImportReport < ApplicationRecord
   validates :report_id, presence: true, uniqueness: true
   validates :import_type, presence: true, inclusion: {in: %w[mentor applicant match]}
-  validates :status, presence: true, inclusion: {in: %w[pending processing completed failed]}
+
+  enum :status, %w[processing completed failed].index_by(&:itself)
 
   serialize :error_messages, coder: JSON
   serialize :row_errors, coder: JSON
@@ -29,10 +30,6 @@ class ImportReport < ApplicationRecord
   def duration
     return nil unless started_at && completed_at
     completed_at - started_at
-  end
-
-  def success?
-    status == "completed"
   end
 
   def summary
