@@ -56,5 +56,13 @@ module CsvImportable
     def process_csv_row(row, index)
       raise NotImplementedError, "Subclasses must implement process_csv_row"
     end
+
+    def map_csv_row(row, header_mapping)
+      mapped = {}
+      header_mapping.each do |csv_header, field_name|
+        mapped[field_name] = row[csv_header]&.strip
+      end
+      mapped
+    end
   end
 end

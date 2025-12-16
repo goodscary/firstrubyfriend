@@ -228,14 +228,6 @@ class User < ApplicationRecord
     {success: false, error: "Error processing row: #{e.message}"}
   end
 
-  def self.map_csv_row(row, header_mapping)
-    mapped = {}
-    header_mapping.each do |csv_header, field_name|
-      mapped[field_name] = row[csv_header]&.strip
-    end
-    mapped
-  end
-
   def self.build_applicant_questionnaire_responses(data)
     responses = {}
     responses["ruby_experience"] = data[:ruby_experience] if data[:ruby_experience].present?

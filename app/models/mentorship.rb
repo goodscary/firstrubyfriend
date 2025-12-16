@@ -81,14 +81,6 @@ class Mentorship < ApplicationRecord
     {success: false, error: "Error processing row: #{e.message}"}
   end
 
-  def self.map_csv_row(row, header_mapping)
-    mapped = {}
-    header_mapping.each do |csv_header, field_name|
-      mapped[field_name] = row[csv_header]&.strip
-    end
-    mapped
-  end
-
   def self.normalize_country_code(country)
     case country.downcase
     when "usa", "us", "united states" then "US"
