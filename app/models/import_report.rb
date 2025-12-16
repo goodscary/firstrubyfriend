@@ -1,7 +1,8 @@
 class ImportReport < ApplicationRecord
   validates :report_id, presence: true, uniqueness: true
   validates :import_type, presence: true, inclusion: {in: %w[mentor applicant match]}
-  validates :status, presence: true, inclusion: {in: %w[pending processing completed failed]}
+
+  enum :status, {processing: "processing", completed: "completed", failed: "failed"}
 
   serialize :error_messages, coder: JSON
   serialize :row_errors, coder: JSON
@@ -32,19 +33,7 @@ class ImportReport < ApplicationRecord
   end
 
   def success?
-    status == "completed"
-  end
-
-  def processing?
-    status.in?(%w[pending processing])
-  end
-
-  def completed?
-    status == "completed"
-  end
-
-  def failed?
-    status == "failed"
+    completed?
   end
 
   def summary

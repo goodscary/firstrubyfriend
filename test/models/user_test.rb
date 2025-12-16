@@ -227,50 +227,6 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
-  class AdminCheck < UserTest
-    setup do
-      @original_admin_emails = ENV["ADMIN_EMAILS"]
-    end
-
-    teardown do
-      if @original_admin_emails
-        ENV["ADMIN_EMAILS"] = @original_admin_emails
-      else
-        ENV.delete("ADMIN_EMAILS")
-      end
-    end
-
-    test "admin? returns true when user email is in ADMIN_EMAILS" do
-      ENV["ADMIN_EMAILS"] = @user.email
-      assert @user.admin?
-    end
-
-    test "admin? returns true when user email is among multiple admin emails" do
-      ENV["ADMIN_EMAILS"] = "other@example.com, #{@user.email}, another@example.com"
-      assert @user.admin?
-    end
-
-    test "admin? returns false when user email is not in ADMIN_EMAILS" do
-      ENV["ADMIN_EMAILS"] = "admin@example.com"
-      assert_not @user.admin?
-    end
-
-    test "admin? returns false when ADMIN_EMAILS is empty" do
-      ENV["ADMIN_EMAILS"] = ""
-      assert_not @user.admin?
-    end
-
-    test "admin? returns false when ADMIN_EMAILS is not set" do
-      ENV.delete("ADMIN_EMAILS")
-      assert_not @user.admin?
-    end
-
-    test "admin? handles whitespace in ADMIN_EMAILS" do
-      ENV["ADMIN_EMAILS"] = "  #{@user.email}  ,  other@example.com  "
-      assert @user.admin?
-    end
-  end
-
   class MailcoachSubscription < UserTest
     include ActiveJob::TestHelper
 

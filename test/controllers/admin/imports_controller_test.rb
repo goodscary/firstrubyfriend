@@ -2,21 +2,8 @@ require "test_helper"
 
 class Admin::ImportsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @admin = users.mentor
-    ENV["ADMIN_EMAILS"] = @admin.email
-    sign_in_as(@admin)
-  end
-
-  teardown do
-    ENV.delete("ADMIN_EMAILS")
-  end
-
-  test "non-admin cannot access imports" do
-    ENV["ADMIN_EMAILS"] = ""
-    sign_in_as(users.applicant)
-    get new_admin_import_path
-    assert_redirected_to root_path
-    assert_equal "Not authorized", flash[:alert]
+    @user = users.mentor
+    sign_in_as(@user)
   end
 
   test "unauthenticated user cannot access imports" do
@@ -25,7 +12,7 @@ class Admin::ImportsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to sign_in_path
   end
 
-  test "admin can view new import form" do
+  test "can view new import form" do
     get new_admin_import_path
     assert_response :success
     assert_select "input[type=file]"
@@ -34,7 +21,7 @@ class Admin::ImportsControllerTest < ActionDispatch::IntegrationTest
     assert_select "input[type=radio][value=match]"
   end
 
-  test "admin can upload CSV and start import" do
+  test "can upload CSV and start import" do
     csv_content = "first name,last name,email\nJane,Doe,jane@example.com"
     file = Rack::Test::UploadedFile.new(
       StringIO.new(csv_content),
@@ -80,7 +67,7 @@ class Admin::ImportsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".bg-red-50", /invalid import type/i
   end
 
-  test "admin can view import status" do
+  test "can view import status" do
     report = ImportReport.create!(
       report_id: "mentor-123",
       import_type: "mentor",
@@ -95,7 +82,7 @@ class Admin::ImportsControllerTest < ActionDispatch::IntegrationTest
     assert_select "p.text-2xl", text: "2"
   end
 
-  test "admin can view processing import with spinner" do
+  test "can view processing import with spinner" do
     report = ImportReport.create!(
       report_id: "mentor-456",
       import_type: "mentor",
@@ -108,7 +95,7 @@ class Admin::ImportsControllerTest < ActionDispatch::IntegrationTest
     assert_select "meta[http-equiv=refresh]"
   end
 
-  test "admin can view import history" do
+  test "can view import history" do
     3.times do |i|
       ImportReport.create!(
         report_id: "mentor-#{i}",

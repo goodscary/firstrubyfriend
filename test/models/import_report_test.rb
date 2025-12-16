@@ -1,11 +1,6 @@
 require "test_helper"
 
 class ImportReportTest < ActiveSupport::TestCase
-  test "processing? returns true for pending status" do
-    report = ImportReport.new(status: "pending")
-    assert report.processing?
-  end
-
   test "processing? returns true for processing status" do
     report = ImportReport.new(status: "processing")
     assert report.processing?

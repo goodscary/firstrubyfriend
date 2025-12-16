@@ -306,11 +306,6 @@ class User < ApplicationRecord
     requested_mentorship_at.present? || mentorship_roles_as_applicant.exists?
   end
 
-  def admin?
-    admin_emails = ENV.fetch("ADMIN_EMAILS", "").split(",").map(&:strip)
-    admin_emails.include?(email)
-  end
-
   def subscribe_to_mailcoach
     MailcoachClient.new.add(email)
   rescue MailcoachClient::MissingCredentials

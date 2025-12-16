@@ -1,7 +1,5 @@
 module Admin
   class ImportsController < ApplicationController
-    before_action :require_admin
-
     def index
       @reports = ImportReport.recent
     end
@@ -35,12 +33,6 @@ module Admin
 
     def show
       @report = ImportReport.find_by!(report_id: params[:id])
-    end
-
-    private
-
-    def require_admin
-      redirect_to root_path, alert: "Not authorized" unless Current.session&.user&.admin?
     end
   end
 end
