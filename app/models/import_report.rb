@@ -35,6 +35,18 @@ class ImportReport < ApplicationRecord
     status == "completed"
   end
 
+  def processing?
+    status.in?(%w[pending processing])
+  end
+
+  def completed?
+    status == "completed"
+  end
+
+  def failed?
+    status == "failed"
+  end
+
   def summary
     lines = []
     lines << "Import Report: #{report_id}"
