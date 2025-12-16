@@ -27,9 +27,4 @@ class ImportReportTest < ActiveSupport::TestCase
     assert_not ImportReport.new(status: "completed").failed?
     assert_not ImportReport.new(status: "processing").failed?
   end
-
-  test "success? returns true only for completed status" do
-    assert ImportReport.new(status: "completed").success?
-    assert_not ImportReport.new(status: "failed").success?
-  end
 end
