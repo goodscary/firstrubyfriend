@@ -17,17 +17,20 @@ class ImportJobTest < ActiveJob::TestCase
     end
 
     @applicant_csv = CSV.generate do |csv|
-      csv << ["Date", "First name", "Last name", "Email", "What year were you born?",
-        "What year did you first start programming?", "What year did you first start using Ruby?",
-        "Do you self-identify as a member of an underrepresented group in tech?",
-        "If you feel comfortable, please share which group(s) you identify with",
-        "What is your current level of Ruby experience?", "Where do you currently live? (City, Country)",
-        "Are you currently writing Ruby regularly?", "How did you get started with programming in general?",
-        "What do you want to get out of being mentored?", "Any links you'd like to share?"]
-      csv << ["2023-03-01", "Alice", "Johnson", "alice@example.com", "1995",
-        "2018", "2022", "Yes", "Women in tech",
-        "Junior", "Portland, OR", "Yes", "Bootcamp",
-        "Career guidance and code reviews", "https://github.com/alicej"]
+      csv << ["Date", "What's your name?", "What's your email?", "Country", "City",
+        "Are you working anywhere yet?", "Are you writing Ruby there?", "Where'd you get your start?",
+        "Would you consider yourself in an underrepresented group?", "Twitter?", "Github?",
+        "Do you have a personal site?", "Any languages other than English?",
+        "What did you do before you became a programmer?", "What are you looking to get out of the mentoring?",
+        "Are you a member of the WNB.rb community? (https://wnb-rb.dev)",
+        "Do you have a strong preference to mentor someone from a particular demographic?",
+        "How would you describe yourself?"]
+      csv << ["2023-03-01", "Alice Johnson", "alice@example.com", "US", "Portland",
+        "https://techcorp.com", "Yes", "Bootcamp",
+        "Yes", "@alicej", "alicej",
+        "https://alice.dev", "Spanish",
+        "Marketing", "Career guidance and code reviews",
+        "Yes", "", "woman"]
     end
 
     @match_csv = CSV.generate do |csv|

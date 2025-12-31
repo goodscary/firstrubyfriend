@@ -252,21 +252,26 @@ class UserTest < ActiveSupport::TestCase
   class ImportApplicantsFromCsv < UserTest
     setup do
       @valid_csv = CSV.generate do |csv|
-        csv << ["Date", "First name", "Last name", "Email", "What year were you born?",
-          "What year did you first start programming?", "What year did you first start using Ruby?",
-          "Do you self-identify as a member of an underrepresented group in tech?",
-          "If you feel comfortable, please share which group(s) you identify with",
-          "What is your current level of Ruby experience?", "Where do you currently live? (City, Country)",
-          "Are you currently writing Ruby regularly?", "How did you get started with programming in general?",
-          "What do you want to get out of being mentored?", "Any links you'd like to share?"]
-        csv << ["2023-03-01", "Alice", "Johnson", "alice@example.com", "1995",
-          "2018", "2022", "Yes", "Women in tech",
-          "Junior", "Portland, OR", "Yes", "Bootcamp",
-          "Career guidance and code reviews", "https://github.com/alicej"]
-        csv << ["2023-03-15", "Bob", "Smith", "bob@example.com", "1990",
-          "2015", "2021", "No", "",
-          "Intermediate", "Denver, CO", "No", "Self-taught",
-          "Best practices and architecture", ""]
+        csv << ["Date", "What's your name?", "What's your email?", "Country", "City",
+          "Are you working anywhere yet?", "Are you writing Ruby there?", "Where'd you get your start?",
+          "Would you consider yourself in an underrepresented group?", "Twitter?", "Github?",
+          "Do you have a personal site?", "Any languages other than English?",
+          "What did you do before you became a programmer?", "What are you looking to get out of the mentoring?",
+          "Are you a member of the WNB.rb community? (https://wnb-rb.dev)",
+          "Do you have a strong preference to mentor someone from a particular demographic?",
+          "How would you describe yourself?"]
+        csv << ["2023-03-01", "Alice Johnson", "alice@example.com", "US", "Portland",
+          "https://techcorp.com", "Yes", "Bootcamp",
+          "Yes", "@alicej", "alicej",
+          "https://alice.dev", "Spanish",
+          "Marketing manager", "Career guidance and code reviews",
+          "Yes", "Women in tech", "woman"]
+        csv << ["2023-03-15", "Bob Smith", "bob@example.com", "UK", "London",
+          "", "No", "Self-taught",
+          "No", "", "bobsmith",
+          "", "",
+          "Student", "Best practices and architecture",
+          "No", "", "man"]
       end
 
       @missing_headers_csv = CSV.generate do |csv|
@@ -286,17 +291,15 @@ class UserTest < ActiveSupport::TestCase
       assert_equal "Alice", alice.first_name
       assert_equal "Johnson", alice.last_name
       assert alice.requested_mentorship_at.present?
-      assert_equal 1995, alice.demographic_year_of_birth
-      assert_equal 2018, alice.demographic_year_started_programming
-      assert_equal 2022, alice.demographic_year_started_ruby
       assert alice.demographic_underrepresented_group
-      assert_equal "Women in tech", alice.demographic_underrepresented_group_details
-      assert_equal "Portland, OR", alice.questionnaire_responses["location"]
-      assert_equal "Junior", alice.questionnaire_responses["ruby_experience"]
+      assert_equal "Portland", alice.city
+      assert_equal "US", alice.country_code
+      assert_equal "https://techcorp.com", alice.questionnaire_responses["current_employer"]
       assert_equal true, alice.questionnaire_responses["currently_writing_ruby"]
       assert_equal "Bootcamp", alice.questionnaire_responses["how_started"]
       assert_equal "Career guidance and code reviews", alice.questionnaire_responses["mentorship_goals"]
-      assert_equal "https://github.com/alicej", alice.questionnaire_responses["links"]
+      assert_equal "@alicej", alice.questionnaire_responses["twitter_handle"]
+      assert_equal "alicej", alice.questionnaire_responses["github_handle"]
     end
 
     test "validates required headers" do
@@ -325,45 +328,51 @@ class UserTest < ActiveSupport::TestCase
       assert_equal false, bob.questionnaire_responses["currently_writing_ruby"]
     end
 
-    test "parses years as integers" do
-      User.import_applicants_from_csv(@valid_csv)
-
-      alice = User.find_by(email: "alice@example.com")
-      assert_kind_of Integer, alice.demographic_year_of_birth
-      assert_equal 1995, alice.demographic_year_of_birth
-      assert_equal 2018, alice.demographic_year_started_programming
-      assert_equal 2022, alice.demographic_year_started_ruby
-    end
-
     test "handles missing optional fields" do
       csv_with_missing = CSV.generate do |csv|
-        csv << ["Date", "First name", "Last name", "Email", "What year were you born?",
-          "What year did you first start programming?", "What year did you first start using Ruby?",
-          "Do you self-identify as a member of an underrepresented group in tech?",
-          "If you feel comfortable, please share which group(s) you identify with",
-          "What is your current level of Ruby experience?", "Where do you currently live? (City, Country)",
-          "Are you currently writing Ruby regularly?", "How did you get started with programming in general?",
-          "What do you want to get out of being mentored?", "Any links you'd like to share?"]
-        csv << ["2023-03-01", "Charlie", "Brown", "charlie@example.com", "",
-          "", "", "No", "",
-          "Beginner", "Austin, TX", "Yes", "University",
-          "Learn Ruby basics", ""]
+        csv << ["Date", "What's your name?", "What's your email?", "Country", "City",
+          "Are you working anywhere yet?", "Are you writing Ruby there?", "Where'd you get your start?",
+          "Would you consider yourself in an underrepresented group?", "Twitter?", "Github?",
+          "Do you have a personal site?", "Any languages other than English?",
+          "What did you do before you became a programmer?", "What are you looking to get out of the mentoring?",
+          "Are you a member of the WNB.rb community? (https://wnb-rb.dev)",
+          "Do you have a strong preference to mentor someone from a particular demographic?",
+          "How would you describe yourself?"]
+        csv << ["2023-03-01", "Charlie Brown", "charlie@example.com", "US", "Austin",
+          "", "Yes", "University",
+          "No", "", "",
+          "", "",
+          "", "Learn Ruby basics",
+          "No", "", ""]
       end
 
       result = User.import_applicants_from_csv(csv_with_missing)
 
       assert result.success?
       charlie = User.find_by(email: "charlie@example.com")
-      assert_nil charlie.demographic_year_of_birth
-      assert_nil charlie.demographic_year_started_programming
-      assert_nil charlie.demographic_year_started_ruby
+      assert_nil charlie.questionnaire_responses["current_employer"]
+      assert_nil charlie.questionnaire_responses["twitter_handle"]
+      assert_nil charlie.questionnaire_responses["github_handle"]
     end
 
-    test "maps location data correctly" do
+    test "maps questionnaire responses correctly" do
       User.import_applicants_from_csv(@valid_csv)
 
       alice = User.find_by(email: "alice@example.com")
-      assert_equal "Portland, OR", alice.questionnaire_responses["location"]
+      responses = alice.questionnaire_responses
+
+      assert_equal "https://techcorp.com", responses["current_employer"]
+      assert_equal true, responses["currently_writing_ruby"]
+      assert_equal "Bootcamp", responses["how_started"]
+      assert_equal "@alicej", responses["twitter_handle"]
+      assert_equal "alicej", responses["github_handle"]
+      assert_equal "https://alice.dev", responses["personal_site"]
+      assert_equal "Spanish", responses["languages"]
+      assert_equal "Marketing manager", responses["previous_career"]
+      assert_equal "Career guidance and code reviews", responses["mentorship_goals"]
+      assert_equal true, responses["wnb_member"]
+      assert_equal "Women in tech", responses["demographic_preference"]
+      assert_equal "woman", responses["self_description"]
     end
   end
 
