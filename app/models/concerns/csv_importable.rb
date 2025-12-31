@@ -1,3 +1,5 @@
+require "csv"
+
 module CsvImportable
   extend ActiveSupport::Concern
 

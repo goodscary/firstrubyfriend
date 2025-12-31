@@ -370,16 +370,20 @@ class UserTest < ActiveSupport::TestCase
   class ImportMentorsFromCsv < UserTest
     setup do
       @valid_csv = CSV.generate do |csv|
-        csv << ["Date", "First name", "Last name", "Email", "What company do you work for or what do you do?",
-          "Where do you work?", "Location (Where do you currently live?)", "Previous Location",
-          "Confirmed location", "Links", "Who would you prefer to mentor",
-          "How many people would you prefer to mentor simultaneously?", "Languages you feel comfortable mentoring in"]
-        csv << ["2023-01-15", "John", "Doe", "john@example.com", "Acme Corp",
-          "Remote", "San Francisco, CA", "New York, NY", "San Francisco, CA",
-          "https://github.com/johndoe", "Junior developers", "2", "English, Spanish"]
-        csv << ["2023-02-20", "Jane", "Smith", "jane@example.com", "Tech Co",
-          "Office", "Austin, TX", "", "Austin, TX",
-          "https://linkedin.com/in/janesmith", "Career changers", "1", "English"]
+        csv << ["Date", "What's your name?", "What's your email?", "Where do you work?",
+          "Year you started programming in Ruby", "Country", "City", "Twitter?", "Github?",
+          "Do you have a personal site?", "Worked anywhere else?", "Why are you doing this?",
+          "Have you done any mentoring before?", "Are you a member of the WNB.rb community? (https://wnb-rb.dev)",
+          "Do you have a strong preference to mentor someone from a particular demographic?",
+          "How would you describe yourself?"]
+        csv << ["2023-01-15", "John Doe", "john@example.com", "https://acme.com",
+          "2015", "US", "San Francisco", "@johndoe", "johndoe",
+          "https://johndoe.com", "Previous Corp, Other Inc", "I want to help!",
+          "Yes", "No", "Junior developers", "Senior developer"]
+        csv << ["2023-02-20", "Jane Smith", "jane@example.com", "https://techco.com",
+          "2018", "UK", "London", "@janesmith", "janesmith",
+          "", "BigCorp", "Give back to community",
+          "No", "Yes", "", "Mid-level developer"]
       end
 
       @missing_headers_csv = CSV.generate do |csv|
@@ -388,16 +392,20 @@ class UserTest < ActiveSupport::TestCase
       end
 
       @duplicate_email_csv = CSV.generate do |csv|
-        csv << ["Date", "First name", "Last name", "Email", "What company do you work for or what do you do?",
-          "Where do you work?", "Location (Where do you currently live?)", "Previous Location",
-          "Confirmed location", "Links", "Who would you prefer to mentor",
-          "How many people would you prefer to mentor simultaneously?", "Languages you feel comfortable mentoring in"]
-        csv << ["2023-01-15", "John", "Doe", "john@example.com", "Acme Corp",
-          "Remote", "San Francisco, CA", "New York, NY", "San Francisco, CA",
-          "https://github.com/johndoe", "Junior developers", "2", "English, Spanish"]
-        csv << ["2023-03-10", "Johnny", "Doe", "john@example.com", "New Corp",
-          "Hybrid", "San Francisco, CA", "Los Angeles, CA", "San Francisco, CA",
-          "https://github.com/johnnydoe", "Senior developers", "3", "English, French"]
+        csv << ["Date", "What's your name?", "What's your email?", "Where do you work?",
+          "Year you started programming in Ruby", "Country", "City", "Twitter?", "Github?",
+          "Do you have a personal site?", "Worked anywhere else?", "Why are you doing this?",
+          "Have you done any mentoring before?", "Are you a member of the WNB.rb community? (https://wnb-rb.dev)",
+          "Do you have a strong preference to mentor someone from a particular demographic?",
+          "How would you describe yourself?"]
+        csv << ["2023-01-15", "John Doe", "john@example.com", "https://acme.com",
+          "2015", "US", "San Francisco", "@johndoe", "johndoe",
+          "https://johndoe.com", "Previous Corp", "I want to help!",
+          "Yes", "No", "", "Senior developer"]
+        csv << ["2023-03-10", "Johnny Doe", "john@example.com", "https://newcorp.com",
+          "2010", "US", "San Francisco", "@johnnydoe", "johnnydoe",
+          "", "Previous Corp, New Inc", "Still want to help!",
+          "Yes", "No", "", "Principal developer"]
       end
     end
 
@@ -412,10 +420,10 @@ class UserTest < ActiveSupport::TestCase
       assert_equal "John", john.first_name
       assert_equal "Doe", john.last_name
       assert john.available_as_mentor_at.present?
-      assert_equal "Acme Corp", john.questionnaire_responses["company"]
-      assert_equal "San Francisco, CA", john.questionnaire_responses["location"]
-      assert_equal ["English", "Spanish"], john.questionnaire_responses["languages"]
-      assert_equal 2, john.questionnaire_responses["max_mentees"]
+      assert_equal "https://acme.com", john.questionnaire_responses["company"]
+      assert_equal "San Francisco", john.city
+      assert_equal "US", john.country_code
+      assert_equal 2015, john.demographic_year_started_ruby
     end
 
     test "validates required headers" do
@@ -441,19 +449,22 @@ class UserTest < ActiveSupport::TestCase
 
       john = User.find_by(email: "john@example.com")
       assert_equal "Johnny", john.first_name
-      assert_equal "New Corp", john.questionnaire_responses["company"]
-      assert_equal 3, john.questionnaire_responses["max_mentees"]
+      assert_equal "https://newcorp.com", john.questionnaire_responses["company"]
+      assert_equal 2010, john.demographic_year_started_ruby
     end
 
     test "handles invalid email formats" do
       invalid_csv = CSV.generate do |csv|
-        csv << ["Date", "First name", "Last name", "Email", "What company do you work for or what do you do?",
-          "Where do you work?", "Location (Where do you currently live?)", "Previous Location",
-          "Confirmed location", "Links", "Who would you prefer to mentor",
-          "How many people would you prefer to mentor simultaneously?", "Languages you feel comfortable mentoring in"]
-        csv << ["2023-01-15", "Invalid", "User", "not-an-email", "Company",
-          "Remote", "Location", "", "Location",
-          "", "Anyone", "1", "English"]
+        csv << ["Date", "What's your name?", "What's your email?", "Where do you work?",
+          "Year you started programming in Ruby", "Country", "City", "Twitter?", "Github?",
+          "Do you have a personal site?", "Worked anywhere else?", "Why are you doing this?",
+          "Have you done any mentoring before?", "Are you a member of the WNB.rb community? (https://wnb-rb.dev)",
+          "Do you have a strong preference to mentor someone from a particular demographic?",
+          "How would you describe yourself?"]
+        csv << ["2023-01-15", "Invalid User", "not-an-email", "https://company.com",
+          "2015", "US", "Location", "", "",
+          "", "", "Reason",
+          "No", "No", "", ""]
       end
 
       result = User.import_mentors_from_csv(invalid_csv)
@@ -470,28 +481,34 @@ class UserTest < ActiveSupport::TestCase
       john = User.find_by(email: "john@example.com")
       responses = john.questionnaire_responses
 
-      assert_equal "Acme Corp", responses["company"]
-      assert_equal "Remote", responses["work_location"]
-      assert_equal "San Francisco, CA", responses["location"]
-      assert_equal "New York, NY", responses["previous_location"]
-      assert_equal "https://github.com/johndoe", responses["links"]
-      assert_equal "Junior developers", responses["mentee_preference"]
-      assert_equal 2, responses["max_mentees"]
-      assert_equal ["English", "Spanish"], responses["languages"]
+      assert_equal "https://acme.com", responses["company"]
+      assert_equal "@johndoe", responses["twitter_handle"]
+      assert_equal "johndoe", responses["github_handle"]
+      assert_equal "https://johndoe.com", responses["personal_site"]
+      assert_equal "Previous Corp, Other Inc", responses["previous_workplaces"]
+      assert_equal "I want to help!", responses["mentoring_reason"]
+      assert_equal true, responses["has_mentored_before"]
+      assert_equal false, responses["wnb_member"]
+      assert_equal "Junior developers", responses["demographic_preference"]
+      assert_equal "Senior developer", responses["self_description"]
     end
 
     test "uses transaction for rollback on failure" do
       csv_with_error = CSV.generate do |csv|
-        csv << ["Date", "First name", "Last name", "Email", "What company do you work for or what do you do?",
-          "Where do you work?", "Location (Where do you currently live?)", "Previous Location",
-          "Confirmed location", "Links", "Who would you prefer to mentor",
-          "How many people would you prefer to mentor simultaneously?", "Languages you feel comfortable mentoring in"]
-        csv << ["2023-01-15", "Valid", "User", "valid@example.com", "Company",
-          "Remote", "Location", "", "Location",
-          "", "Anyone", "1", "English"]
-        csv << ["2023-01-16", "", "", "missing-names@example.com", "Company",
-          "Remote", "Location", "", "Location",
-          "", "Anyone", "1", "English"]
+        csv << ["Date", "What's your name?", "What's your email?", "Where do you work?",
+          "Year you started programming in Ruby", "Country", "City", "Twitter?", "Github?",
+          "Do you have a personal site?", "Worked anywhere else?", "Why are you doing this?",
+          "Have you done any mentoring before?", "Are you a member of the WNB.rb community? (https://wnb-rb.dev)",
+          "Do you have a strong preference to mentor someone from a particular demographic?",
+          "How would you describe yourself?"]
+        csv << ["2023-01-15", "Valid User", "valid@example.com", "https://company.com",
+          "2015", "US", "Location", "", "",
+          "", "", "Reason",
+          "No", "No", "", ""]
+        csv << ["2023-01-16", "", "missing-names@example.com", "https://company.com",
+          "2015", "US", "Location", "", "",
+          "", "", "Reason",
+          "No", "No", "", ""]
       end
 
       assert_no_difference "User.count" do

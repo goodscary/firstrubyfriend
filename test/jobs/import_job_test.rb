@@ -4,13 +4,16 @@ require "csv"
 class ImportJobTest < ActiveJob::TestCase
   setup do
     @mentor_csv = CSV.generate do |csv|
-      csv << ["Date", "First name", "Last name", "Email", "What company do you work for or what do you do?",
-        "Where do you work?", "Location (Where do you currently live?)", "Previous Location",
-        "Confirmed location", "Links", "Who would you prefer to mentor",
-        "How many people would you prefer to mentor simultaneously?", "Languages you feel comfortable mentoring in"]
-      csv << ["2023-01-15", "John", "Doe", "john@example.com", "Acme Corp",
-        "Remote", "San Francisco, CA", "New York, NY", "San Francisco, CA",
-        "https://github.com/johndoe", "Junior developers", "2", "English, Spanish"]
+      csv << ["Date", "What's your name?", "What's your email?", "Where do you work?",
+        "Year you started programming in Ruby", "Country", "City", "Twitter?", "Github?",
+        "Do you have a personal site?", "Worked anywhere else?", "Why are you doing this?",
+        "Have you done any mentoring before?", "Are you a member of the WNB.rb community? (https://wnb-rb.dev)",
+        "Do you have a strong preference to mentor someone from a particular demographic?",
+        "How would you describe yourself?"]
+      csv << ["2023-01-15", "John Doe", "john@example.com", "https://acme.com",
+        "2015", "US", "San Francisco", "@johndoe", "johndoe",
+        "https://johndoe.com", "Previous Corp", "I want to help!",
+        "Yes", "No", "Junior developers", "Senior developer"]
     end
 
     @applicant_csv = CSV.generate do |csv|
