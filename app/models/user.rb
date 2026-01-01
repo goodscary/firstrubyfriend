@@ -129,16 +129,16 @@ class User < ApplicationRecord
     "languages you feel comfortable mentoring in" => :languages
   }.freeze
 
-  def self.import_applicants_from_csv(csv_content, use_transaction: false)
+  def self.import_applicants_from_csv(csv_content, use_transaction: false, rate_limit_delay: 1)
     @current_import_type = :applicant
-    import_from_csv(csv_content, use_transaction: use_transaction)
+    import_from_csv(csv_content, use_transaction: use_transaction, rate_limit_delay: rate_limit_delay)
   ensure
     @current_import_type = nil
   end
 
-  def self.import_mentors_from_csv(csv_content, use_transaction: false)
+  def self.import_mentors_from_csv(csv_content, use_transaction: false, rate_limit_delay: 1)
     @current_import_type = :mentor
-    import_from_csv(csv_content, use_transaction: use_transaction)
+    import_from_csv(csv_content, use_transaction: use_transaction, rate_limit_delay: rate_limit_delay)
   ensure
     @current_import_type = nil
   end
