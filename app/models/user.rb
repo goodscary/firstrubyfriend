@@ -135,16 +135,16 @@ class User < ApplicationRecord
     "how would you describe yourself?" => :self_description
   }.freeze
 
-  def self.import_applicants_from_csv(csv_content, use_transaction: false, rate_limit_delay: 1)
+  def self.import_applicants_from_csv(csv_content, rate_limit_delay: 1)
     @current_import_type = :applicant
-    import_from_csv(csv_content, use_transaction: use_transaction, rate_limit_delay: rate_limit_delay)
+    import_from_csv(csv_content, rate_limit_delay: rate_limit_delay)
   ensure
     @current_import_type = nil
   end
 
-  def self.import_mentors_from_csv(csv_content, use_transaction: false, rate_limit_delay: 1)
+  def self.import_mentors_from_csv(csv_content, rate_limit_delay: 1)
     @current_import_type = :mentor
-    import_from_csv(csv_content, use_transaction: use_transaction, rate_limit_delay: rate_limit_delay)
+    import_from_csv(csv_content, rate_limit_delay: rate_limit_delay)
   ensure
     @current_import_type = nil
   end
@@ -166,7 +166,8 @@ class User < ApplicationRecord
   end
 
   def self.process_applicant_row(row)
-    mapped_data = map_csv_row(row, APPLICANT_CSV_HEADERS)
+    mapped_data = {}
+    APPLICANT_CSV_HEADERS.each { |csv_header, field| mapped_data[field] = row[csv_header]&.strip }
 
     unless valid_import_email?(mapped_data[:email])
       return {success: false, error: "Invalid email format: #{mapped_data[:email]}"}
@@ -206,7 +207,8 @@ class User < ApplicationRecord
   end
 
   def self.process_mentor_row(row)
-    mapped_data = map_csv_row(row, MENTOR_CSV_HEADERS)
+    mapped_data = {}
+    MENTOR_CSV_HEADERS.each { |csv_header, field| mapped_data[field] = row[csv_header]&.strip }
 
     unless valid_import_email?(mapped_data[:email])
       return {success: false, error: "Invalid email format: #{mapped_data[:email]}"}

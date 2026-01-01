@@ -28,8 +28,8 @@ class Mentorship < ApplicationRecord
     MentorshipMatcher.new(applicant).matches
   end
 
-  def self.import_matches_from_csv(csv_content, use_transaction: false)
-    import_from_csv(csv_content, use_transaction: use_transaction)
+  def self.import_matches_from_csv(csv_content)
+    import_from_csv(csv_content)
   end
 
   def self.csv_import_required_headers
@@ -38,7 +38,8 @@ class Mentorship < ApplicationRecord
   end
 
   def self.process_csv_row(row, index)
-    mapped_data = map_csv_row(row, MATCH_CSV_HEADERS)
+    mapped_data = {}
+    MATCH_CSV_HEADERS.each { |csv_header, field| mapped_data[field] = row[csv_header]&.strip }
 
     applicant = User.find_by("LOWER(email) = ?", mapped_data[:applicant_email]&.downcase)
     unless applicant
@@ -108,30 +109,22 @@ class Mentorship < ApplicationRecord
     end
   end
 
-  def self.backfill_email_dates(audit: false)
-    result = BackfillResult.new
-    audit_trail = [] if audit
+  def self.backfill_email_dates
+    processed = 0
+    errors = 0
 
     find_each do |mentorship|
-      backfill_result = mentorship.backfill_email_dates_for_mentorship
-
-      if backfill_result[:success]
-        result.increment_processed
-
-        if audit && backfill_result[:backfilled_count] > 0
-          audit_trail << {
-            mentorship_id: mentorship.id,
-            backfilled_fields: backfill_result[:backfilled_fields],
-            created_at: mentorship.created_at
-          }
-        end
+      result = mentorship.backfill_email_dates_for_mentorship
+      if result[:success]
+        processed += 1
       else
-        result.add_error("Failed to backfill mentorship #{mentorship.id}: #{backfill_result[:error]}")
+        errors += 1
+        Rails.logger.info "[Backfill] Mentorship #{mentorship.id}: #{result[:error]}"
       end
     end
 
-    result.audit_trail = audit_trail if audit
-    result
+    Rails.logger.info "[Backfill] Complete: #{processed} processed, #{errors} errors"
+    errors == 0
   end
 
   def backfill_email_dates_for_mentorship

@@ -4,54 +4,38 @@ module CsvImportable
   extend ActiveSupport::Concern
 
   class_methods do
-    def import_from_csv(csv_content, use_transaction: false, rate_limit_delay: nil)
-      result = ImportResult.new
+    def import_from_csv(csv_content, rate_limit_delay: nil)
+      imported = 0
+      failed = 0
 
-      begin
-        csv = CSV.parse(csv_content, headers: true, header_converters: :downcase)
+      csv = CSV.parse(csv_content, headers: true, header_converters: :downcase)
 
-        missing = csv_import_missing_headers(csv.headers)
-        if missing.any?
-          result.add_error("Missing required headers: #{missing.join(", ")}")
-          return result
-        end
-
-        if use_transaction
-          transaction do
-            process_csv_rows(csv, result, rate_limit_delay: rate_limit_delay)
-            raise ActiveRecord::Rollback unless result.success?
-          end
-        else
-          process_csv_rows(csv, result, rate_limit_delay: rate_limit_delay)
-        end
-      rescue CSV::MalformedCSVError => e
-        result.add_error("CSV parsing error: #{e.message}")
-      rescue => e
-        result.add_error("Import failed: #{e.message}")
+      missing = csv_import_required_headers - csv.headers.map(&:to_s)
+      if missing.any?
+        Rails.logger.error "[Import] Missing required headers: #{missing.join(', ')}"
+        return false
       end
 
-      result
-    end
-
-    private
-
-    def process_csv_rows(csv, result, rate_limit_delay: nil)
       csv.each_with_index do |row, index|
         sleep(rate_limit_delay) if rate_limit_delay && index > 0
 
-        row_result = process_csv_row(row, index)
-
-        if row_result[:success]
-          result.increment_imported
+        result = process_csv_row(row, index)
+        if result[:success]
+          imported += 1
         else
-          result.add_row_error(index + 2, row_result[:error])
+          failed += 1
+          Rails.logger.info "[Import] Row #{index + 2}: #{result[:error]}"
         end
       end
+
+      Rails.logger.info "[Import] Complete: #{imported} imported, #{failed} failed"
+      failed == 0
+    rescue CSV::MalformedCSVError => e
+      Rails.logger.error "[Import] CSV parsing error: #{e.message}"
+      false
     end
 
-    def csv_import_missing_headers(headers)
-      csv_import_required_headers - headers.map(&:to_s)
-    end
+    private
 
     def csv_import_required_headers
       []
@@ -59,14 +43,6 @@ module CsvImportable
 
     def process_csv_row(row, index)
       raise NotImplementedError, "Subclasses must implement process_csv_row"
-    end
-
-    def map_csv_row(row, header_mapping)
-      mapped = {}
-      header_mapping.each do |csv_header, field_name|
-        mapped[field_name] = row[csv_header]&.strip
-      end
-      mapped
     end
   end
 end

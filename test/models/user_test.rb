@@ -282,9 +282,8 @@ class UserTest < ActiveSupport::TestCase
 
     test "imports applicants successfully" do
       assert_difference "User.count", 2 do
-        result = User.import_applicants_from_csv(@valid_csv)
-        assert result.success?
-        assert_equal 2, result.imported_count
+        success = User.import_applicants_from_csv(@valid_csv)
+        assert success
       end
 
       alice = User.find_by(email: "alice@example.com")
@@ -303,10 +302,8 @@ class UserTest < ActiveSupport::TestCase
     end
 
     test "validates required headers" do
-      result = User.import_applicants_from_csv(@missing_headers_csv)
-
-      assert_not result.success?
-      assert result.errors.any? { |e| e.include?("Missing required headers") }
+      success = User.import_applicants_from_csv(@missing_headers_csv)
+      assert_not success
     end
 
     test "creates users without passwords" do
@@ -346,9 +343,9 @@ class UserTest < ActiveSupport::TestCase
           "No", "", ""]
       end
 
-      result = User.import_applicants_from_csv(csv_with_missing)
+      success = User.import_applicants_from_csv(csv_with_missing)
 
-      assert result.success?
+      assert success
       charlie = User.find_by(email: "charlie@example.com")
       assert_nil charlie.questionnaire_responses["current_employer"]
       assert_nil charlie.questionnaire_responses["twitter_handle"]
@@ -420,9 +417,8 @@ class UserTest < ActiveSupport::TestCase
 
     test "imports mentors successfully" do
       assert_difference "User.count", 2 do
-        result = User.import_mentors_from_csv(@valid_csv)
-        assert result.success?
-        assert_equal 2, result.imported_count
+        success = User.import_mentors_from_csv(@valid_csv)
+        assert success
       end
 
       john = User.find_by(email: "john@example.com")
@@ -436,10 +432,8 @@ class UserTest < ActiveSupport::TestCase
     end
 
     test "validates required headers" do
-      result = User.import_mentors_from_csv(@missing_headers_csv)
-
-      assert_not result.success?
-      assert result.errors.any? { |e| e.include?("Missing required headers") }
+      success = User.import_mentors_from_csv(@missing_headers_csv)
+      assert_not success
     end
 
     test "creates users without passwords" do
@@ -451,9 +445,8 @@ class UserTest < ActiveSupport::TestCase
 
     test "handles duplicate emails by updating existing record" do
       assert_difference "User.count", 1 do
-        result = User.import_mentors_from_csv(@duplicate_email_csv)
-        assert result.success?
-        assert_equal 2, result.imported_count
+        success = User.import_mentors_from_csv(@duplicate_email_csv)
+        assert success
       end
 
       john = User.find_by(email: "john@example.com")
@@ -476,12 +469,8 @@ class UserTest < ActiveSupport::TestCase
           "No", "No", "", ""]
       end
 
-      result = User.import_mentors_from_csv(invalid_csv)
-
-      assert_not result.success?
-      assert_equal 0, result.imported_count
-      assert_equal 1, result.failed_count
-      assert result.row_errors.any? { |e| e[:error].include?("Invalid email") }
+      success = User.import_mentors_from_csv(invalid_csv)
+      assert_not success
     end
 
     test "maps CSV fields to questionnaire responses" do
@@ -502,28 +491,5 @@ class UserTest < ActiveSupport::TestCase
       assert_equal "Senior developer", responses["self_description"]
     end
 
-    test "uses transaction for rollback on failure" do
-      csv_with_error = CSV.generate do |csv|
-        csv << ["Date", "What's your name?", "What's your email?", "Where do you work?",
-          "Year you started programming in Ruby", "Country", "City", "Twitter?", "Github?",
-          "Do you have a personal site?", "Worked anywhere else?", "Why are you doing this?",
-          "Have you done any mentoring before?", "Are you a member of the WNB.rb community? (https://wnb-rb.dev)",
-          "Do you have a strong preference to mentor someone from a particular demographic?",
-          "How would you describe yourself?"]
-        csv << ["2023-01-15", "Valid User", "valid@example.com", "https://company.com",
-          "2015", "US", "Location", "", "",
-          "", "", "Reason",
-          "No", "No", "", ""]
-        csv << ["2023-01-16", "", "missing-names@example.com", "https://company.com",
-          "2015", "US", "Location", "", "",
-          "", "", "Reason",
-          "No", "No", "", ""]
-      end
-
-      assert_no_difference "User.count" do
-        result = User.import_mentors_from_csv(csv_with_error, use_transaction: true)
-        assert_not result.success?
-      end
-    end
   end
 end
