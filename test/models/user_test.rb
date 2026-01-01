@@ -371,6 +371,60 @@ class UserTest < ActiveSupport::TestCase
       assert_equal "Women in tech", responses["demographic_preference"]
       assert_equal "woman", responses["self_description"]
     end
+
+    test "imports real-world CSV format with URL-style entries" do
+      # This tests the actual format from the Tally form export
+      real_csv = CSV.generate do |csv|
+        csv << ["Date", "What's your name?", "What's your email?", "Country", "City",
+          "Are you working anywhere yet?", "Are you writing Ruby there?", "Where'd you get your start?",
+          "Would you consider yourself in an underrepresented group?", "Twitter?", "Github?",
+          "Do you have a personal site?", "Any languages other than English?",
+          "What did you do before you became a programmer?", "What are you looking to get out of the mentoring?",
+          "Are you a member of the WNB.rb community? (https://wnb-rb.dev)",
+          "Do you have a strong preference to mentor someone from a particular demographic?",
+          "How would you describe yourself?"]
+        csv << ["2025-03-09 19:55:37", "Moein Amin", "moein@example.com", "Iran", "Tehran",
+          "https://no", "No", "I am a CS student but mostly self-taught",
+          "No", "", "",
+          "", "Farsi",
+          "", "Career advice and first principle thinkings",
+          "No", "", ""]
+        csv << ["2025-03-11 15:35:29", "Javier Garcia", "javier@example.com", "Spain", "Coruña",
+          "https://inditex.com", "No", "Self-taught",
+          "No", "", "",
+          "nightlydev.io", "I speak Spanish and English",
+          "I was a salesman at a sport department store (Decathlon).",
+          "I'm just starting my Ruby journey, and I would love to change my job to a Ruby one.",
+          "No", "", "man"]
+        csv << ["2025-03-18 10:46:48", "Summer", "summer@example.com", "Philippines", "City of San Fernando",
+          "https://i-am-still-a-student-im-not-working.com", "Yes", "still a student, but learning ror through self study only",
+          "yes", "none", "summer-rem",
+          "none", "filipino and english",
+          "accounting", "looking for help to learn the language since it is currently being used in my internship",
+          "Yes", "", "woman"]
+      end
+
+      assert_difference "User.count", 3 do
+        success = User.import_applicants_from_csv(real_csv)
+        assert success
+      end
+
+      # Verify the URL-like "no" entries are handled
+      moein = User.find_by(email: "moein@example.com")
+      assert_equal "Moein", moein.first_name
+      assert_equal "Amin", moein.last_name
+      assert_equal "Tehran", moein.city
+      assert_equal "IR", moein.country_code
+      assert_equal "https://no", moein.questionnaire_responses["current_employer"]
+      assert_equal false, moein.questionnaire_responses["currently_writing_ruby"]
+
+      # Verify case-insensitive boolean parsing
+      summer = User.find_by(email: "summer@example.com")
+      assert_equal "Summer", summer.first_name
+      assert summer.demographic_underrepresented_group
+      assert_equal true, summer.questionnaire_responses["wnb_member"]
+      assert_equal "woman", summer.questionnaire_responses["self_description"]
+    end
   end
 
   class ImportMentorsFromCsv < UserTest
@@ -489,6 +543,57 @@ class UserTest < ActiveSupport::TestCase
       assert_equal false, responses["wnb_member"]
       assert_equal "Junior developers", responses["demographic_preference"]
       assert_equal "Senior developer", responses["self_description"]
+    end
+
+    test "imports real-world mentor CSV format" do
+      # This tests the actual format from the Tally form export
+      real_csv = CSV.generate do |csv|
+        csv << ["Date", "What's your name?", "What's your email?", "Where do you work?",
+          "Year you started programming in Ruby", "Country", "City", "Twitter?", "Github?",
+          "Do you have a personal site?", "Worked anywhere else?", "Why are you doing this?",
+          "Have you done any mentoring before?", "Are you a member of the WNB.rb community? (https://wnb-rb.dev)",
+          "Do you have a strong preference to mentor someone from a particular demographic?",
+          "How would you describe yourself?"]
+        csv << ["2022-07-17 10:50:24", "Emma Barnes", "emma@example.com", "https://consonance.app",
+          "2011", "uk", "Oxford", "@has_many_books", "EmmaB",
+          "", "Snowbooks, Make our book, previously Deloitte and Kingfisher plc", "because andy comes up with good ideas and I want in",
+          "", "", "", ""]
+        csv << ["2022-07-17 14:52:26", "Tom Stuart", "tom@example.com", "https://www.shopify.com/",
+          "2005", "UK", "London", "@tomstuart", "https://github.com/tomstuart",
+          "https://tomstu.art/", "BBC, Berg, Econsultancy, FutureLearn, Government Digital Service, Ministry of Justice, Newspaper Club", "I want to help!",
+          "Yes", "", "", ""]
+        csv << ["2022-07-19 08:48:43", "George Sheppard", "george@example.com", "https://www.treecard.org/",
+          "2009", "UK", "London", "@fuzzmonkey", "https://github.com/fuzzmonkey",
+          "", "banked.com\nmeetcleo.com", "I've got so much from the Ruby community over the last 12+ years and keen to something to give back if i can!",
+          "Yes", "", "", ""]
+      end
+
+      assert_difference "User.count", 3 do
+        success = User.import_mentors_from_csv(real_csv)
+        assert success
+      end
+
+      # Verify case-insensitive country codes
+      emma = User.find_by(email: "emma@example.com")
+      assert_equal "Emma", emma.first_name
+      assert_equal "Barnes", emma.last_name
+      assert_equal "Oxford", emma.city
+      assert_equal "GB", emma.country_code  # "uk" → "GB"
+      assert_equal 2011, emma.demographic_year_started_ruby
+      assert_equal "https://consonance.app", emma.questionnaire_responses["company"]
+      assert_equal "@has_many_books", emma.questionnaire_responses["twitter_handle"]
+
+      # Verify GitHub URLs are stored as-is
+      tom = User.find_by(email: "tom@example.com")
+      assert_equal "https://github.com/tomstuart", tom.questionnaire_responses["github_handle"]
+      assert_equal "https://tomstu.art/", tom.questionnaire_responses["personal_site"]
+      assert_equal 2005, tom.demographic_year_started_ruby
+      assert_equal true, tom.questionnaire_responses["has_mentored_before"]
+
+      # Verify multiline text is preserved
+      george = User.find_by(email: "george@example.com")
+      assert george.questionnaire_responses["previous_workplaces"].include?("banked.com")
+      assert george.questionnaire_responses["previous_workplaces"].include?("meetcleo.com")
     end
 
   end

@@ -18,23 +18,22 @@ class Mentorship < ApplicationRecord
 
   MATCH_CSV_HEADERS = {
     "applicant" => :applicant_email,
-    "country" => :applicant_country,
-    "city" => :applicant_city,
-    "mentor" => :mentor_email,
-    "gone" => :gone_status
+    "mentor" => :mentor_email
   }.freeze
 
   def self.find_matches_for_applicant(applicant)
     MentorshipMatcher.new(applicant).matches
   end
 
-  def self.import_matches_from_csv(csv_content)
+  def self.import_matches_from_csv(csv_content, match_date:)
+    @match_date = match_date
     import_from_csv(csv_content)
+  ensure
+    @match_date = nil
   end
 
   def self.csv_import_required_headers
-    # Gone is optional
-    MATCH_CSV_HEADERS.keys - ["gone"]
+    MATCH_CSV_HEADERS.keys
   end
 
   def self.process_csv_row(row, index)
@@ -51,28 +50,9 @@ class Mentorship < ApplicationRecord
       return {success: false, error: "Mentor not found: #{mapped_data[:mentor_email]}"}
     end
 
-    if mapped_data[:applicant_city].present?
-      applicant.city = mapped_data[:applicant_city]
-    end
-    if mapped_data[:applicant_country].present?
-      applicant.country_code = normalize_country_code(mapped_data[:applicant_country])
-    end
-    applicant.save! if applicant.changed?
-
-    # Determine standing based on "Gone" column
-    is_gone = mapped_data[:gone_status].present? && mapped_data[:gone_status].strip.downcase != ""
-    desired_standing = is_gone ? "ended" : "active"
-
     existing_mentorship = find_by(applicant: applicant, mentor: mentor)
-
     if existing_mentorship
-      # Update standing if different
-      if existing_mentorship.standing != desired_standing
-        existing_mentorship.update!(standing: desired_standing)
-        return {success: true, data: existing_mentorship, updated: true}
-      else
-        return {success: false, error: "Mentorship already exists between #{applicant.email} and #{mentor.email} with standing: #{existing_mentorship.standing}"}
-      end
+      return {success: false, error: "Mentorship already exists between #{applicant.email} and #{mentor.email}"}
     end
 
     # End any other active mentorship for this applicant
@@ -82,7 +62,8 @@ class Mentorship < ApplicationRecord
     mentorship = new(
       mentor: mentor,
       applicant: applicant,
-      standing: desired_standing
+      standing: "active",
+      created_at: @match_date
     )
 
     if mentorship.save
@@ -92,21 +73,6 @@ class Mentorship < ApplicationRecord
     end
   rescue => e
     {success: false, error: "Error processing row: #{e.message}"}
-  end
-
-  def self.normalize_country_code(country)
-    case country.downcase
-    when "usa", "us", "united states" then "US"
-    when "canada", "ca" then "CA"
-    when "uk", "united kingdom", "gb" then "GB"
-    when "mexico", "mx" then "MX"
-    else
-      if country.length == 2
-        country.upcase
-      else
-        country[0..1].upcase
-      end
-    end
   end
 
   def self.backfill_email_dates
