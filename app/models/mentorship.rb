@@ -17,10 +17,11 @@ class Mentorship < ApplicationRecord
   validate :mentor_and_applicant_cannot_be_same
 
   MATCH_CSV_HEADERS = {
-    "applicant email" => :applicant_email,
-    "applicant country" => :applicant_country,
-    "applicant city" => :applicant_city,
-    "mentor email" => :mentor_email
+    "applicant" => :applicant_email,
+    "country" => :applicant_country,
+    "city" => :applicant_city,
+    "mentor" => :mentor_email,
+    "gone" => :gone_status
   }.freeze
 
   def self.find_matches_for_applicant(applicant)
@@ -32,7 +33,8 @@ class Mentorship < ApplicationRecord
   end
 
   def self.csv_import_required_headers
-    MATCH_CSV_HEADERS.keys
+    # Gone is optional
+    MATCH_CSV_HEADERS.keys - ["gone"]
   end
 
   def self.process_csv_row(row, index)
@@ -56,20 +58,30 @@ class Mentorship < ApplicationRecord
     end
     applicant.save! if applicant.changed?
 
-    existing_mentorship = find_by(applicant: applicant, standing: "active")
+    # Determine standing based on "Gone" column
+    is_gone = mapped_data[:gone_status].present? && mapped_data[:gone_status].strip.downcase != ""
+    desired_standing = is_gone ? "ended" : "active"
+
+    existing_mentorship = find_by(applicant: applicant, mentor: mentor)
 
     if existing_mentorship
-      if existing_mentorship.mentor_id == mentor.id
-        return {success: false, error: "Applicant #{applicant.email} already has an active mentorship with #{mentor.email}"}
+      # Update standing if different
+      if existing_mentorship.standing != desired_standing
+        existing_mentorship.update!(standing: desired_standing)
+        return {success: true, data: existing_mentorship, updated: true}
       else
-        existing_mentorship.update!(standing: "ended")
+        return {success: false, error: "Mentorship already exists between #{applicant.email} and #{mentor.email} with standing: #{existing_mentorship.standing}"}
       end
     end
+
+    # End any other active mentorship for this applicant
+    other_active = find_by(applicant: applicant, standing: "active")
+    other_active&.update!(standing: "ended")
 
     mentorship = new(
       mentor: mentor,
       applicant: applicant,
-      standing: "active"
+      standing: desired_standing
     )
 
     if mentorship.save

@@ -34,8 +34,8 @@ class ImportJobTest < ActiveJob::TestCase
     end
 
     @match_csv = CSV.generate do |csv|
-      csv << ["Applicant Email", "Applicant Country", "Applicant City", "Mentor Email"]
-      csv << ["alice@example.com", "USA", "Portland", "john@example.com"]
+      csv << ["Applicant", "Country", "City", "Mentor", "Gone"]
+      csv << ["alice@example.com", "USA", "Portland", "john@example.com", ""]
     end
   end
 
