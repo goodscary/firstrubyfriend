@@ -4,7 +4,7 @@ module CsvImportable
   extend ActiveSupport::Concern
 
   class_methods do
-    def import_from_csv(csv_content, use_transaction: false)
+    def import_from_csv(csv_content, use_transaction: false, rate_limit_delay: nil)
       result = ImportResult.new
 
       begin
@@ -18,11 +18,11 @@ module CsvImportable
 
         if use_transaction
           transaction do
-            process_csv_rows(csv, result)
+            process_csv_rows(csv, result, rate_limit_delay: rate_limit_delay)
             raise ActiveRecord::Rollback unless result.success?
           end
         else
-          process_csv_rows(csv, result)
+          process_csv_rows(csv, result, rate_limit_delay: rate_limit_delay)
         end
       rescue CSV::MalformedCSVError => e
         result.add_error("CSV parsing error: #{e.message}")
@@ -35,8 +35,10 @@ module CsvImportable
 
     private
 
-    def process_csv_rows(csv, result)
+    def process_csv_rows(csv, result, rate_limit_delay: nil)
       csv.each_with_index do |row, index|
+        sleep(rate_limit_delay) if rate_limit_delay && index > 0
+
         row_result = process_csv_row(row, index)
 
         if row_result[:success]
