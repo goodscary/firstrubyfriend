@@ -123,21 +123,21 @@ class MentorshipTest < ActiveSupport::TestCase
       )
 
       @valid_csv = CSV.generate do |csv|
-        csv << ["Applicant Email", "Applicant Country", "Applicant City", "Mentor Email"]
-        csv << ["import_applicant1@example.com", "USA", "Portland", "import_mentor1@example.com"]
-        csv << ["import_applicant2@example.com", "Canada", "Toronto", "import_mentor2@example.com"]
+        csv << ["Applicant", "Country", "City", "Mentor", "Gone"]
+        csv << ["import_applicant1@example.com", "USA", "Portland", "import_mentor1@example.com", ""]
+        csv << ["import_applicant2@example.com", "Canada", "Toronto", "import_mentor2@example.com", ""]
       end
 
       @reassignment_csv = CSV.generate do |csv|
-        csv << ["Applicant Email", "Applicant Country", "Applicant City", "Mentor Email"]
-        csv << ["import_applicant1@example.com", "USA", "Portland", "import_mentor1@example.com"]
-        csv << ["import_applicant1@example.com", "USA", "Portland", "import_mentor2@example.com"]
+        csv << ["Applicant", "Country", "City", "Mentor", "Gone"]
+        csv << ["import_applicant1@example.com", "USA", "Portland", "import_mentor1@example.com", ""]
+        csv << ["import_applicant1@example.com", "USA", "Portland", "import_mentor2@example.com", ""]
       end
 
       @orphaned_match_csv = CSV.generate do |csv|
-        csv << ["Applicant Email", "Applicant Country", "Applicant City", "Mentor Email"]
-        csv << ["nonexistent@example.com", "USA", "Portland", "import_mentor1@example.com"]
-        csv << ["import_applicant1@example.com", "USA", "Portland", "nonexistent@example.com"]
+        csv << ["Applicant", "Country", "City", "Mentor", "Gone"]
+        csv << ["nonexistent@example.com", "USA", "Portland", "import_mentor1@example.com", ""]
+        csv << ["import_applicant1@example.com", "USA", "Portland", "nonexistent@example.com", ""]
       end
     end
 
@@ -204,13 +204,13 @@ class MentorshipTest < ActiveSupport::TestCase
 
       assert_equal 1, result.imported_count
       assert_equal 1, result.failed_count
-      assert result.row_errors.any? { |e| e[:error].include?("already has an active mentorship") }
+      assert result.row_errors.any? { |e| e[:error].include?("already exists between") }
     end
 
     test "updates applicant location from match data" do
       csv_with_location = CSV.generate do |csv|
-        csv << ["Applicant Email", "Applicant Country", "Applicant City", "Mentor Email"]
-        csv << ["import_applicant1@example.com", "US", "Seattle", "import_mentor1@example.com"]
+        csv << ["Applicant", "Country", "City", "Mentor", "Gone"]
+        csv << ["import_applicant1@example.com", "US", "Seattle", "import_mentor1@example.com", ""]
       end
 
       Mentorship.import_matches_from_csv(csv_with_location)
@@ -222,8 +222,8 @@ class MentorshipTest < ActiveSupport::TestCase
 
     test "handles case-insensitive email matching" do
       csv_with_mixed_case = CSV.generate do |csv|
-        csv << ["Applicant Email", "Applicant Country", "Applicant City", "Mentor Email"]
-        csv << ["IMPORT_APPLICANT1@EXAMPLE.COM", "USA", "Portland", "IMPORT_MENTOR1@EXAMPLE.COM"]
+        csv << ["Applicant", "Country", "City", "Mentor", "Gone"]
+        csv << ["IMPORT_APPLICANT1@EXAMPLE.COM", "USA", "Portland", "IMPORT_MENTOR1@EXAMPLE.COM", ""]
       end
 
       assert_difference "Mentorship.count", 1 do
@@ -237,15 +237,30 @@ class MentorshipTest < ActiveSupport::TestCase
 
     test "uses transaction for rollback on failure" do
       csv_with_error = CSV.generate do |csv|
-        csv << ["Applicant Email", "Applicant Country", "Applicant City", "Mentor Email"]
-        csv << ["import_applicant1@example.com", "USA", "Portland", "import_mentor1@example.com"]
-        csv << ["nonexistent@example.com", "USA", "Portland", "import_mentor2@example.com"]
+        csv << ["Applicant", "Country", "City", "Mentor", "Gone"]
+        csv << ["import_applicant1@example.com", "USA", "Portland", "import_mentor1@example.com", ""]
+        csv << ["nonexistent@example.com", "USA", "Portland", "import_mentor2@example.com", ""]
       end
 
       assert_no_difference "Mentorship.count" do
         result = Mentorship.import_matches_from_csv(csv_with_error, use_transaction: true)
         assert_not result.success?
       end
+    end
+
+    test "imports matches with gone status as ended" do
+      csv_with_gone = CSV.generate do |csv|
+        csv << ["Applicant", "Country", "City", "Mentor", "Gone"]
+        csv << ["import_applicant1@example.com", "USA", "Portland", "import_mentor1@example.com", "yes"]
+      end
+
+      assert_difference "Mentorship.count", 1 do
+        result = Mentorship.import_matches_from_csv(csv_with_gone)
+        assert result.success?
+      end
+
+      mentorship = Mentorship.find_by(mentor: @test_mentor1, applicant: @test_applicant1)
+      assert_equal "ended", mentorship.standing
     end
   end
 

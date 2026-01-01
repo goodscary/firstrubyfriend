@@ -10,18 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_25_140656) do
+ActiveRecord::Schema[8.1].define(version: 2025_08_25_140656) do
   create_table "applicant_questionnaires", force: :cascade do |t|
-    t.integer "respondent_id", null: false
-    t.string "name", null: false
+    t.datetime "created_at", null: false
     t.boolean "currently_writing_ruby", null: false
-    t.text "where_started_coding", null: false
-    t.text "mentorship_goals", null: false
     t.boolean "looking_for_career_mentorship", null: false
     t.boolean "looking_for_code_mentorship", null: false
-    t.string "work_url"
-    t.datetime "created_at", null: false
+    t.text "mentorship_goals", null: false
+    t.string "name", null: false
+    t.integer "respondent_id", null: false
     t.datetime "updated_at", null: false
+    t.text "where_started_coding", null: false
+    t.string "work_url"
     t.index ["respondent_id"], name: "index_applicant_questionnaires_on_respondent_id", unique: true
   end
 
@@ -31,29 +31,29 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_140656) do
   end
 
   create_table "events", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.string "action", null: false
-    t.string "user_agent"
-    t.string "ip_address"
     t.datetime "created_at", null: false
+    t.string "ip_address"
     t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.bigint "user_id", null: false
     t.index ["action"], name: "index_events_on_action"
     t.index ["user_id", "created_at"], name: "index_events_on_user_and_created_at"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
   create_table "import_reports", force: :cascade do |t|
-    t.string "report_id", null: false
-    t.string "import_type"
-    t.string "status"
-    t.integer "imported_count", default: 0
-    t.integer "failed_count", default: 0
-    t.text "error_messages"
-    t.text "row_errors"
-    t.text "metadata"
-    t.datetime "started_at"
     t.datetime "completed_at"
     t.datetime "created_at", null: false
+    t.text "error_messages"
+    t.integer "failed_count", default: 0
+    t.string "import_type"
+    t.integer "imported_count", default: 0
+    t.text "metadata"
+    t.string "report_id", null: false
+    t.text "row_errors"
+    t.datetime "started_at"
+    t.string "status"
     t.datetime "updated_at", null: false
     t.index ["import_type"], name: "index_import_reports_on_import_type"
     t.index ["report_id"], name: "index_import_reports_on_report_id", unique: true
@@ -61,49 +61,49 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_140656) do
   end
 
   create_table "languages", force: :cascade do |t|
-    t.string "iso639_alpha3", null: false
-    t.string "iso639_alpha2"
+    t.datetime "created_at", null: false
     t.string "english_name"
     t.string "french_name"
+    t.string "iso639_alpha2"
+    t.string "iso639_alpha3", null: false
     t.string "local_name"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "mentor_questionnaires", force: :cascade do |t|
-    t.bigint "respondent_id", null: false
-    t.string "name", null: false
     t.string "company_url", null: false
-    t.string "twitter_handle"
+    t.datetime "created_at", null: false
     t.string "github_handle"
-    t.string "personal_site_url"
-    t.text "previous_workplaces"
     t.boolean "has_mentored_before", null: false
     t.text "mentoring_reason", null: false
+    t.string "name", null: false
+    t.string "personal_site_url"
     t.boolean "preferred_style_career", null: false
     t.boolean "preferred_style_code", null: false
-    t.datetime "created_at", null: false
+    t.text "previous_workplaces"
+    t.bigint "respondent_id", null: false
+    t.string "twitter_handle"
     t.datetime "updated_at", null: false
     t.index ["respondent_id"], name: "index_mentor_questionnaires_on_respondent_id", unique: true
   end
 
   create_table "mentorships", force: :cascade do |t|
-    t.bigint "mentor_id", null: false
     t.bigint "applicant_id", null: false
-    t.string "standing", null: false
     t.datetime "applicant_month_1_email_sent_at"
     t.datetime "applicant_month_2_email_sent_at"
     t.datetime "applicant_month_3_email_sent_at"
     t.datetime "applicant_month_4_email_sent_at"
     t.datetime "applicant_month_5_email_sent_at"
     t.datetime "applicant_month_6_email_sent_at"
+    t.datetime "created_at", null: false
+    t.bigint "mentor_id", null: false
     t.datetime "mentor_month_1_email_sent_at"
     t.datetime "mentor_month_2_email_sent_at"
     t.datetime "mentor_month_3_email_sent_at"
     t.datetime "mentor_month_4_email_sent_at"
     t.datetime "mentor_month_5_email_sent_at"
     t.datetime "mentor_month_6_email_sent_at"
-    t.datetime "created_at", null: false
+    t.string "standing", null: false
     t.datetime "updated_at", null: false
     t.index ["applicant_id", "standing"], name: "index_mentorships_on_applicant_and_standing"
     t.index ["applicant_id"], name: "index_mentorships_on_applicant_id"
@@ -119,47 +119,47 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_25_140656) do
   end
 
   create_table "sessions", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "user_agent"
-    t.string "ip_address"
     t.datetime "created_at", null: false
+    t.string "ip_address"
     t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.bigint "user_id", null: false
     t.index ["user_id", "created_at"], name: "index_sessions_on_user_and_created_at"
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
   create_table "user_languages", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "language_id", null: false
     t.datetime "created_at", null: false
+    t.string "language_id", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["user_id", "language_id"], name: "index_user_languages_on_user_and_language", unique: true
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email", null: false
-    t.string "password_digest"
-    t.boolean "verified", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "unsubscribed_at"
-    t.string "unsubscribed_reason"
     t.datetime "available_as_mentor_at"
-    t.datetime "requested_mentorship_at"
     t.string "city"
     t.string "country_code"
-    t.decimal "lat", precision: 10, scale: 6
-    t.decimal "lng", precision: 10, scale: 6
-    t.integer "demographic_year_of_birth"
-    t.integer "demographic_year_started_ruby"
-    t.integer "demographic_year_started_programming"
+    t.datetime "created_at", null: false
     t.boolean "demographic_underrepresented_group"
     t.text "demographic_underrepresented_group_details"
-    t.string "provider"
-    t.string "uid"
+    t.integer "demographic_year_of_birth"
+    t.integer "demographic_year_started_programming"
+    t.integer "demographic_year_started_ruby"
+    t.string "email", null: false
     t.string "first_name"
     t.string "last_name"
+    t.decimal "lat", precision: 10, scale: 6
+    t.decimal "lng", precision: 10, scale: 6
+    t.string "password_digest"
+    t.string "provider"
     t.text "questionnaire_responses", default: "{}"
+    t.datetime "requested_mentorship_at"
+    t.string "uid"
+    t.datetime "unsubscribed_at"
+    t.string "unsubscribed_reason"
+    t.datetime "updated_at", null: false
+    t.boolean "verified", default: false, null: false
     t.index ["available_as_mentor_at"], name: "index_users_on_available_as_mentor_at"
     t.index ["city"], name: "index_users_on_city"
     t.index ["country_code"], name: "index_users_on_country_code"

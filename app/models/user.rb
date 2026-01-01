@@ -97,36 +97,42 @@ class User < ApplicationRecord
 
   APPLICANT_CSV_HEADERS = {
     "date" => :import_date,
-    "first name" => :first_name,
-    "last name" => :last_name,
-    "email" => :email,
-    "what year were you born?" => :year_of_birth,
-    "what year did you first start programming?" => :year_started_programming,
-    "what year did you first start using ruby?" => :year_started_ruby,
-    "do you self-identify as a member of an underrepresented group in tech?" => :underrepresented_group,
-    "if you feel comfortable, please share which group(s) you identify with" => :underrepresented_details,
-    "what is your current level of ruby experience?" => :ruby_experience,
-    "where do you currently live? (city, country)" => :location,
-    "are you currently writing ruby regularly?" => :currently_writing_ruby,
-    "how did you get started with programming in general?" => :how_started,
-    "what do you want to get out of being mentored?" => :mentorship_goals,
-    "any links you'd like to share?" => :links
+    "what's your name?" => :name,
+    "what's your email?" => :email,
+    "country" => :country,
+    "city" => :city,
+    "are you working anywhere yet?" => :current_employer,
+    "are you writing ruby there?" => :currently_writing_ruby,
+    "where'd you get your start?" => :how_started,
+    "would you consider yourself in an underrepresented group?" => :underrepresented_group,
+    "twitter?" => :twitter_handle,
+    "github?" => :github_handle,
+    "do you have a personal site?" => :personal_site,
+    "any languages other than english?" => :languages,
+    "what did you do before you became a programmer?" => :previous_career,
+    "what are you looking to get out of the mentoring?" => :mentorship_goals,
+    "are you a member of the wnb.rb community? (https://wnb-rb.dev)" => :wnb_member,
+    "do you have a strong preference to mentor someone from a particular demographic?" => :demographic_preference,
+    "how would you describe yourself?" => :self_description
   }.freeze
 
   MENTOR_CSV_HEADERS = {
     "date" => :import_date,
-    "first name" => :first_name,
-    "last name" => :last_name,
-    "email" => :email,
-    "what company do you work for or what do you do?" => :company,
-    "where do you work?" => :work_location,
-    "location (where do you currently live?)" => :location,
-    "previous location" => :previous_location,
-    "confirmed location" => :confirmed_location,
-    "links" => :links,
-    "who would you prefer to mentor" => :mentee_preference,
-    "how many people would you prefer to mentor simultaneously?" => :max_mentees,
-    "languages you feel comfortable mentoring in" => :languages
+    "what's your name?" => :name,
+    "what's your email?" => :email,
+    "where do you work?" => :company,
+    "year you started programming in ruby" => :year_started_ruby,
+    "country" => :country,
+    "city" => :city,
+    "twitter?" => :twitter_handle,
+    "github?" => :github_handle,
+    "do you have a personal site?" => :personal_site,
+    "worked anywhere else?" => :previous_workplaces,
+    "why are you doing this?" => :mentoring_reason,
+    "have you done any mentoring before?" => :has_mentored_before,
+    "are you a member of the wnb.rb community? (https://wnb-rb.dev)" => :wnb_member,
+    "do you have a strong preference to mentor someone from a particular demographic?" => :demographic_preference,
+    "how would you describe yourself?" => :self_description
   }.freeze
 
   def self.import_applicants_from_csv(csv_content, use_transaction: false)
@@ -167,26 +173,26 @@ class User < ApplicationRecord
     end
 
     user = find_or_initialize_by(email: mapped_data[:email].downcase)
-    user.first_name = mapped_data[:first_name]
-    user.last_name = mapped_data[:last_name]
+
+    # Parse name - split on first space for first/last name
+    if mapped_data[:name].present?
+      name_parts = mapped_data[:name].strip.split(/\s+/, 2)
+      user.first_name = name_parts[0]
+      user.last_name = name_parts[1] || ""
+    end
+
     user.skip_password_validation = true if user.new_record?
 
-    user.demographic_year_of_birth = parse_import_year(mapped_data[:year_of_birth])
-    user.demographic_year_started_programming = parse_import_year(mapped_data[:year_started_programming])
-    user.demographic_year_started_ruby = parse_import_year(mapped_data[:year_started_ruby])
+    # Set location fields
+    user.city = mapped_data[:city] if mapped_data[:city].present?
+    user.country_code = parse_country_code(mapped_data[:country]) if mapped_data[:country].present?
     user.demographic_underrepresented_group = parse_import_boolean(mapped_data[:underrepresented_group])
-    user.demographic_underrepresented_group_details = mapped_data[:underrepresented_details] if mapped_data[:underrepresented_details].present?
 
     user.questionnaire_responses ||= {}
     user.questionnaire_responses.merge!(build_applicant_questionnaire_responses(mapped_data))
 
-    if mapped_data[:location].present?
-      user.questionnaire_responses["location"] = mapped_data[:location]
-      parse_import_location(user, mapped_data[:location])
-    end
-
-    if user.first_name.blank? || user.last_name.blank?
-      return {success: false, error: "Missing required name fields for #{mapped_data[:email]}"}
+    if user.first_name.blank?
+      return {success: false, error: "Missing required name for #{mapped_data[:email]}"}
     end
 
     if user.save
@@ -207,15 +213,26 @@ class User < ApplicationRecord
     end
 
     user = find_or_initialize_by(email: mapped_data[:email].downcase)
-    user.first_name = mapped_data[:first_name]
-    user.last_name = mapped_data[:last_name]
+
+    # Parse name - split on first space for first/last name
+    if mapped_data[:name].present?
+      name_parts = mapped_data[:name].strip.split(/\s+/, 2)
+      user.first_name = name_parts[0]
+      user.last_name = name_parts[1] || ""
+    end
+
     user.skip_password_validation = true if user.new_record?
+
+    # Set location fields
+    user.city = mapped_data[:city] if mapped_data[:city].present?
+    user.country_code = parse_country_code(mapped_data[:country]) if mapped_data[:country].present?
+    user.demographic_year_started_ruby = parse_import_year(mapped_data[:year_started_ruby])
 
     user.questionnaire_responses ||= {}
     user.questionnaire_responses.merge!(build_mentor_questionnaire_responses(mapped_data))
 
-    if user.first_name.blank? || user.last_name.blank?
-      return {success: false, error: "Missing required name fields for #{mapped_data[:email]}"}
+    if user.first_name.blank?
+      return {success: false, error: "Missing required name for #{mapped_data[:email]}"}
     end
 
     if user.save
@@ -230,24 +247,33 @@ class User < ApplicationRecord
 
   def self.build_applicant_questionnaire_responses(data)
     responses = {}
-    responses["ruby_experience"] = data[:ruby_experience] if data[:ruby_experience].present?
+    responses["current_employer"] = data[:current_employer] if data[:current_employer].present?
     responses["currently_writing_ruby"] = parse_import_boolean(data[:currently_writing_ruby])
     responses["how_started"] = data[:how_started] if data[:how_started].present?
+    responses["twitter_handle"] = data[:twitter_handle] if data[:twitter_handle].present?
+    responses["github_handle"] = data[:github_handle] if data[:github_handle].present?
+    responses["personal_site"] = data[:personal_site] if data[:personal_site].present?
+    responses["languages"] = data[:languages] if data[:languages].present?
+    responses["previous_career"] = data[:previous_career] if data[:previous_career].present?
     responses["mentorship_goals"] = data[:mentorship_goals] if data[:mentorship_goals].present?
-    responses["links"] = data[:links] if data[:links].present?
+    responses["wnb_member"] = parse_import_boolean(data[:wnb_member])
+    responses["demographic_preference"] = data[:demographic_preference] if data[:demographic_preference].present?
+    responses["self_description"] = data[:self_description] if data[:self_description].present?
     responses
   end
 
   def self.build_mentor_questionnaire_responses(data)
     responses = {}
     responses["company"] = data[:company] if data[:company].present?
-    responses["work_location"] = data[:work_location] if data[:work_location].present?
-    responses["location"] = data[:confirmed_location].presence || data[:location]
-    responses["previous_location"] = data[:previous_location] if data[:previous_location].present?
-    responses["links"] = data[:links] if data[:links].present?
-    responses["mentee_preference"] = data[:mentee_preference] if data[:mentee_preference].present?
-    responses["max_mentees"] = data[:max_mentees].to_i if data[:max_mentees].present?
-    responses["languages"] = data[:languages].split(",").map(&:strip) if data[:languages].present?
+    responses["twitter_handle"] = data[:twitter_handle] if data[:twitter_handle].present?
+    responses["github_handle"] = data[:github_handle] if data[:github_handle].present?
+    responses["personal_site"] = data[:personal_site] if data[:personal_site].present?
+    responses["previous_workplaces"] = data[:previous_workplaces] if data[:previous_workplaces].present?
+    responses["mentoring_reason"] = data[:mentoring_reason] if data[:mentoring_reason].present?
+    responses["has_mentored_before"] = parse_import_boolean(data[:has_mentored_before])
+    responses["wnb_member"] = parse_import_boolean(data[:wnb_member])
+    responses["demographic_preference"] = data[:demographic_preference] if data[:demographic_preference].present?
+    responses["self_description"] = data[:self_description] if data[:self_description].present?
     responses
   end
 
@@ -272,6 +298,26 @@ class User < ApplicationRecord
     Date.parse(date_string)
   rescue Date::Error
     nil
+  end
+
+  def self.parse_country_code(country)
+    return nil if country.blank?
+    case country.downcase.strip
+    when "usa", "us", "united states", "united states of america" then "US"
+    when "canada", "ca" then "CA"
+    when "uk", "united kingdom", "great britain", "gb", "england", "scotland", "wales" then "GB"
+    when "australia", "au" then "AU"
+    when "germany", "de" then "DE"
+    when "france", "fr" then "FR"
+    when "netherlands", "nl" then "NL"
+    when "spain", "es" then "ES"
+    when "italy", "it" then "IT"
+    when "japan", "jp" then "JP"
+    when "india", "in" then "IN"
+    when "brazil", "br" then "BR"
+    else
+      country.strip.upcase[0..1]
+    end
   end
 
   def self.parse_import_location(user, location_string)
