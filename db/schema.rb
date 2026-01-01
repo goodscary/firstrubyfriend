@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_08_25_140656) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_01_000000) do
   create_table "applicant_questionnaires", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.boolean "currently_writing_ruby", null: false
@@ -40,24 +40,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_08_25_140656) do
     t.index ["action"], name: "index_events_on_action"
     t.index ["user_id", "created_at"], name: "index_events_on_user_and_created_at"
     t.index ["user_id"], name: "index_events_on_user_id"
-  end
-
-  create_table "import_reports", force: :cascade do |t|
-    t.datetime "completed_at"
-    t.datetime "created_at", null: false
-    t.text "error_messages"
-    t.integer "failed_count", default: 0
-    t.string "import_type"
-    t.integer "imported_count", default: 0
-    t.text "metadata"
-    t.string "report_id", null: false
-    t.text "row_errors"
-    t.datetime "started_at"
-    t.string "status"
-    t.datetime "updated_at", null: false
-    t.index ["import_type"], name: "index_import_reports_on_import_type"
-    t.index ["report_id"], name: "index_import_reports_on_report_id", unique: true
-    t.index ["status"], name: "index_import_reports_on_status"
   end
 
   create_table "languages", force: :cascade do |t|
