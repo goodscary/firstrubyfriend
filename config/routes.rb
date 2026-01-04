@@ -36,5 +36,10 @@ Rails.application.routes.draw do
     resource :bulk_approvals, only: [:create]
   end
 
+  # Public marketing pages
+  get "early-career-devs", to: "pages#early_career", as: :early_career
+  get "mentors", to: "pages#mentors", as: :mentors
+  get "conduct", to: "pages#conduct", as: :conduct
+
   root "home#show"
 end
