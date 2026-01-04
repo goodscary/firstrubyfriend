@@ -1,10 +1,66 @@
-<div class="bg-blue-500 text-white p-4 rounded-lg">
-  <h1>Hello</h1>
+<% content_for :title, "First Ruby Friend - Make your first #rubyfriend today" %>
+
+<!-- Hero -->
+<div class="hero min-h-[60vh] bg-base-200">
+  <div class="hero-content text-center">
+    <div class="max-w-2xl">
+      <img src="https://firstrubyfriend.org/images/ruby-plus-one.svg" alt="Ruby Plus One" class="mx-auto h-24 mb-8">
+
+      <h1 class="text-5xl font-bold">
+        Make your first <span class="text-primary">#rubyfriend</span> today
+      </h1>
+
+      <p class="py-6 text-xl">
+        Six half-hour calls between early career devs and friendly volunteer mentors.
+      </p>
+
+      <!-- Status Alert -->
+      <div class="alert alert-warning mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <span>Programme temporarily closed until 2026</span>
+      </div>
+    </div>
+  </div>
 </div>
 
-<% if !Current.session %>
-  <div>
-    <%= link_to "Sign in", sign_in_path %>
-    <%= render "sessions/github_oauth_button" %>
+<!-- Dual CTAs -->
+<div class="py-16 px-4">
+  <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+
+    <!-- Early Career -->
+    <%= link_to early_career_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow" do %>
+      <div class="card-body">
+        <h2 class="card-title text-2xl">Early Career Devs</h2>
+        <p>In your first year of programming? Looking for guidance from someone who's been there?</p>
+        <div class="card-actions justify-end mt-4">
+          <span class="btn btn-primary">Apply here →</span>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Mentors -->
+    <%= link_to mentors_path, class: "card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow" do %>
+      <div class="card-body">
+        <h2 class="card-title text-2xl">Help Wanted</h2>
+        <p>Got programming experience? Want to give back to the Ruby community? We need your help.</p>
+        <div class="card-actions justify-end mt-4">
+          <span class="btn btn-primary">How can I help? →</span>
+        </div>
+      </div>
+    <% end %>
+
   </div>
-<% end %>
+</div>
+
+<!-- Value Prop -->
+<div class="bg-base-200 py-16 px-4">
+  <div class="max-w-2xl mx-auto text-center">
+    <h2 class="text-3xl font-bold mb-4">We are nice</h2>
+    <p class="text-lg">
+      We pair first year programmers with experienced Rubyists for free mentorship.
+      No strings attached, just friendly help from the Ruby community.
+    </p>
+  </div>
+</div>
