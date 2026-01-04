@@ -4,8 +4,8 @@ class HomeTest < ActionDispatch::IntegrationTest
   test "GET /" do
     get "/"
 
-    assert_select "h1", text: "Hello"
-    assert_select "a", text: "Sign in"
+    assert_select "h1", /Make your first.*rubyfriend.*today/
+    assert_select "a", text: "Sign In"
   end
 
   test "signed in GET /" do
