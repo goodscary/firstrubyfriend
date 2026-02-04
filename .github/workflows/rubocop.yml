@@ -15,3 +15,4 @@ jobs:
         with:
           rubocop_extensions: standard
           rubocop_version: gemfile
+          reviewdog_version: latest
