@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "setup": "script/conductor-setup && bin/setup",
+    "run": "bin/dev"
+  }
+}

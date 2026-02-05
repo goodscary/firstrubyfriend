@@ -53,6 +53,25 @@ bin/standardrb --fix   # Auto-fix lint issues
 
 Uses Authentication Zero gem with GitHub OAuth. Check gem capabilities before implementing auth features.
 
+Admin routes (`/admin/*`) use HTTP Basic auth via `AdminController`.
+
+### Credentials
+
+Two credential files, each with its own key:
+
+| Environment | Key | Encrypted File |
+|-------------|-----|----------------|
+| Dev/Test | `config/master.key` | `config/credentials.yml.enc` |
+| Production | `config/credentials/production.key` | `config/credentials/production.yml.enc` |
+
+**Edit credentials:**
+```bash
+EDITOR="code --wait" bin/rails credentials:edit           # dev/test
+EDITOR="code --wait" bin/rails credentials:edit -e production  # production
+```
+
+**Conductor worktrees:** Keys auto-copied via `conductor.json` setup script.
+
 ## Test Data
 
 Tests use Oaken (not YAML fixtures). Reference seeds in tests like fixtures:
