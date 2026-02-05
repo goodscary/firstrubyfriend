@@ -1,5 +1,5 @@
 module Admin
-  class PendingMatchesController < ApplicationController
+  class PendingMatchesController < AdminController
     def index
       @pending_matches = Mentorship.pending
         .includes(:mentor, :applicant)

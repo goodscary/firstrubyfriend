@@ -1,5 +1,5 @@
 module Admin
-  class AutoMatchesController < ApplicationController
+  class AutoMatchesController < AdminController
     def create
       result = Mentorship.auto_match_all(minimum_score: 30)
 

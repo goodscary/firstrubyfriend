@@ -1,5 +1,5 @@
 module Admin
-  class BulkApprovalsController < ApplicationController
+  class BulkApprovalsController < AdminController
     def create
       count = Mentorship.pending.update_all(standing: "active")
       redirect_to admin_pending_matches_path, notice: "Approved #{count} pending matches."
