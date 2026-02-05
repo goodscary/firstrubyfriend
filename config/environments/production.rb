@@ -64,8 +64,8 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address: "smtp.postmarkapp.com",
     port: 587,
-    user_name: Rails.application.credentials.dig(:postmark, :api_token),
-    password: Rails.application.credentials.dig(:postmark, :api_token),
+    user_name: Rails.application.credentials.dig(:postmark, :api_token) || ENV["POSTMARK_API_TOKEN"],
+    password: Rails.application.credentials.dig(:postmark, :api_token) || ENV["POSTMARK_API_TOKEN"],
     authentication: :plain,
     enable_starttls_auto: true
   }
