@@ -1,0 +1,32 @@
+#!/bin/bash
+# Copy credential keys from original repository to this worktree
+# Run this after cloning a new Conductor worktree
+
+set -e
+
+ORIGINAL_REPO="/Users/andy/code/goodscary/firstrubyfriend"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+echo "Setting up credentials for Conductor worktree..."
+
+# Create credentials directory if needed
+mkdir -p "$PROJECT_DIR/config/credentials"
+
+# Copy master.key
+if [ -f "$ORIGINAL_REPO/config/master.key" ]; then
+  cp "$ORIGINAL_REPO/config/master.key" "$PROJECT_DIR/config/master.key"
+  echo "✓ Copied master.key"
+else
+  echo "✗ master.key not found in original repo"
+fi
+
+# Copy production.key
+if [ -f "$ORIGINAL_REPO/config/credentials/production.key" ]; then
+  cp "$ORIGINAL_REPO/config/credentials/production.key" "$PROJECT_DIR/config/credentials/production.key"
+  echo "✓ Copied production.key"
+else
+  echo "✗ production.key not found in original repo"
+fi
+
+echo "Done! Run 'bin/setup' to complete setup."

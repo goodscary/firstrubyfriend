@@ -1,5 +1,5 @@
 module Admin
-  class MatchesController < ApplicationController
+  class MatchesController < AdminController
     def create
       @mentorship = Mentorship.find(params[:id])
 
