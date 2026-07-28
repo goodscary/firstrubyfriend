@@ -595,6 +595,5 @@ class UserTest < ActiveSupport::TestCase
       assert george.questionnaire_responses["previous_workplaces"].include?("banked.com")
       assert george.questionnaire_responses["previous_workplaces"].include?("meetcleo.com")
     end
-
   end
 end

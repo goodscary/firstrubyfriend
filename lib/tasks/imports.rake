@@ -48,7 +48,7 @@ namespace :imports do
     if filename =~ /^(\d{2})-([A-Za-z]{3})/
       year_suffix = $1.to_i
       month_abbrev = $2
-      year = year_suffix >= 90 ? 1900 + year_suffix : 2000 + year_suffix
+      year = (year_suffix >= 90) ? 1900 + year_suffix : 2000 + year_suffix
       Date.parse("1 #{month_abbrev} #{year}")
     end
   rescue Date::Error

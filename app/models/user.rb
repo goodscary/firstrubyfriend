@@ -281,7 +281,7 @@ class User < ApplicationRecord
 
   def self.valid_import_email?(email)
     return false if email.blank?
-    email.match?(/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i)
+    email.match?(/\A[\w+\-.]+@[a-z\d-]+(\.[a-z\d-]+)*\.[a-z]+\z/i)
   end
 
   def self.parse_import_boolean(value)

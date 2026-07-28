@@ -12,7 +12,7 @@ module CsvImportable
 
       missing = csv_import_required_headers - csv.headers.map(&:to_s)
       if missing.any?
-        Rails.logger.error "[Import] Missing required headers: #{missing.join(', ')}"
+        Rails.logger.error "[Import] Missing required headers: #{missing.join(", ")}"
         return false
       end
 
