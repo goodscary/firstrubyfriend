@@ -111,7 +111,7 @@ namespace :daisyui do
     puts "\n❓ Configure ApplicationController to use DaisyUI form builder by default? (y/n)"
     print "   This will add 'default_form_builder DaisyUiFormBuilder' to ApplicationController: "
 
-    response = STDIN.gets.chomp.downcase
+    response = $stdin.gets.chomp.downcase
     if response == "y" || response == "yes"
       controller_path = "app/controllers/application_controller.rb"
       if File.exist?(controller_path)
