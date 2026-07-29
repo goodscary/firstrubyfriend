@@ -13,6 +13,7 @@ gem "geocoder"
 # gem "image_processing", "~> 1.2" # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "importmap-rails" # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "kredis" # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
+gem "ostruct" # Used by ApplicationClient to parse JSON responses; no longer a default gem in Ruby 3.5 [https://github.com/ruby/ostruct]
 gem "propshaft" # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "sqlite3" # Use SQLite3 as the database for Active Record [https://github.com/rails/rails/blob/v8.0.0/activerecord/README.md]
 gem "puma" # Use the Puma web server [https://github.com/puma/puma]
@@ -30,6 +31,7 @@ gem "prefixed_ids"
 gem "active_job-performs"
 
 group :development, :test do
+  gem "brakeman", require: false # Static analysis for security vulnerabilities; invoked via bin/brakeman [https://brakemanscanner.org]
   gem "debug", platforms: %i[mri mingw x64_mingw]   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "standard"
   gem "faker"
