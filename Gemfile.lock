@@ -91,6 +91,8 @@ GEM
     bindex (0.8.1)
     bootsnap (1.24.6)
       msgpack (~> 1.2)
+    brakeman (8.0.5)
+      racc
     builder (3.3.0)
     capybara (3.40.0)
       addressable
@@ -229,6 +231,7 @@ GEM
     omniauth-rails_csrf_protection (2.0.1)
       actionpack (>= 4.2)
       omniauth (~> 2.0)
+    ostruct (0.6.3)
     parallel (2.1.0)
     parser (3.3.12.0)
       ast (~> 2.4.1)
@@ -424,6 +427,7 @@ DEPENDENCIES
   authentication-zero
   bcrypt
   bootsnap
+  brakeman
   capybara
   country_select
   debug
@@ -434,6 +438,7 @@ DEPENDENCIES
   oaken
   omniauth-github
   omniauth-rails_csrf_protection
+  ostruct
   prefixed_ids
   propshaft
   puma
